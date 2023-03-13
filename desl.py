@@ -1,10 +1,53 @@
 from tkinter import *
+from tkinter import ttk
+import sqlite3
+
+
+
+
+def article() :
+    art = Toplevel()
+    art.title("articles")
+
+    # Créer le tableau
+    table = ttk.Treeview(art, columns=("Id_article", "Code_comptable","Designation"))
+
+    # Définir les en-têtes de colonnes
+    table.heading("#0", text="ID")
+    table.heading("Id_article", text="Id_article")
+    table.heading("Code_comptable", text="Code_comptable")
+    table.heading("Designation", text="Designation")
+
+
+    conn = sqlite3.connect('classe.db')
+    cur = conn.cursor()
+    req = "select Id_aritcle from article"
+    cur.execute(req)
+    res = cur.fetchall()
+    print(res)
+    conn.commit()
+    conn.close()
+
+    
+
+    for i in range(len(res)):
+    # Supprimer l'élément existant avec le même identifiant
+     table.delete(i)
+    # Ajouter des données
+     table.insert(parent="", index="end", iid=i, text=i+1, values=(res[i], 25, 15))
+     table.insert(parent="", index="end", iid=i, text=i+2, values=(res[i], 30, 15))
+     table.insert(parent="", index="end", iid=i, text=i+3, values=(res[i], 35, 15))
+    
+
+    # Afficher le tableau
+    table.pack()
+
 
 
 def year():
     ann = Toplevel()
     ann.title("activitée")
-    listes_article = Button(ann, text="Liste d'articles", padx=50, pady=10)
+    listes_article = Button(ann, text="Liste d'articles",command=article, padx=50, pady=10)
     listes_article.pack(padx=40, pady=20)
 
     ajouter_article = Button(ann, text="Ajouter un article", padx=50, pady=10)
