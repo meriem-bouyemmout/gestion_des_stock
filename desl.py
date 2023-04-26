@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter import ttk
+from tkinter import messagebox
 import sqlite3
 
 
@@ -13,7 +14,7 @@ def article() :
     table = ttk.Treeview(art, columns=("Id_article", "Code_comptable","Designation"))
 
     # Définir les en-têtes de colonnes
-    table.heading("#0", text="ID")
+    table.heading("#0", text="Num")
     table.heading("Id_article", text="Id_article")
     table.heading("Code_comptable", text="Code_comptable")
     table.heading("Designation", text="Designation")
@@ -22,21 +23,25 @@ def article() :
     conn = sqlite3.connect('classe.db')
     cur = conn.cursor()
     req = "select Id_aritcle from article"
+    req1 = "select code_comptable from article"
+    req2 = "select designation from article"
     cur.execute(req)
     res = cur.fetchall()
+    cur.execute(req1)
+    res1 = cur.fetchall()
+    cur.execute(req2)
+    res2 = cur.fetchall()
     print(res)
+    print(res1)
+    print(res2)
     conn.commit()
     conn.close()
 
-    
+
 
     for i in range(len(res)):
-    # Supprimer l'élément existant avec le même identifiant
-     table.delete(i)
-    # Ajouter des données
-     table.insert(parent="", index="end", iid=i, text=i+1, values=(res[i], 25, 15))
-     table.insert(parent="", index="end", iid=i, text=i+2, values=(res[i], 30, 15))
-     table.insert(parent="", index="end", iid=i, text=i+3, values=(res[i], 35, 15))
+     table.insert(parent="", index="end", iid=i, text=str(i+1), values=(res[i], res1[i], res2[i]))
+    
     
 
     # Afficher le tableau
@@ -44,17 +49,77 @@ def article() :
 
 
 
+def ajouter():
+    ajt = Toplevel()
+    ajt.title("Ajouter article")
+    
+    global Id_article_entry,Code_comptable_entry,Designation_entry
+   
+    Id_article = Label(ajt, text="Id_article:", font=("Times", 16, "bold"))  
+    Id_article.pack(pady=10)
+ 
+    Id_article_entry = Entry(ajt)
+    Id_article_entry.pack(pady=10)
+
+    Code_comptable = Label(ajt, text="Code_comptable:", font=("Times", 16, "bold"))
+    Code_comptable.pack(pady=10)
+
+    Code_comptable_entry = Entry(ajt)
+    Code_comptable_entry.pack(pady=10)
+
+    Designation = Label(ajt, text="Desighnation", font=("Times", 16, "bold"))  
+    Designation.pack(pady=10)
+ 
+    Designation_entry = Entry(ajt)
+    Designation_entry.pack(pady=10)
+
+    bouton_ajouter = Button(ajt, text="Ajouter", command=ajouter_dans_bd)
+    bouton_ajouter.pack(pady=10)
+  
+
+
+def ajouter_dans_bd():
+    # Connexion à la base de données
+    conn = sqlite3.connect('classe.db')
+    cur = conn.cursor()
+
+    # Récupération des valeurs des champs de saisie
+    id_article = Id_article_entry.get()
+    code_comptable = Code_comptable_entry.get()
+    designation = Designation_entry.get()
+
+    # Insertion des valeurs dans la base de données
+    cur.execute("INSERT INTO article (Id_aritcle, code_comptable, designation) VALUES (?, ?, ?)", (id_article, code_comptable, designation))
+    
+    # Message de confirmation
+    messagebox.showinfo("Ajouté", "L'article a été ajouté avec succès !")
+
+    # Validation de la transaction et fermeture de la connexion
+    conn.commit()
+    conn.close()
+
+
+   
+
 def year():
     ann = Toplevel()
     ann.title("activitée")
     listes_article = Button(ann, text="Liste d'articles",command=article, padx=50, pady=10)
     listes_article.pack(padx=40, pady=20)
 
-    ajouter_article = Button(ann, text="Ajouter un article", padx=50, pady=10)
+    
+
+
+    ajouter_article = Button(ann, text="Ajouter un article", command=ajouter, padx=50, pady=10)
     ajouter_article.pack(padx=40, pady=20)
 
-    mouvement = Button(ann, text="Mouvement", padx=50, pady=10)
-    mouvement.pack(padx=40, pady=20)
+    BR = Button(ann, text="BR", padx=50, pady=10)
+    BR.pack(padx=40, pady=20)
+
+    BS = Button(ann, text="BS", padx=50, pady=10)
+    BS.pack(padx=40, pady=20)
+
+
 
     # Mettre à jour la géométrie de la fenêtre
     ann.update_idletasks()
@@ -93,13 +158,13 @@ def login():
         option1_button = Button(options_window, text="2023",command=year, padx=50, pady=10)
         option1_button.pack(padx=40, pady=20)
 
-        option2_button = Button(options_window, text="2022",command=year, padx=50, pady=10)
+        option2_button = Button(options_window, text="2022", padx=50, pady=10)
         option2_button.pack(padx=40, pady=20)
 
-        option3_button = Button(options_window, text="2021",command=year, padx=50, pady=10)
+        option3_button = Button(options_window, text="2021", padx=50, pady=10)
         option3_button.pack(padx=40, pady=20)
 
-        option4_button = Button(options_window, text="2020",command=year, padx=50, pady=10)
+        option4_button = Button(options_window, text="2020", padx=50, pady=10)
         option4_button.pack(padx=40, pady=20)
 
 
