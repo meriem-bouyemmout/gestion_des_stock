@@ -73,9 +73,11 @@ def ajouter():
     Designation_entry = Entry(ajt)
     Designation_entry.pack(pady=10)
 
-    bouton_ajouter = Button(ajt, text="Ajouter", command=ajouter_dans_bd)
+    bouton_ajouter = Button(ajt, text="Ajouter", command = ajouter_dans_bd)
     bouton_ajouter.pack(pady=10)
-  
+
+    boutton_annuler = Button(ajt, text="Annuler", command = annuler)
+    boutton_annuler.pack()  
 
 
 def ajouter_dans_bd():
@@ -98,8 +100,34 @@ def ajouter_dans_bd():
     conn.commit()
     conn.close()
 
+def annuler():
+    Id_article_entry.delete(0, END)
+    Code_comptable_entry.delete(0, END)
+    Designation_entry.delete(0, END)   
 
+
+def num_BR():
+    num_BR = Toplevel()
+    num_BR.title("Numéro BR")
+    global Numéro_entry
    
+    Numéro = Label(num_BR, text="Donner un numéro BR", font=("Times", 16, "bold"))  
+    Numéro.pack(pady=10)
+ 
+    Numéro_entry = Entry(num_BR)
+    Numéro_entry.pack(pady=10)
+   
+    OK = Button(num_BR, text="OK", command=BR, padx=50, pady=10)
+    OK.pack()
+
+def BR():
+    BR = Toplevel()
+    BR.title("BR")
+    BR_label = Label(BR, text=Numéro_entry.get(), font=("Times", 16, "bold"))
+    BR_label.pack()
+    Numéro_entry.delete(0, END)
+
+
 
 def year():
     ann = Toplevel()
@@ -113,7 +141,7 @@ def year():
     ajouter_article = Button(ann, text="Ajouter un article", command=ajouter, padx=50, pady=10)
     ajouter_article.pack(padx=40, pady=20)
 
-    BR = Button(ann, text="BR", padx=50, pady=10)
+    BR = Button(ann, text="BR",command=num_BR, padx=50, pady=10)
     BR.pack(padx=40, pady=20)
 
     BS = Button(ann, text="BS", padx=50, pady=10)
