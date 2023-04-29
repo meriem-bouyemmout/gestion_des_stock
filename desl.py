@@ -130,7 +130,6 @@ def BR():
     table2 = ttk.Treeview(BR, columns=("Id_article","Designation"))
 
     # Définir les en-têtes de colonnes
-    table2.heading("#0", text="Num")
     table2.heading("Id_article", text="Id_article")
     table2.heading("Designation", text="Designation")
 
@@ -164,11 +163,23 @@ def ajouter_br():
 
 def Entrer_table():
 
-    res=[(Id_article_entry.get()),(Designation_entry.get())]
-    print(res)
+    # Ajouter les valeurs entrées à table2
+    table2.insert(parent="", index="end", iid=None, text="", values=(Id_article_entry.get(), Designation_entry.get()))
 
-    for i in range(len(res)):
-     table2.insert(parent="", index="end", iid=i, text=str(i+1), values=(res[i], res[i+1]))
+    # Copier les valeurs de table2 dans res
+    res = []
+    for item in table2.get_children():
+        res.append(table2.item(item)['values'])
+
+    # Afficher la première valeur de res
+    if len(res) > 0:
+        print(res[0][0])
+
+    # Effacer les entrées dans la fenêtre "Ajouter BR"
+    Id_article_entry.delete(0, END)
+    Designation_entry.delete(0, END)
+
+    
      
 
 
