@@ -65,7 +65,7 @@ def ajouter():
     Code_comptable_entry = Entry(ajt)
     Code_comptable_entry.pack(pady=10)
 
-    Designation = Label(ajt, text="Desighnation", font=("Times", 16, "bold"))  
+    Designation = Label(ajt, text="Designation", font=("Times", 16, "bold"))  
     Designation.pack(pady=10)
  
     Designation_entry = Entry(ajt)
@@ -138,6 +138,8 @@ def BR():
     
     Ajouter_BR = Button(BR, text="Ajouter BR", command=ajouter_br)
     Ajouter_BR.pack()
+    Enregistrer_BR = Button(BR, text="Valider", command=ajouter_BR_dansBD)
+    Enregistrer_BR.pack()
 
 def ajouter_br():
     ajt_BR = Toplevel()
@@ -167,21 +169,35 @@ def Entrer_table():
     table2.insert(parent="", index="end", iid=None, text="", values=(Id_article_entry.get(), Designation_entry.get()))
 
     # Copier les valeurs de table2 dans res
-    res = []
+    global ses
+    ses = []
     for item in table2.get_children():
-        res.append(table2.item(item)['values'])
+        ses.append(table2.item(item)['values'])
 
-    # Afficher la première valeur de res
-    if len(res) > 0:
-        print(res[0][0])
 
     # Effacer les entrées dans la fenêtre "Ajouter BR"
     Id_article_entry.delete(0, END)
     Designation_entry.delete(0, END)
 
+def ajouter_BR_dansBD():
+    # Connexion à la base de données
+    conn = sqlite3.connect('classe.db')
+    cur = conn.cursor()    
     
-     
+    for row in ses:
+     id = row[0]
+     des = row[1]
 
+     req = "INSERT INTO BR(ID_article, Designation) VALUES (?, ?)"
+     cur.execute(req, (id, des))
+
+    # Validation de la transaction et fermeture de la connexion
+    conn.commit()
+    conn.close()
+    
+    # Message de confirmation
+    messagebox.showinfo("Ajouté", "Le BR a été ajouté avec succès !")
+                
 
 def year():
     ann = Toplevel()
