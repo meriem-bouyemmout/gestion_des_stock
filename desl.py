@@ -4,8 +4,6 @@ from tkinter import messagebox
 import sqlite3
 
 
-
-
 def article() :
     art = Toplevel()
     art.title("articles")
@@ -127,6 +125,51 @@ def BR():
     BR_label.pack()
     Numéro_entry.delete(0, END)
 
+    # Créer le tableau
+    global table2
+    table2 = ttk.Treeview(BR, columns=("Id_article","Designation"))
+
+    # Définir les en-têtes de colonnes
+    table2.heading("#0", text="Num")
+    table2.heading("Id_article", text="Id_article")
+    table2.heading("Designation", text="Designation")
+
+    # Afficher le tableau
+    table2.pack()
+    
+    Ajouter_BR = Button(BR, text="Ajouter BR", command=ajouter_br)
+    Ajouter_BR.pack()
+
+def ajouter_br():
+    ajt_BR = Toplevel()
+    ajt_BR.title("Ajouter BR")
+    
+    global Id_article_entry,Designation_entry
+   
+    Id_article = Label(ajt_BR, text="Id_article:", font=("Times", 16, "bold"))  
+    Id_article.pack(pady=10)
+ 
+    Id_article_entry = Entry(ajt_BR)
+    Id_article_entry.pack(pady=10)
+
+
+    Designation = Label(ajt_BR, text="Designation", font=("Times", 16, "bold"))  
+    Designation.pack(pady=10)
+ 
+    Designation_entry = Entry(ajt_BR)
+    Designation_entry.pack(pady=10)
+
+    bouton_ajouter = Button(ajt_BR, text="Ajouter BR", command=Entrer_table)
+    bouton_ajouter.pack(pady=10)
+
+def Entrer_table():
+
+    res=[(Id_article_entry.get()),(Designation_entry.get())]
+    print(res)
+
+    for i in range(len(res)):
+     table2.insert(parent="", index="end", iid=i, text=str(i+1), values=(res[i], res[i+1]))
+     
 
 
 def year():
