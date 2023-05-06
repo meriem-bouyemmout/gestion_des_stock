@@ -104,6 +104,17 @@ def annuler():
     Designation_entry.delete(0, END)   
 
 
+
+def Bon_Rentrer():
+    fenetre_Bon_Renter = Toplevel()
+    fenetre_Bon_Renter.title("BR")
+
+    ajouter_un_BR = Button(fenetre_Bon_Renter, text="Ajouter BR", command=num_BR, padx=50, pady=10)
+    ajouter_un_BR.pack()
+
+    Liste_des_BR = Button(fenetre_Bon_Renter, text="Liste des BR", command=Liste_BR, padx=50, pady=10)
+    Liste_des_BR.pack()
+
 def num_BR():
     num_BR = Toplevel()
     num_BR.title("Numéro BR")
@@ -197,7 +208,43 @@ def ajouter_BR_dansBD():
     
     # Message de confirmation
     messagebox.showinfo("Ajouté", "Le BR a été ajouté avec succès !")
-                
+
+def Liste_BR():      
+    Liste_BR = Toplevel()
+    Liste_BR.title("Liste des BR")
+
+    # Créer le tableau
+    table = ttk.Treeview(Liste_BR, columns=("Id_article", "Designation"))
+
+    # Définir les en-têtes de colonnes
+    table.heading("#0", text="Num")
+    table.heading("Id_article", text="Id_article")
+    table.heading("Designation", text="Designation")
+
+
+    conn = sqlite3.connect('classe.db')
+    cur = conn.cursor()
+    req = "select ID_article from BR"
+    req1 = "select Designation from BR"
+    cur.execute(req)
+    res = cur.fetchall()
+    cur.execute(req1)
+    res1 = cur.fetchall()
+
+    conn.commit()
+    conn.close()
+
+
+
+    for i in range(len(res)):
+     table.insert(parent="", index="end", iid=i, text=str(i+1), values=(res[i], res1[i]))
+    
+    
+
+    # Afficher le tableau
+    table.pack()
+
+          
 
 def year():
     ann = Toplevel()
@@ -211,7 +258,7 @@ def year():
     ajouter_article = Button(ann, text="Ajouter un article", command=ajouter, padx=50, pady=10)
     ajouter_article.pack(padx=40, pady=20)
 
-    BR = Button(ann, text="BR",command=num_BR, padx=50, pady=10)
+    BR = Button(ann, text="BR",command=Bon_Rentrer, padx=50, pady=10)
     BR.pack(padx=40, pady=20)
 
     BS = Button(ann, text="BS", padx=50, pady=10)
