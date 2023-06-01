@@ -10,7 +10,7 @@ root.title('LOGIN')
 root.geometry("1300x700")
 
 def AjouterArticle():
-    add_article_window = tk.Toplevel(root)
+    add_article_window = tk.Toplevel()
     add_article_window.title("Ajouter Article")
     add_article_window.geometry("1300x700")
     
@@ -108,7 +108,7 @@ def show_articles():
     c = conn.cursor()
     
     
-    articles_window = tk.Toplevel(root)
+    articles_window = tk.Toplevel()
     articles_window.title("Articles List")
     articles_window.geometry("1300x700")
 
@@ -164,7 +164,7 @@ def show_articles():
 
 
 def article_details():
-    detail_window = tk.Toplevel(root)
+    detail_window = tk.Toplevel()
     detail_window.title("Detail Article")
     detail_window.geometry("1300x700")
     
@@ -266,7 +266,7 @@ def article_details():
 
 
 def AjouterEntres():
-    add_entres_window = tk.Toplevel(root)
+    add_entres_window = tk.Toplevel()
     add_entres_window.title("Ajouter Entré")
     add_entres_window.geometry("1300x700")
     
@@ -297,7 +297,7 @@ def AjouterEntres():
 
 
 
-    def save_entres():
+    def save_sorties():
 
         conn = sqlite3.connect('stock.db')
         c = conn.cursor()
@@ -323,11 +323,11 @@ def AjouterEntres():
 
         c.execute("""
         UPDATE ARTICLES
-        SET qte = qte + (SELECT qte_ent FROM ENTRES WHERE ENTRES.code_entre = ?),
+        SET qte = qte + (SELECT qte_ent FROM ENTRES WHERE ENTRES.code_article = ARTICLES.code_art),
         prix = (SELECT prix_ent FROM ENTRES WHERE ENTRES.code_article = ARTICLES.code_art),
-        montant = qte*prix
+        montant = (qte + (SELECT qte_ent FROM ENTRES WHERE ENTRES.code_article = ARTICLES.code_art))*(SELECT prix_ent FROM ENTRES WHERE ENTRES.code_article = ARTICLES.code_art)
         WHERE code_art = ?
-        """, (code_entre,code_article,))
+        """, (code_article,))
 
 
 
@@ -353,7 +353,7 @@ def AjouterEntres():
         
 
     
-    save_button = ttk.Button(add_entres_window, text="Save", command=save_entres)
+    save_button = ttk.Button(add_entres_window, text="Save", command=save_sorties)
     save_button.pack()
 
     def annuler():
@@ -368,7 +368,103 @@ def AjouterEntres():
 # ajouter_Entre.config(bg="blue", fg="white", font=("Arial", 16))
 # ajouter_Entre.pack()
 
+def AjouterSorties():
+    add_sorties_window = tk.Toplevel()
+    add_sorties_window.title("Ajouter Sortie")
+    add_sorties_window.geometry("1300x700")
+    
+    # Define the labels and entry fields
+    code_sortie_label = ttk.Label(add_sorties_window, text="Code Sortie:")
+    code_sortie_entry = ttk.Entry(add_sorties_window)
+    qté_ent_label = ttk.Label(add_sorties_window, text="Quantité Sortie:")
+    qté_ent_entry = ttk.Entry(add_sorties_window)
+    prix_ent_label = ttk.Label(add_sorties_window, text="Prix U Entré:")
+    prix_ent_entry = ttk.Entry(add_sorties_window)
+    code_br_label = ttk.Label(add_sorties_window, text="Code BSM:")
+    code_br_entry = ttk.Entry(add_sorties_window)
+    code_article_label = ttk.Label(add_sorties_window, text="Code Article:")
+    code_article_entry = ttk.Entry(add_sorties_window)
 
+    # Add the labels and entry fields to the window
+    code_sortie_label.pack()
+    code_sortie_entry.pack()
+    qté_ent_label.pack()
+    qté_ent_entry.pack()
+    prix_ent_label.pack()
+    prix_ent_entry.pack()
+    code_br_label.pack()
+    code_br_entry.pack()
+    code_article_label.pack()
+    code_article_entry.pack()
+    
+
+
+
+    def save_entres():
+
+        conn = sqlite3.connect('stock.db')
+        c = conn.cursor()
+        d = conn.cursor()
+
+
+    
+        code_entre = code_sortie_entry.get()
+        qté_ent = qté_ent_entry.get()
+        prix_ent = prix_ent_entry.get()
+        code_br = code_br_entry.get()
+        code_article = code_article_entry.get()
+
+        
+        montant_ent = float(prix_ent) * float(qté_ent)
+
+        
+        c.execute("INSERT INTO SORTIES VALUES (?, ?, ?, ?, ?, ?)",
+                  (code_entre, qté_ent, prix_ent, montant_ent, code_br, code_article))
+
+
+
+
+        c.execute("""
+        UPDATE ARTICLES
+        SET qte = qte - (SELECT qte_sort FROM SORTIES WHERE SORTIES.code_sortie = ?),
+        prix = (SELECT prix_sort FROM SORTIES WHERE SORTIES.code_sortie = ?),
+        montant = (qte - (SELECT qte_sort FROM SORTIES WHERE SORTIES.code_sortie = ?))*(SELECT prix_sort FROM SORTIES WHERE SORTIES.code_sortie = ?)
+        WHERE code_art = ?
+        """, (code_entre,code_entre,code_entre,code_entre,code_article,))
+
+
+
+
+
+        
+
+
+
+
+        code_sortie_entry.delete(0, END)
+        qté_ent_entry.delete(0, END)
+        prix_ent_entry.delete(0, END)
+        code_br_entry.delete(0, END)
+        code_article_entry.delete(0, END)
+        
+
+
+
+        
+        conn.commit()
+
+        
+
+    
+    save_button = ttk.Button(add_sorties_window, text="Save", command=save_entres)
+    save_button.pack()
+
+    def annuler():
+        add_sorties_window.destroy()
+
+
+    exit_button = ttk.Button(add_sorties_window, text="Retour", command=annuler)
+    exit_button.pack()
 
 def login():
     # Check if the username and password are correct
@@ -377,14 +473,14 @@ def login():
         username_entry.delete(0, END)
         password_entry.delete(0, END)
 
-        # Close the login window
-        root.destroy()
+        # # Close the login window
+        # root.destroy()
 
 
         # Open the options window
-        options_window = Toplevel()
+        options_window = Toplevel(root)
         options_window.title("Options")
-
+        options_window.geometry("1300x700")
 
 
         ajouter_article = Button(options_window, text='ajouter article', command=AjouterArticle)
@@ -392,9 +488,21 @@ def login():
         ajouter_article.pack()
 
 
+        afficher_article = Button(options_window, text='Liste Articles', command=show_articles)
+        afficher_article.config(bg="green", fg="white", font=("Arial", 16))
+        afficher_article.pack()
 
+        detail_article = Button(options_window, text='detaile Articles', command=article_details)
+        detail_article.config(bg="red", fg="white", font=("Arial", 16))
+        detail_article.pack()
 
+        ajouter_Entre = Button(options_window, text='Ajouter Entré ', command=AjouterEntres)
+        ajouter_Entre.config(bg="blue", fg="white", font=("Arial", 16))
+        ajouter_Entre.pack()
 
+        ajouter_Sortie = Button(options_window, text='Ajouter Sortie ', command=AjouterSorties)
+        ajouter_Sortie.config(bg="pink", fg="white", font=("Arial", 16))
+        ajouter_Sortie.pack()
      
 
     else:
