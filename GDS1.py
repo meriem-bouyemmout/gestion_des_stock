@@ -904,7 +904,193 @@ def AjouterBSM():
 
     code_bsm_entry.bind("<KeyRelease>", update_fields)
     
+#===========================================Ajouter BSM PF =================================================
 
+def AjouterBSM_PF():
+
+    add_bsm_pf_window = tk.Toplevel()
+    add_bsm_pf_window.title("Ajouter BSM")
+    add_bsm_pf_window.state('zoomed')    
+    add_bsm_pf_window.resizable(0,0)
+    add_bsm_pf_window.config(bg="#ACE5F3")
+    add_bsm_pf_frame = Frame(add_bsm_pf_window,bg='#067790', width='900', height='600')
+    add_bsm_pf_frame.place(x=200, y=30)
+
+    add_bsm_pf_window.geometry("1300x700")
+    add_bsm_pf_window.config(bg="#D3D3D3")
+
+
+    conn = sqlite3.connect('stock1.db')
+    c = conn.cursor()
+    c.execute("SELECT Num_représantant FROM Représantant")
+    values = [row[0] for row in c.fetchall()]
+
+    label = Label(add_bsm_pf_frame, text="BON DE SORTIE ",bg='#067790',font=('yu gothic ui', 20,'bold'),fg='white')
+    label.place(x=15, y=10)
+    
+    code_bsm_label = Label(add_bsm_pf_frame, text="Code BSM :",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
+    code_bsm_label.place(x=380, y=70)
+
+    code_bsm_entry = Entry(add_bsm_pf_frame, highlightthickness=0, relief=FLAT, bg='#067790', fg='black',font=('yu gothic ui',12,'bold'))
+    code_bsm_entry.place(x=465, y=70, width=90)
+
+    code_bsm_line =Canvas(add_bsm_pf_frame, width=90, height=2.0,bg='white',highlightthickness=0)
+    code_bsm_line.place(x=465, y=93)
+
+    date_label = Label(add_bsm_pf_frame, text="Date : ",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
+    date_label.place(x=700, y=90)
+
+    date_entry = DateEntry(add_bsm_pf_frame, width=1, background='#067790', foreground='white', borderwidth=1, font=('yu gothic ui',12,'bold'))
+    date_entry.place(x=750, y=90, width=130)
+
+
+    nom_label = Label(add_bsm_pf_frame, text="Représentant    :",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
+    nom_label.place(x=30, y=90)
+
+    Num_représantant_combobox = ttk.Combobox(add_bsm_pf_frame, text="Numméro représentant",width='15', state='readonly', values=values)
+    Num_représantant_combobox.place(x=100, y=90, width=120)
+
+    nom_line =Canvas(add_bsm_pf_frame, width=120, height=2.0,bg='white',highlightthickness=0)
+    nom_line.place(x=100, y=113)
+
+    conn.close()
+
+    def save_BSM_PF():
+
+        conn = sqlite3.connect('stock1.db')
+        c = conn.cursor()
+
+        code_bsm = code_bsm_entry.get()
+        date = date_entry.get()
+        Num_représantant = Num_représantant_combobox.get()
+    
+
+        c.execute("INSERT INTO BSM VALUES (?, ?, ?)",
+                  (code_bsm, date, Num_représantant))
+        
+
+        code_bsm_entry.delete(0, END)
+        date_entry.delete(0, END)
+        
+
+        conn.commit()
+        conn.close()
+    
+    save_button = Button(add_bsm_pf_frame, text="Ajouter", width='15',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 11,'bold'),fg='black', command=save_BSM_PF)
+    save_button.place(x=620,y=500)
+
+    def annuler():
+        add_bsm_pf_window.destroy()
+
+
+    exit_button = Button(add_bsm_pf_frame, text="Annuler",  width='15',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 11,'bold'),fg='black', command=annuler)
+    exit_button.place(x=250,y=500)
+
+    
+
+
+    def ajouter_ligne():
+        conn = sqlite3.connect('stock1.db')
+        c = conn.cursor()
+
+        # Récupération des valeurs saisies par l'utilisateur
+        code_sort = e_code_sort.get()
+        qte_sort = int(e_qte_sort.get())
+        prix_sort = float(e_prix_sort.get())
+        montant_sort = qte_sort * prix_sort
+        code_bsm = e_code_bsm.get()
+        code_article = e_code_combobox.get()
+    
+        # Insertion des données dans la base de données
+        c.execute("INSERT INTO Sorties VALUES (?, ?, ?, ?, ?, ?)",
+                (code_sort, qte_sort, prix_sort, montant_sort, code_bsm, code_article))
+
+
+        c.execute("""
+        UPDATE ARTICLE
+        SET Quantité = Quantité - (SELECT Quantité_sort FROM Sorties WHERE Sorties.code_sort = ?),
+        prix = (SELECT Prix_sort FROM Sorties WHERE Sorties.code_sort = ?),
+        montant = (Quantité - (SELECT Quantité_sort FROM Sorties WHERE Sorties.code_sort = ?))*(SELECT Prix_sort FROM Sorties WHERE Sorties.code_sort = ?)
+        WHERE code_article = ?
+        """, (code_sort,code_sort,code_sort,code_sort,code_article,))
+        conn.commit()
+        conn.close()
+    
+        # Ajout des données dans le tableau
+        tableau.insert("", tk.END, values=(code_sort, qte_sort, prix_sort, montant_sort, code_bsm, code_article))
+    
+        # Effacement des champs de saisie
+        e_code_sort.delete(0, tk.END)
+        e_qte_sort.delete(0, tk.END)
+        e_prix_sort.delete(0, tk.END)   
+        e_code_combobox.delete(0, tk.END)
+
+    # Création du tableau
+    tableau = tk.ttk.Treeview(add_bsm_pf_frame, columns=("code_sort", "qte_sort", "prix_sort", "montant_sort", "code_bsm", "code_article"))
+
+    # Configuration des colonnes
+    tableau.column("#0", width=0, stretch=tk.NO)
+    tableau.column("code_sort", width=100)
+    tableau.column("qte_sort", width=100)
+    tableau.column("prix_sort", width=100)
+    tableau.column("montant_sort", width=100)
+    tableau.column("code_bsm", width=100)
+    tableau.column("code_article", width=100)
+
+    # Titres des colonnes
+    tableau.heading("code_sort", text="Code Sortie")
+    tableau.heading("qte_sort", text="Quantité Sortie")
+    tableau.heading("prix_sort", text="Prix Sortie")
+    tableau.heading("montant_sort", text="Montant Sortie")
+    tableau.heading("code_bsm", text="Code BSM")
+    tableau.heading("code_article", text="Code Article")
+
+    # Ajout d'une ligne vide pour la saisie
+    tableau.insert("", tk.END, values=("", "", "", "", "", ""))
+
+    # Placement du tableau dans la fenêtre
+    tableau.place(x=200, y=250)
+    conn = sqlite3.connect('stock1.db')
+    c = conn.cursor()
+    c.execute("SELECT code_article FROM ARTICLE WHERE code_catg ='PF' ")
+    values2 = [row[0] for row in c.fetchall()]
+
+    # Création des champs de saisie
+    e_code_sort = tk.Entry(add_bsm_pf_frame)
+    e_qte_sort = tk.Entry(add_bsm_pf_frame)
+    e_prix_sort = tk.Entry(add_bsm_pf_frame)
+    e_code_bsm = tk.Entry(add_bsm_pf_frame)
+    e_code_combobox = ttk.Combobox(add_bsm_pf_frame, text="Code Article",width='15', state='readonly', values=values2)
+
+
+    
+
+
+    # Placement des champs de saisie dans la fenêtre
+    e_code_sort.place(x=200, y=220)
+    e_qte_sort.place(x=300, y=220)
+    e_prix_sort.place(x=400, y=220)
+    e_code_bsm.place(x=500, y=220)
+    e_code_combobox.place(x=600, y=219)
+
+    # Création des étiquettes pour les champs de saisie
+    tk.Label(add_bsm_pf_frame, text="Code Sortie",bg="#067790").place(x=200, y=195)
+    tk.Label(add_bsm_pf_frame, text="Quantité Sortie",bg="#067790").place(x=300, y=195)
+    tk.Label(add_bsm_pf_frame, text="Prix Sorties",bg="#067790").place(x=400, y=195)
+    tk.Label(add_bsm_pf_frame, text="Code BSM",bg="#067790").place(x=500, y=195)
+    tk.Label(add_bsm_pf_frame, text="Code Article",bg="#067790").place(x=600, y=195)
+
+    # Bouton pour ajouter une ligne
+    btn_ajouter = tk.Button(add_bsm_pf_frame, text="Ajouter Sortie",width='10', bg='#ACE5F3',cursor='hand2', command=ajouter_ligne)
+    btn_ajouter.place(x=720, y=218)
+
+    def update_fields(event):
+        value = code_bsm_entry.get()
+        e_code_bsm.delete(0, END)
+        e_code_bsm.insert(0, value)
+
+    code_bsm_entry.bind("<KeyRelease>", update_fields)
+    
 
 #===========================================Liste BR======================================================================================
 def liste_br() :
@@ -1733,7 +1919,7 @@ def consulter_ajouter_bsm():
     
     btn1 = Button(ajouter_bsm_frame,text="Ajouter BSM",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=AjouterBSM)
     btn1.place(x=120,y=80)
-    btn2 = Button(ajouter_bsm_frame,text="Ajouter BSM PF",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black')
+    btn2 = Button(ajouter_bsm_frame,text="Ajouter BSM PF",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=AjouterBSM_PF)
     btn2.place(x=120,y=130)
     btn3 = Button(ajouter_bsm_frame,text="Liste BSM",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=liste_bsm)
     btn3.place(x=120,y=180)
