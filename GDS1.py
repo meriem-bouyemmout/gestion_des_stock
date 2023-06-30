@@ -1243,8 +1243,9 @@ def Ajouter_empl():
     def save_employé():
         conn = sqlite3.connect('stock1.db')
         c = conn.cursor()
+        d = conn.cursor()
 
-        Num_fournisseur = Num_carte_entry.get()
+        Num_carte = Num_carte_entry.get()
         Nom = Nom_entry.get()
         Prénom = Prénom_entry.get()
         Num_tel = Num_tel_entry.get()
@@ -1253,8 +1254,10 @@ def Ajouter_empl():
         Département = Département_combobox.get()
 
 
-        c.execute("INSERT INTO Employé VALUES (?, ?, ?, ?, ?, ?, ?)",
-             (Num_fournisseur, Nom, Prénom, Num_tel, Email, Grade, Département))
+        c.execute("INSERT INTO Personne VALUES (?, ?, ?, ?, ?)",
+             (Num_carte, Nom, Prénom, Num_tel, Email))
+        d.execute("INSERT INTO Employé VALUES (?, ?, ?)",
+             (Num_carte, Grade, Département))      
 
         messagebox.showinfo("Succès", "Les données ont été ajoutées avec succès")       
     
@@ -1293,7 +1296,7 @@ def Liste_employé():
     empl_frame = Frame(empl,bg='#067790', width='900', height='600')
     empl_frame.place(x=140, y=70)
 
-    article_label = Label(empl, text="Liste des fournisseur", font=('yu gothic ui', 23,'bold'),fg="white",bg="#ACE5F3")
+    article_label = Label(empl, text="Liste des employés", font=('yu gothic ui', 23,'bold'),fg="white",bg="#ACE5F3")
     article_label.place(x=500, y=20)
 
     # Créer le tableau
@@ -1317,7 +1320,8 @@ def Liste_employé():
     table.column("grade", width=100, stretch=NO)
     table.column("departement", width=100, stretch=NO)
    
-    cur.execute("""SELECT * FROM Employé""")
+    cur.execute("""SELECT * FROM Personne p
+                    JOIN Employé e ON p.ID = e.Num_carte""")
     employés = cur.fetchall()
 
     for employé in employés:
@@ -1326,8 +1330,9 @@ def Liste_employé():
         prenom = employé[2]
         num_tel = employé[3]
         email = employé[4]
-        grade = employé[5]
-        departement = employé[6]
+        ID = employé[5]
+        grade = employé[6]
+        departement = employé[7]
 
         table.insert("", "end", text=num_carte , values=(nom, prenom, num_tel, email, grade, departement))
 
