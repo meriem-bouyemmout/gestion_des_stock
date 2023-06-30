@@ -1342,8 +1342,125 @@ def Liste_employé():
     exit_button = Button(empl, text="Retour", width='20',cursor='hand2', command=annuler)
     exit_button.place(x=10, y=630)
 
+#===================================Ajouter représantant================================================
+
+def Ajouter_représantant():
+
+    ajou_repr = Toplevel()
+    ajou_repr.geometry('1000x1000')
+    ajou_repr.title("Ajouter Représentant")
+    ajou_repr.state('zoomed')    
+    ajou_repr.resizable(0,0) 
+    ajou_repr.config(bg="#ACE5F3")
+    ajou_repr_frame = Frame(ajou_repr,bg='#067790', width='500', height='600')
+    ajou_repr_frame.place(x=380, y=30)
+
+    conn = sqlite3.connect('stock1.db')
+    c = conn.cursor()
+    c.execute("SELECT Nom_entreprise FROM Entreprise")
+    values = [row[0] for row in c.fetchall()]
+
+    Num_représantant_label = Label(ajou_repr_frame, text="Numéro Représentant ",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
+    Num_représantant_label.place(x=110, y=50)
+
+    Num_représantant_entry = Entry(ajou_repr_frame, highlightthickness=0, relief=FLAT, bg='#B0e0e6', fg='black',font=('yu gothic ui',12,'bold'))
+    Num_représantant_entry.place(x=250, y=50, width=120)
+
+    Num_représantant_line =Canvas(ajou_repr_frame, width=120, height=2.0,bg='white',highlightthickness=0)
+    Num_représantant_line.place(x=250, y=75)
+
+    Nom_label = Label(ajou_repr_frame, text="Nom ",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
+    Nom_label.place(x=110, y=115)
+
+    Nom_entry = Entry(ajou_repr_frame, highlightthickness=0, relief=FLAT, bg='#B0e0e6', fg='black',font=('yu gothic ui',12,'bold'))
+    Nom_entry.place(x=250, y=115, width=120)
+
+    Nom_line =Canvas(ajou_repr_frame, width=120, height=2.0,bg='white',highlightthickness=0)
+    Nom_line.place(x=250, y=140)
+
+    Prénom_label = Label(ajou_repr_frame, text="Prénom ",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
+    Prénom_label.place(x=110, y=180)
+
+    Prénom_entry = Entry(ajou_repr_frame, highlightthickness=0, relief=FLAT, bg='#B0e0e6', fg='black',font=('yu gothic ui',12,'bold'))
+    Prénom_entry.place(x=250, y=180, width=120)
+
+    Prénom_line =Canvas(ajou_repr_frame, width=120, height=2.0,bg='white',highlightthickness=0)
+    Prénom_line.place(x=250, y=205)
+
+    Num_tel_label = Label(ajou_repr_frame, text="Numéro de téléphone",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
+    Num_tel_label.place(x=110, y=245)
+
+    Num_tel_entry = Entry(ajou_repr_frame, highlightthickness=0, relief=FLAT, bg='#B0e0e6', fg='black',font=('yu gothic ui',12,'bold'))
+    Num_tel_entry.place(x=250, y=245, width=120)
+
+    Num_tel_line =Canvas(ajou_repr_frame, width=120, height=2.0,bg='white',highlightthickness=0)
+    Num_tel_line.place(x=250, y=270)
 
 
+    Email_label = Label(ajou_repr_frame, text="Adress email",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
+    Email_label.place(x=110, y=310)
+
+    Email_entry = Entry(ajou_repr_frame, highlightthickness=0, relief=FLAT, bg='#B0e0e6', fg='black',font=('yu gothic ui',12,'bold'))
+    Email_entry.place(x=250, y=310, width=120)
+
+    Email_line =Canvas(ajou_repr_frame, width=120, height=2.0,bg='white',highlightthickness=0)
+    Email_line.place(x=250, y=335)
+
+
+    Entreprise_label = Label(ajou_repr_frame, text="Département",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
+    Entreprise_label.place(x=110, y=440)
+
+    Entreprise_combobox = ttk.Combobox(ajou_repr_frame, text="Département",width='15', state='readonly', values=values)
+    Entreprise_combobox.place(x=250, y=440, width=120)
+
+    Entreprise_line =Canvas(ajou_repr_frame, width=120, height=2.0,bg='white',highlightthickness=0)
+    Entreprise_line.place(x=250, y=465)
+
+    conn.close()
+
+
+    def save_représantant():
+        conn = sqlite3.connect('stock1.db')
+        c = conn.cursor()
+        d = conn.cursor()
+
+        Num_représantant = Num_représantant_entry.get()
+        Nom = Nom_entry.get()
+        Prénom = Prénom_entry.get()
+        Num_tel = Num_tel_entry.get()
+        Email = Email_entry.get()
+        Entreprise = Entreprise_combobox.get()
+
+
+        c.execute("INSERT INTO Personne VALUES (?, ?, ?, ?, ?)",
+             (Num_représantant, Nom, Prénom, Num_tel, Email))
+        d.execute("INSERT INTO Représantant VALUES (?, ?)",
+             (Num_représantant,  Entreprise))      
+
+        messagebox.showinfo("Succès", "Les données ont été ajoutées avec succès")       
+    
+
+        Num_représantant_entry.delete(0, END)
+        Nom_entry.delete(0, END)
+        Prénom_entry.delete(0, END)
+        Num_tel_entry.delete(0, END)
+        Email_entry.delete(0, END)
+        Entreprise_combobox.delete(0, END)
+        
+        
+        conn.commit()
+        conn.close()
+
+    save_button = Button(ajou_repr, text="Ajouter",width='15',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 11,'bold'),fg='black', command=save_représantant)
+    save_button.place(x=660,y=500)
+        
+
+    def annuler():
+        ajou_repr.destroy()
+    exit_button = Button(ajou_repr, text="Annuler", width='15',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 11,'bold'),fg='black', command=annuler)
+    exit_button.place(x=450,y=500)
+
+#==================================Ajouter entreprise======================================================
 
 
 
@@ -1415,17 +1532,28 @@ def consulter_ajouter_bsm():
     ajouter_bsm.state('zoomed')     
     ajouter_bsm.resizable(0,0) 
     ajouter_bsm.config(background='#ACE5F3')
-    ajouter_bsm_frame = Frame(ajouter_bsm, bg='#067790', width='500', height='600')
+    ajouter_bsm_frame = Frame(ajouter_bsm, bg='#067790', width='500', height='700')
     ajouter_bsm_frame.place(x=380, y=30)
     
     btn1 = Button(ajouter_bsm_frame,text="Ajouter BSM",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=AjouterBSM)
     btn1.place(x=120,y=80)
-    btn2 = Button(ajouter_bsm_frame,text="Liste BSM",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=liste_bsm)
-    btn2.place(x=120,y=180)
-    btn3 = Button(ajouter_bsm_frame,text="Ajouter Employé",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=Ajouter_empl)
-    btn3.place(x=120,y=280)
-    btn3 = Button(ajouter_bsm_frame,text="Liste Employé",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=Liste_employé)
-    btn3.place(x=120,y=380)
+    btn2 = Button(ajouter_bsm_frame,text="Ajouter BSM PF",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black')
+    btn2.place(x=120,y=130)
+    btn3 = Button(ajouter_bsm_frame,text="Liste BSM",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=liste_bsm)
+    btn3.place(x=120,y=180)
+    btn4 = Button(ajouter_bsm_frame,text="Liste Employé",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=Liste_employé)
+    btn4.place(x=120,y=230)
+    btn5 = Button(ajouter_bsm_frame,text="Liste représantants",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black')
+    btn5.place(x=120,y=280)
+    btn6 = Button(ajouter_bsm_frame,text="Liste entreprises",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black')
+    btn6.place(x=120,y=330)
+    btn7 = Button(ajouter_bsm_frame,text="Ajouter Employé",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=Ajouter_empl)
+    btn7.place(x=120,y=380)
+    btn8 = Button(ajouter_bsm_frame,text="Ajouter Représanant",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black')
+    btn8.place(x=120,y=430)
+    btn9 = Button(ajouter_bsm_frame,text="Ajouter Entreprise",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=Ajouter_représantant)
+    btn9.place(x=120,y=480)
+    
 
     def annuler():
         ajouter_bsm.destroy()
