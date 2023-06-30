@@ -4,7 +4,7 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
 from tkinter.ttk import Treeview
-
+from tkcalendar import DateEntry
 
 root = Tk()
 root.title("Se connecter")
@@ -448,9 +448,9 @@ def article_details():
     detail_window.resizable(0,0)
     detail_window.config(background='#ACE5F3')
 
-    conn = sqlite3.connect('stock.db')
+    conn = sqlite3.connect('stock1.db')
     c = conn.cursor()
-    c.execute("SELECT code_art FROM ARTICLES")
+    c.execute("SELECT code_article FROM ARTICLE")
     values = [row[0] for row in c.fetchall()]
 
 
@@ -500,11 +500,11 @@ def article_details():
         code_article = code_art_combobox.get()
 
         # Connexion à la base de données
-        conn = sqlite3.connect('stock.db')
+        conn = sqlite3.connect('stock1.db')
         cursor = conn.cursor()
 
         # Récupérer les données de la table ENTRES pour le code article entré
-        cursor.execute("SELECT * FROM ENTRES WHERE code_article=?", (code_article,))
+        cursor.execute("SELECT * FROM Entrées WHERE code_article=?", (code_article,))
         entres = cursor.fetchall()
 
         # Afficher les données de la table ENTRES dans le tableau
@@ -512,7 +512,7 @@ def article_details():
             entres_treeview.insert("", "end", text=entre[0], values=entre[1:])
 
         # Récupérer les données de la table SORTIES pour le code article entré
-        cursor.execute("SELECT * FROM SORTIES WHERE code_article=?", (code_article,))
+        cursor.execute("SELECT * FROM Sorties WHERE code_article=?", (code_article,))
         sorties = cursor.fetchall()
 
         # Afficher les données de la table SORTIES dans le tableau
@@ -548,7 +548,7 @@ def AjouterBR():
 
     conn = sqlite3.connect('stock1.db')
     c = conn.cursor()
-    c.execute("SELECT code_article FROM ARTICLE")
+    c.execute("SELECT Num_fournisseur FROM Fournisseurs")
     values = [row[0] for row in c.fetchall()]
 
     label = Label(add_br_frame, text="BON DE RECEPTION ",bg='#067790',font=('yu gothic ui', 20,'bold'),fg='white')
@@ -566,14 +566,14 @@ def AjouterBR():
     date_label = Label(add_br_frame, text="Date : ",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
     date_label.place(x=700, y=90)
 
-    date_entry = Entry(add_br_frame, width=1, background='#067790', foreground='white', borderwidth=1, font=('yu gothic ui',12,'bold'))
+    date_entry = DateEntry(add_br_frame, width=1, background='#067790', foreground='white', borderwidth=1, font=('yu gothic ui',12,'bold'))
     date_entry.place(x=750, y=90, width=130)
 
 
     nom_label = Label(add_br_frame, text="Fournisseur    :",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
     nom_label.place(x=30, y=90)
 
-    Num_fournisseur_combobox = ttk.Combobox(add_br_frame, text="Code Article",width='15', state='readonly', values=values)
+    Num_fournisseur_combobox = ttk.Combobox(add_br_frame, text="Num fournisseur",width='15', state='readonly', values=values)
     Num_fournisseur_combobox.place(x=100, y=90, width=120)
 
     nom_line =Canvas(add_br_frame, width=120, height=2.0,bg='white',highlightthickness=0)
@@ -679,14 +679,14 @@ def AjouterBR():
     conn = sqlite3.connect('stock1.db')
     c = conn.cursor()
     c.execute("SELECT code_article FROM ARTICLE")
-    values = [row[0] for row in c.fetchall()]
+    values2 = [row[0] for row in c.fetchall()]
 
     # Création des champs de saisie
     e_code_entre = tk.Entry(add_br_frame)
     e_qte_ent = tk.Entry(add_br_frame)
     e_prix_ent = tk.Entry(add_br_frame)
     e_code_br = tk.Entry(add_br_frame)
-    e_code_combobox = ttk.Combobox(add_br_frame, text="Code Article",width='15', state='readonly', values=values)
+    e_code_combobox = ttk.Combobox(add_br_frame, text="Code Article",width='15', state='readonly', values=values2)
 
 
     
@@ -721,7 +721,6 @@ def AjouterBR():
 #===========================================Ajouter BSM====================================================
 def AjouterBSM():
 
-    
     add_bsm_window = tk.Toplevel()
     add_bsm_window.title("Ajouter BSM")
     add_bsm_window.state('zoomed')    
@@ -730,72 +729,65 @@ def AjouterBSM():
     add_bsm_frame = Frame(add_bsm_window,bg='#067790', width='900', height='600')
     add_bsm_frame.place(x=200, y=30)
 
-    label = Label(add_bsm_frame, text="BON SORTIE MAGASIN ",bg='#067790',font=('yu gothic ui', 20,'bold'),fg='white')
+    add_bsm_window.geometry("1300x700")
+    add_bsm_window.config(bg="#D3D3D3")
+
+
+    conn = sqlite3.connect('stock1.db')
+    c = conn.cursor()
+    c.execute("SELECT Num_carte FROM Employé")
+    values = [row[0] for row in c.fetchall()]
+
+    label = Label(add_bsm_frame, text="BON DE SORTIE ",bg='#067790',font=('yu gothic ui', 20,'bold'),fg='white')
     label.place(x=15, y=10)
     
     code_bsm_label = Label(add_bsm_frame, text="Code BSM :",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
-    code_bsm_label.place(x=350, y=70)
+    code_bsm_label.place(x=380, y=70)
 
     code_bsm_entry = Entry(add_bsm_frame, highlightthickness=0, relief=FLAT, bg='#067790', fg='black',font=('yu gothic ui',12,'bold'))
-    code_bsm_entry.place(x=445, y=70, width=90)
+    code_bsm_entry.place(x=465, y=70, width=90)
 
     code_bsm_line =Canvas(add_bsm_frame, width=90, height=2.0,bg='white',highlightthickness=0)
-    code_bsm_line.place(x=445, y=93)
+    code_bsm_line.place(x=465, y=93)
 
     date_label = Label(add_bsm_frame, text="Date : ",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
     date_label.place(x=700, y=90)
 
-    date_entry = Entry(add_bsm_frame, width=1, background='#067790', foreground='black', borderwidth=1, font=('yu gothic ui',12,'bold'))
+    date_entry = DateEntry(add_bsm_frame, width=1, background='#067790', foreground='white', borderwidth=1, font=('yu gothic ui',12,'bold'))
     date_entry.place(x=750, y=90, width=130)
 
 
-    nom_label = Label(add_bsm_frame, text="Nom    :",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
+    nom_label = Label(add_bsm_frame, text="Employé    :",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
     nom_label.place(x=30, y=90)
 
-    nom_entry = Entry(add_bsm_frame, highlightthickness=0, relief=FLAT, bg='#067790', fg='black',font=('yu gothic ui',12,'bold'))
-    nom_entry.place(x=100, y=90, width=120)
+    Num_carte_combobox = ttk.Combobox(add_bsm_frame, text="Code Article",width='15', state='readonly', values=values)
+    Num_carte_combobox.place(x=100, y=90, width=120)
 
     nom_line =Canvas(add_bsm_frame, width=120, height=2.0,bg='white',highlightthickness=0)
     nom_line.place(x=100, y=113)
 
-    prenom_label = Label(add_bsm_frame, text="Prénom :",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
-    prenom_label.place(x=30, y=130)
-
-    prenom_entry = Entry(add_bsm_frame, highlightthickness=0, relief=FLAT, bg='#067790', fg='black',font=('yu gothic ui',12,'bold'))
-    prenom_entry.place(x=105, y=130, width=120)
-
-    prenom_line =Canvas(add_bsm_frame, width=120, height=2.0,bg='white',highlightthickness=0)
-    prenom_line.place(x=105, y=153)
-
-    conn = sqlite3.connect('stock.db')
-    c = conn.cursor()
-
-    
-
-
-    
+    conn.close()
 
     def save_BSM():
 
-        conn = sqlite3.connect('stock.db')
+        conn = sqlite3.connect('stock1.db')
         c = conn.cursor()
 
         code_bsm = code_bsm_entry.get()
         date = date_entry.get()
-        nom = nom_entry.get()
-        prenom = prenom_entry.get()
+        Num_carte = Num_carte_combobox.get()
     
 
-        c.execute("INSERT INTO BSM VALUES (?, ?, ?, ?)",
-                  (code_bsm, date, nom, prenom,))
+        c.execute("INSERT INTO BSM VALUES (?, ?, ?)",
+                  (code_bsm, date, Num_carte))
         
 
         code_bsm_entry.delete(0, END)
         date_entry.delete(0, END)
-        nom_entry.delete(0, END)
-        prenom_entry.delete(0, END)
+        
 
         conn.commit()
+        conn.close()
     
     save_button = Button(add_bsm_frame, text="Ajouter", width='15',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 11,'bold'),fg='black', command=save_BSM)
     save_button.place(x=620,y=500)
@@ -811,11 +803,11 @@ def AjouterBSM():
 
 
     def ajouter_ligne():
-        conn = sqlite3.connect('stock.db')
+        conn = sqlite3.connect('stock1.db')
         c = conn.cursor()
 
         # Récupération des valeurs saisies par l'utilisateur
-        code_sortie = e_code_sortie.get()
+        code_sort = e_code_sort.get()
         qte_sort = int(e_qte_sort.get())
         prix_sort = float(e_prix_sort.get())
         montant_sort = qte_sort * prix_sort
@@ -823,37 +815,35 @@ def AjouterBSM():
         code_article = e_code_combobox.get()
     
         # Insertion des données dans la base de données
-        c.execute("INSERT INTO SORTIES VALUES (?, ?, ?, ?, ?, ?)",
-                (code_sortie, qte_sort, prix_sort, montant_sort, code_bsm, code_article))
+        c.execute("INSERT INTO Sorties VALUES (?, ?, ?, ?, ?, ?)",
+                (code_sort, qte_sort, prix_sort, montant_sort, code_bsm, code_article))
+
 
         c.execute("""
-        UPDATE ARTICLES
-        SET qte = qte - (SELECT qte_sort FROM SORTIES WHERE SORTIES.code_sortie = ?),
-        prix = (SELECT prix_sort FROM SORTIES WHERE SORTIES.code_sortie = ?),
-        montant = (qte - (SELECT qte_sort FROM SORTIES WHERE SORTIES.code_sortie = ?))*(SELECT prix_sort FROM SORTIES WHERE SORTIES.code_sortie = ?)
-        WHERE code_art = ?
-        """, (code_sortie,code_sortie,code_sortie,code_sortie,code_article,))
-
-
-
+        UPDATE ARTICLE
+        SET Quantité = Quantité - (SELECT Quantité_sort FROM Sorties WHERE Sorties.code_sort = ?),
+        prix = (SELECT Prix_sort FROM Sorties WHERE Sorties.code_sort = ?),
+        montant = (Quantité - (SELECT Quantité_sort FROM Sorties WHERE Sorties.code_sort = ?))*(SELECT Prix_sort FROM Sorties WHERE Sorties.code_sort = ?)
+        WHERE code_article = ?
+        """, (code_sort,code_sort,code_sort,code_sort,code_article,))
         conn.commit()
+        conn.close()
     
         # Ajout des données dans le tableau
-        tableau.insert("", tk.END, values=(code_sortie, qte_sort, prix_sort, montant_sort, code_bsm, code_article))
+        tableau.insert("", tk.END, values=(code_sort, qte_sort, prix_sort, montant_sort, code_bsm, code_article))
     
         # Effacement des champs de saisie
-        e_code_sortie.delete(0, tk.END)
+        e_code_sort.delete(0, tk.END)
         e_qte_sort.delete(0, tk.END)
-        e_prix_sort.delete(0, tk.END)
-        
-        # e_code_article.delete(0, tk.END)
+        e_prix_sort.delete(0, tk.END)   
+        e_code_combobox.delete(0, tk.END)
 
     # Création du tableau
-    tableau = tk.ttk.Treeview(add_bsm_frame, columns=("code_sortie", "qte_sort", "prix_sort", "montant_sort", "code_bsm", "code_article"))
+    tableau = tk.ttk.Treeview(add_bsm_frame, columns=("code_sort", "qte_sort", "prix_sort", "montant_sort", "code_bsm", "code_article"))
 
     # Configuration des colonnes
     tableau.column("#0", width=0, stretch=tk.NO)
-    tableau.column("code_sortie", width=100)
+    tableau.column("code_sort", width=100)
     tableau.column("qte_sort", width=100)
     tableau.column("prix_sort", width=100)
     tableau.column("montant_sort", width=100)
@@ -861,10 +851,10 @@ def AjouterBSM():
     tableau.column("code_article", width=100)
 
     # Titres des colonnes
-    tableau.heading("code_sortie", text="Code Sortie")
+    tableau.heading("code_sort", text="Code Sortie")
     tableau.heading("qte_sort", text="Quantité Sortie")
     tableau.heading("prix_sort", text="Prix Sortie")
-    tableau.heading("montant_sort", text="Montant Sortiee")
+    tableau.heading("montant_sort", text="Montant Sortie")
     tableau.heading("code_bsm", text="Code BSM")
     tableau.heading("code_article", text="Code Article")
 
@@ -873,33 +863,35 @@ def AjouterBSM():
 
     # Placement du tableau dans la fenêtre
     tableau.place(x=200, y=250)
-
-    conn = sqlite3.connect('stock.db')
+    conn = sqlite3.connect('stock1.db')
     c = conn.cursor()
-    c.execute("SELECT code_art FROM ARTICLES")
-    values = [row[0] for row in c.fetchall()]
+    c.execute("SELECT code_article FROM ARTICLE")
+    values2 = [row[0] for row in c.fetchall()]
 
     # Création des champs de saisie
-    e_code_sortie = tk.Entry(add_bsm_frame)
+    e_code_sort = tk.Entry(add_bsm_frame)
     e_qte_sort = tk.Entry(add_bsm_frame)
     e_prix_sort = tk.Entry(add_bsm_frame)
     e_code_bsm = tk.Entry(add_bsm_frame)
-    e_code_combobox = ttk.Combobox(add_bsm_frame, text="Code Article",width='15', state='readonly', values=values)
+    e_code_combobox = ttk.Combobox(add_bsm_frame, text="Code Article",width='15', state='readonly', values=values2)
+
+
+    
 
 
     # Placement des champs de saisie dans la fenêtre
-    e_code_sortie.place(x=200, y=220)
+    e_code_sort.place(x=200, y=220)
     e_qte_sort.place(x=300, y=220)
     e_prix_sort.place(x=400, y=220)
     e_code_bsm.place(x=500, y=220)
     e_code_combobox.place(x=600, y=219)
 
     # Création des étiquettes pour les champs de saisie
-    tk.Label(add_bsm_frame, text="Code Sortie",bg='#067790').place(x=200, y=195)
-    tk.Label(add_bsm_frame, text="Quantité Sortie",bg='#067790').place(x=300, y=195)
-    tk.Label(add_bsm_frame, text="Prix Sortie",bg='#067790').place(x=400, y=195)
-    tk.Label(add_bsm_frame, text="Code BSM",bg='#067790').place(x=500, y=195)
-    tk.Label(add_bsm_frame, text="Code Article",bg='#067790').place(x=600, y=195)
+    tk.Label(add_bsm_frame, text="Code Sortie",bg="#067790").place(x=200, y=195)
+    tk.Label(add_bsm_frame, text="Quantité Sortie",bg="#067790").place(x=300, y=195)
+    tk.Label(add_bsm_frame, text="Prix Sorties",bg="#067790").place(x=400, y=195)
+    tk.Label(add_bsm_frame, text="Code BSM",bg="#067790").place(x=500, y=195)
+    tk.Label(add_bsm_frame, text="Code Article",bg="#067790").place(x=600, y=195)
 
     # Bouton pour ajouter une ligne
     btn_ajouter = tk.Button(add_bsm_frame, text="Ajouter Sortie",width='10', bg='#ACE5F3',cursor='hand2', command=ajouter_ligne)
@@ -911,6 +903,7 @@ def AjouterBSM():
         e_code_bsm.insert(0, value)
 
     code_bsm_entry.bind("<KeyRelease>", update_fields)
+    
 
 
 #===========================================Liste BR======================================================================================
@@ -965,7 +958,7 @@ def liste_br() :
 #===========================================Liste BSM=======================================================================================  
 def liste_bsm() :
 
-    conn = sqlite3.connect('stock.db')
+    conn = sqlite3.connect('stock1.db')
     cur = conn.cursor()
 
     art = Toplevel()
@@ -980,20 +973,19 @@ def liste_bsm() :
     label.place(x=550, y=20)
 
     # Créer le tableau
-    table = ttk.Treeview(art_frame, columns=("date", "nom","prenom"))
+    table = ttk.Treeview(art_frame, columns=("date", "employé"))
     # Définir les en-têtes de colonnes
     table.heading("#0", text="Code BSM")
     table.heading("date", text="Date")
-    table.heading("nom", text="Nom")
-    table.heading("prenom", text="Prénom")
+    table.heading("employé", text="Employé")
     
     
     table.pack(fill="both", expand=True)
 
     table.column("#0", width=100, stretch=NO)
     table.column("date", width=100, stretch=NO)
-    table.column("nom", width=100, stretch=NO)
-    table.column("prenom", width=100, stretch=NO)
+    table.column("employé", width=100, stretch=NO)
+    
     
    
     cur.execute("""SELECT * FROM BSM""")
@@ -1002,10 +994,9 @@ def liste_bsm() :
     for article in articles:
         code_bsm = article[0]
         date = article[1]
-        nom = article[2]
-        prenom = article[3]
+        employé = article[2]
         
-        table.insert("", "end", text=code_bsm, values=(date, nom, prenom))
+        table.insert("", "end", text=code_bsm, values=(date, employé))
 
     def annuler():
         art.destroy()
@@ -1290,6 +1281,61 @@ def Ajouter_empl():
     exit_button.place(x=450,y=500)
 
 #====================================Liste Employé==========================================    
+def Liste_employé():
+    conn = sqlite3.connect('stock1.db')
+    cur = conn.cursor()
+
+    empl = Toplevel()
+    empl.title("Liste des Employés ")
+    empl.state('zoomed')    
+    empl.resizable(0,0) 
+    empl.config(background='#ACE5F3')
+    empl_frame = Frame(empl,bg='#067790', width='900', height='600')
+    empl_frame.place(x=140, y=70)
+
+    article_label = Label(empl, text="Liste des fournisseur", font=('yu gothic ui', 23,'bold'),fg="white",bg="#ACE5F3")
+    article_label.place(x=500, y=20)
+
+    # Créer le tableau
+    table = ttk.Treeview(empl_frame, columns=("nom","prenom","num_tel","email","grade","departement"))
+    # Définir les en-têtes de colonnes
+    table.heading("#0", text="Numéro de carte")
+    table.heading("nom", text="Nom")
+    table.heading("prenom", text="Prénom")
+    table.heading("num_tel", text="Numéro de tel")
+    table.heading("email", text="Adresse email")
+    table.heading("grade", text="Grade")
+    table.heading("departement", text="Département")
+    
+    table.pack(fill="both", expand=True)
+
+    table.column("#0", width=100, stretch=NO)
+    table.column("nom", width=100, stretch=NO)
+    table.column("prenom", width=100, stretch=NO)
+    table.column("num_tel", width=100, stretch=NO)
+    table.column("email", width=100, stretch=NO)
+    table.column("grade", width=100, stretch=NO)
+    table.column("departement", width=100, stretch=NO)
+   
+    cur.execute("""SELECT * FROM Employé""")
+    employés = cur.fetchall()
+
+    for employé in employés:
+        num_carte = employé[0]
+        nom = employé[1]
+        prenom = employé[2]
+        num_tel = employé[3]
+        email = employé[4]
+        grade = employé[5]
+        departement = employé[6]
+
+        table.insert("", "end", text=num_carte , values=(nom, prenom, num_tel, email, grade, departement))
+
+    def annuler():
+        empl.destroy()
+
+    exit_button = Button(empl, text="Retour", width='20',cursor='hand2', command=annuler)
+    exit_button.place(x=10, y=630)
 
 
 
@@ -1372,7 +1418,9 @@ def consulter_ajouter_bsm():
     btn2 = Button(ajouter_bsm_frame,text="Liste BSM",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=liste_bsm)
     btn2.place(x=120,y=180)
     btn3 = Button(ajouter_bsm_frame,text="Ajouter Employé",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=Ajouter_empl)
-    btn3.place(x=120,y=180)
+    btn3.place(x=120,y=280)
+    btn3 = Button(ajouter_bsm_frame,text="Liste Employé",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=Liste_employé)
+    btn3.place(x=120,y=380)
 
     def annuler():
         ajouter_bsm.destroy()
