@@ -1407,14 +1407,14 @@ def Ajouter_représantant():
     Email_line.place(x=250, y=335)
 
 
-    Entreprise_label = Label(ajou_repr_frame, text="Département",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
-    Entreprise_label.place(x=110, y=440)
+    Entreprise_label = Label(ajou_repr_frame, text="Entreprise",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
+    Entreprise_label.place(x=110, y=375)
 
     Entreprise_combobox = ttk.Combobox(ajou_repr_frame, text="Département",width='15', state='readonly', values=values)
-    Entreprise_combobox.place(x=250, y=440, width=120)
+    Entreprise_combobox.place(x=250, y=375, width=120)
 
     Entreprise_line =Canvas(ajou_repr_frame, width=120, height=2.0,bg='white',highlightthickness=0)
-    Entreprise_line.place(x=250, y=465)
+    Entreprise_line.place(x=250, y=400)
 
     conn.close()
 
@@ -1459,10 +1459,206 @@ def Ajouter_représantant():
         ajou_repr.destroy()
     exit_button = Button(ajou_repr, text="Annuler", width='15',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 11,'bold'),fg='black', command=annuler)
     exit_button.place(x=450,y=500)
+#===================================Liste représentant====================================================
+
+def Liste_représantant():
+    conn = sqlite3.connect('stock1.db')
+    cur = conn.cursor()
+
+    repr = Toplevel()
+    repr.title("Liste des Représentant ")
+    repr.state('zoomed')    
+    repr.resizable(0,0) 
+    repr.config(background='#ACE5F3')
+    repr_frame = Frame(repr,bg='#067790', width='900', height='600')
+    repr_frame.place(x=140, y=70)
+
+    article_label = Label(repr, text="Liste des représentant", font=('yu gothic ui', 23,'bold'),fg="white",bg="#ACE5F3")
+    article_label.place(x=500, y=20)
+
+    # Créer le tableau
+    table = ttk.Treeview(repr_frame, columns=("nom","prenom","num_tel","email","entreprise"))
+    # Définir les en-têtes de colonnes
+    table.heading("#0", text="Numéro représentant")
+    table.heading("nom", text="Nom")
+    table.heading("prenom", text="Prénom")
+    table.heading("num_tel", text="Numéro de tel")
+    table.heading("email", text="Adresse email")
+    table.heading("entreprise", text="Entreprise")
+    
+    table.pack(fill="both", expand=True)
+
+    table.column("#0", width=100, stretch=NO)
+    table.column("nom", width=100, stretch=NO)
+    table.column("prenom", width=100, stretch=NO)
+    table.column("num_tel", width=100, stretch=NO)
+    table.column("email", width=100, stretch=NO)
+    table.column("entreprise", width=100, stretch=NO)
+   
+    cur.execute("""SELECT * FROM Personne p
+                    JOIN Représantant r ON p.ID = r.Num_représantant""")
+    représantants = cur.fetchall()
+
+    for représantant in représantants:
+        num_représantant = représantant[0]
+        nom = représantant[1]
+        prenom = représantant[2]
+        num_tel = représantant[3]
+        email = représantant[4]
+        ID = représantant[5]
+        entreprise = représantant[6]
+
+        table.insert("", "end", text=num_représantant , values=(nom, prenom, num_tel, email, entreprise))
+
+    def annuler():
+        repr.destroy()
+
+    exit_button = Button(repr, text="Retour", width='20',cursor='hand2', command=annuler)
+    exit_button.place(x=10, y=630)
+
+
 
 #==================================Ajouter entreprise======================================================
 
+def Ajouter_entreprise():
 
+    ajou_entr = Toplevel()
+    ajou_entr.geometry('1000x1000')
+    ajou_entr.title("Ajouter Entreprise")
+    ajou_entr.state('zoomed')    
+    ajou_entr.resizable(0,0) 
+    ajou_entr.config(bg="#ACE5F3")
+    ajou_entr_frame = Frame(ajou_entr,bg='#067790', width='500', height='600')
+    ajou_entr_frame.place(x=380, y=30)
+
+  
+
+    Num_entr_label = Label(ajou_entr_frame, text="Numéro Entreprise ",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
+    Num_entr_label.place(x=110, y=50)
+
+    Num_entr_entry = Entry(ajou_entr_frame, highlightthickness=0, relief=FLAT, bg='#B0e0e6', fg='black',font=('yu gothic ui',12,'bold'))
+    Num_entr_entry.place(x=250, y=50, width=120)
+
+    Num_entr_line =Canvas(ajou_entr_frame, width=120, height=2.0,bg='white',highlightthickness=0)
+    Num_entr_line.place(x=250, y=75)
+
+    Nom_label = Label(ajou_entr_frame, text="Nom Entreprise ",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
+    Nom_label.place(x=110, y=115)
+
+    Nom_entry = Entry(ajou_entr_frame, highlightthickness=0, relief=FLAT, bg='#B0e0e6', fg='black',font=('yu gothic ui',12,'bold'))
+    Nom_entry.place(x=250, y=115, width=120)
+
+    Nom_line =Canvas(ajou_entr_frame, width=120, height=2.0,bg='white',highlightthickness=0)
+    Nom_line.place(x=250, y=140)
+
+
+    Email_label = Label(ajou_entr_frame, text="Adress email",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
+    Email_label.place(x=110, y=180)
+
+    Email_entry = Entry(ajou_entr_frame, highlightthickness=0, relief=FLAT, bg='#B0e0e6', fg='black',font=('yu gothic ui',12,'bold'))
+    Email_entry.place(x=250, y=180, width=120)
+
+    Email_line =Canvas(ajou_entr_frame, width=120, height=2.0,bg='white',highlightthickness=0)
+    Email_line.place(x=250, y=205)
+
+    
+    Adresse_label = Label(ajou_entr_frame, text="Adresse",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
+    Adresse_label.place(x=110, y=245)
+
+    Adresse_entry = Entry(ajou_entr_frame, highlightthickness=0, relief=FLAT, bg='#B0e0e6', fg='black',font=('yu gothic ui',12,'bold'))
+    Adresse_entry.place(x=250, y=245, width=120)
+
+    Adresse_line =Canvas(ajou_entr_frame, width=120, height=2.0,bg='white',highlightthickness=0)
+    Adresse_line.place(x=250, y=270)
+
+
+  
+
+
+    def save_entreprise():
+        conn = sqlite3.connect('stock1.db')
+        c = conn.cursor()
+
+        Num_entreprise = Num_entr_entry.get()
+        Nom = Nom_entry.get()        
+        Email = Email_entry.get()
+        Adresse = Adresse_entry.get()
+
+
+        c.execute("INSERT INTO Entreprise VALUES (?, ?, ?, ?)",
+             (Num_entreprise, Nom, Email, Adresse))
+             
+
+        messagebox.showinfo("Succès", "Les données ont été ajoutées avec succès")       
+    
+
+        Num_entr_entry.delete(0, END)
+        Nom_entry.delete(0, END)
+        Email_entry.delete(0, END)
+        Adresse_entry.delete(0, END)
+
+        
+        
+        conn.commit()
+        conn.close()
+
+    save_button = Button(ajou_entr, text="Ajouter",width='15',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 11,'bold'),fg='black', command=save_entreprise)
+    save_button.place(x=660,y=500)
+        
+
+    def annuler():
+        ajou_entr.destroy()
+    exit_button = Button(ajou_entr, text="Annuler", width='15',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 11,'bold'),fg='black', command=annuler)
+    exit_button.place(x=450,y=500)
+
+#=====================================Liste représantant==================================================
+
+def Liste_entreprise():
+    conn = sqlite3.connect('stock1.db')
+    cur = conn.cursor()
+
+    entr = Toplevel()
+    entr.title("Liste des Entreprises ")
+    entr.state('zoomed')    
+    entr.resizable(0,0) 
+    entr.config(background='#ACE5F3')
+    entr_frame = Frame(entr,bg='#067790', width='900', height='600')
+    entr_frame.place(x=140, y=70)
+
+    entreprise_label = Label(entr, text="Liste des entreprises", font=('yu gothic ui', 23,'bold'),fg="white",bg="#ACE5F3")
+    entreprise_label.place(x=500, y=20)
+
+    # Créer le tableau
+    table = ttk.Treeview(entr_frame, columns=("nom","email","adresse"))
+    # Définir les en-têtes de colonnes
+    table.heading("#0", text="ID entreprise")
+    table.heading("nom", text="Nom")
+    table.heading("email", text="Adresse email")
+    table.heading("adresse", text="Adresse")
+    
+    table.pack(fill="both", expand=True)
+
+    table.column("#0", width=100, stretch=NO)
+    table.column("nom", width=100, stretch=NO)
+    table.column("email", width=100, stretch=NO)
+    table.column("adresse", width=100, stretch=NO)
+   
+    cur.execute("""SELECT * FROM Entreprise""")
+    entreprises = cur.fetchall()
+
+    for entreprise in entreprises:
+        num_entreprise = entreprise[0]
+        nom = entreprise[1]
+        email = entreprise[2]
+        adresse = entreprise[3]
+
+        table.insert("", "end", text=num_entreprise , values=(nom, email, adresse))
+
+    def annuler():
+        repr.destroy()
+
+    exit_button = Button(repr, text="Retour", width='20',cursor='hand2', command=annuler)
+    exit_button.place(x=10, y=630)
 
 
 #====================================Gestion d'article======================================================
@@ -1543,15 +1739,15 @@ def consulter_ajouter_bsm():
     btn3.place(x=120,y=180)
     btn4 = Button(ajouter_bsm_frame,text="Liste Employé",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=Liste_employé)
     btn4.place(x=120,y=230)
-    btn5 = Button(ajouter_bsm_frame,text="Liste représantants",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black')
+    btn5 = Button(ajouter_bsm_frame,text="Liste représantants",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=Liste_représantant)
     btn5.place(x=120,y=280)
-    btn6 = Button(ajouter_bsm_frame,text="Liste entreprises",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black')
+    btn6 = Button(ajouter_bsm_frame,text="Liste entreprises",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=Liste_entreprise)
     btn6.place(x=120,y=330)
     btn7 = Button(ajouter_bsm_frame,text="Ajouter Employé",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=Ajouter_empl)
     btn7.place(x=120,y=380)
-    btn8 = Button(ajouter_bsm_frame,text="Ajouter Représanant",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black')
+    btn8 = Button(ajouter_bsm_frame,text="Ajouter Représanant",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=Ajouter_représantant)
     btn8.place(x=120,y=430)
-    btn9 = Button(ajouter_bsm_frame,text="Ajouter Entreprise",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=Ajouter_représantant)
+    btn9 = Button(ajouter_bsm_frame,text="Ajouter Entreprise",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=Ajouter_entreprise)
     btn9.place(x=120,y=480)
     
 
