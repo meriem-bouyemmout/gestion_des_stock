@@ -47,12 +47,18 @@ def verifier_identifiants():
                ouvrir_fenetre_bienvenue_mag_PDR()
                root.mainloop()
             else:  
-                if  username == "magasinier MP" and password =="1234" :
+                if  username == "magasinier FB" and password =="1234" :
         
                    message_label.config(text="Vous êtes connecté(e) !")
                    ouvrir_fenetre_bienvenue_mag_FB()
                    root.mainloop()   
                 else:
+                    if username == "magasinier PF" and password =="1234" :
+        
+                       message_label.config(text="Vous êtes connecté(e) !")
+                       ouvrir_fenetre_bienvenue_mag_PF()
+                       root.mainloop()
+                    else:        
                       message_label.config(text="Identifiants incorrect",fg="red")
 
 
@@ -3236,6 +3242,30 @@ def G_article_notadmin():
 
     exit_button = Button(G_art, text="Retour",width='20',cursor='hand2', command=annuler)
     exit_button.place(x=10, y=630)
+#=========================================consulter br pf==========================================
+def consulter_ajouter_br_pf():
+    
+    ajouter_br = Toplevel()
+    ajouter_br.geometry('500x500')
+    ajouter_br.title("BR")
+    ajouter_br.state('zoomed')     
+    ajouter_br.resizable(0,0) 
+    ajouter_br.config(background='#ACE5F3')
+    ajouter_br_frame = Frame(ajouter_br, bg='#067790', width='500', height='600')
+    ajouter_br_frame.place(x=380, y=30)
+    
+    btn1 = Button(ajouter_br_frame,text="Ajouter BR",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=AjouterBR_PF)
+    btn1.place(x=120,y=100)
+    btn2 = Button(ajouter_br_frame,text="Liste BR",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=liste_br)
+    btn2.place(x=120,y=200)
+ 
+
+    def annuler():
+        ajouter_br.destroy()
+
+
+    exit_button = Button(ajouter_br, text="Retour",width='20',cursor='hand2', command=annuler)
+    exit_button.place(x=10, y=630)    
 
 #===========================================consulter br fb====================================================
 def consulter_ajouter_br_fb():
@@ -3339,6 +3369,36 @@ def consulter_ajouter_br():
 
     exit_button = Button(ajouter_br, text="Retour",width='20',cursor='hand2', command=annuler)
     exit_button.place(x=10, y=630)
+#=================================consulter bsm pf==========================================
+def consulter_ajouter_bsm_pf():
+    
+    ajouter_bsm = Toplevel()
+    ajouter_bsm.geometry('500x500')
+    ajouter_bsm.title("BR")
+    ajouter_bsm.state('zoomed')     
+    ajouter_bsm.resizable(0,0) 
+    ajouter_bsm.config(background='#ACE5F3')
+    ajouter_bsm_frame = Frame(ajouter_bsm, bg='#067790', width='500', height='700')
+    ajouter_bsm_frame.place(x=380, y=30)
+    
+
+    btn2 = Button(ajouter_bsm_frame,text="Ajouter BSM PF",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=AjouterBSM_PF)
+    btn2.place(x=120,y=130)
+    btn3 = Button(ajouter_bsm_frame,text="Liste BSM",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=liste_bsm)
+    btn3.place(x=120,y=180)
+    btn5 = Button(ajouter_bsm_frame,text="Liste représantants",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=Liste_représantant)
+    btn5.place(x=120,y=280)
+    btn6 = Button(ajouter_bsm_frame,text="Liste entreprises",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=Liste_entreprise)
+    btn6.place(x=120,y=330)
+
+
+    def annuler():
+        ajouter_bsm.destroy()
+
+
+    exit_button = Button(ajouter_bsm, text="Retour",width='20',cursor='hand2', command=annuler)
+    exit_button.place(x=10, y=630)
+
 
 #=================================consulter bsm fb========================================
 
@@ -3475,6 +3535,33 @@ def consulter_ajouter_bsm():
     exit_button = Button(ajouter_bsm, text="Retour",width='20',cursor='hand2', command=annuler)
     exit_button.place(x=10, y=630)
 
+#========================================Exersice PF============================================
+def exercice_PF():
+    
+    Exo = Toplevel()
+    Exo.geometry('500x500')
+    Exo.title("Exercice 2023")
+    Exo.state('zoomed')     
+    Exo.resizable(0,0) 
+    Exo.config(background='#ACE5F3')
+    Exo_frame = Frame(Exo,bg='#067790', width='500', height='600')
+    Exo_frame.place(x=380, y=30)
+
+
+    btn = Button(Exo_frame,text="Article",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=G_article_notadmin)
+    btn.place(x=120,y=80)    
+    btn3 = Button(Exo_frame,text="BR",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=consulter_ajouter_br_pf)
+    btn3.place(x=120,y=180)
+    btn4 = Button(Exo_frame,text="BSM", width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=consulter_ajouter_bsm_pf)
+    btn4.place(x=120,y=280)
+    
+    def annuler():
+        Exo.destroy()
+
+
+    exit_button = Button(Exo, text="Retour",width='20',cursor='hand2', command=annuler)
+    exit_button.place(x=10, y=630)    
+
 #========================================Exersice FB==============================================
 def exercice_FB():
     
@@ -3582,7 +3669,31 @@ def exercice():
 
     exit_button = Button(Exo, text="Retour",width='20',cursor='hand2', command=annuler)
     exit_button.place(x=10, y=630)
+#=======================================Fenetre MAGASINER PF==============================================
+def ouvrir_fenetre_bienvenue_mag_PF():
+    fenetre_bienvenue = Toplevel(lgn_frame)
+    fenetre_bienvenue.title("Bienvenue")
+    fenetre_bienvenue.config(bg="#D3D3D3")
+    fenetre_bienvenue.state('zoomed')     
+    fenetre_bienvenue.resizable(0,0) 
+    fenetre_bienvenue.config(background='#ACE5F3')
+    bienvenue_frame = Frame(fenetre_bienvenue,bg='#067790', width='500', height='600')
+    bienvenue_frame.place(x=380, y=30)
 
+    message_bienvenue = Label(bienvenue_frame, text="Bienvenue, " + username_entry.get() + " !",font=('yu gothic ui', 26,'bold'),fg="white",bg="#067790")
+    message_bienvenue.place(x=50,y=100)
+    ex = Button(bienvenue_frame, text="Voir Exercice : 2023", width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=exercice_PF)
+    ex.place(x=120, y=250)
+
+    username_entry.delete(0, END)
+    password_entry.delete(0, END)
+
+    def annuler():
+        fenetre_bienvenue.destroy()
+
+
+    exit_button = Button(fenetre_bienvenue, text="Retour",width='20',cursor='hand2', command=annuler)
+    exit_button.place(x=10, y=630)
 #=======================================Fenètre MAGASINER FB++++++++++++=================================
 def ouvrir_fenetre_bienvenue_mag_FB():
     fenetre_bienvenue = Toplevel(lgn_frame)
