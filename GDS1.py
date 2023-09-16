@@ -1,10 +1,12 @@
 from tkinter import *
 import sqlite3
 import tkinter as tk
+# from PIL import ImageTk, Image
 from tkinter import ttk
 from tkinter import messagebox
 from tkinter.ttk import Treeview
 from tkcalendar import DateEntry
+import re
 
 root = Tk()
 root.title("Se connecter")
@@ -12,8 +14,10 @@ root.geometry('1166x718')
 root.state('zoomed')     #Une fenetre plain de l'ecran
 root.resizable(0,0)    # annuler la minimisation de la fenetre
 root.title("Gestion de stock")
+root.iconbitmap('C:\\Users\\pc\\version1-main\\star.ico')
+
 root.config(background='#ACE5F3')
-# root.iconbitmap('C:\\Users\\hp\\Desktop\\Desktop\\star.ico')
+# root.iconbitmap('C:\\Users\\hp\\Desktop\\Desktop.2\\star1.ico')
         
 #=============================== Dectionnaire pour stocker les identifiants ===============================================
 
@@ -31,31 +35,31 @@ def verifier_identifiants():
     password = password_entry.get()
     if username == "admin" and password =="1234" :
         
-        message_label.config(text="Vous êtes connecté(e) !")
+        message_label.config(text="")
         ouvrir_fenetre_bienvenue()
         root.mainloop()
     else: 
         if  username == "magasinier MP" and password =="1234" :
         
-              message_label.config(text="Vous êtes connecté(e) !")
+              message_label.config(text="")
               ouvrir_fenetre_bienvenue_mag_MP()
               root.mainloop()  
         else:
             if  username == "magasinier PDR" and password =="1234" :
         
-               message_label.config(text="Vous êtes connecté(e) !")
+               message_label.config(text="")
                ouvrir_fenetre_bienvenue_mag_PDR()
                root.mainloop()
             else:  
                 if  username == "magasinier FB" and password =="1234" :
         
-                   message_label.config(text="Vous êtes connecté(e) !")
+                   message_label.config(text="")
                    ouvrir_fenetre_bienvenue_mag_FB()
                    root.mainloop()   
                 else:
                     if username == "magasinier PF" and password =="1234" :
         
-                       message_label.config(text="Vous êtes connecté(e) !")
+                       message_label.config(text="")
                        ouvrir_fenetre_bienvenue_mag_PF()
                        root.mainloop()
                     else:        
@@ -80,24 +84,28 @@ def ajouter():
     ajou = Toplevel()
     ajou.geometry('1000x1000')
     ajou.title("Ajouter Article")
-    ajou.state('zoomed')    
+    ajou.state('zoomed')
+    # ajou.iconbitmap('C:\\Users\\hp\\Desktop\\Desktop.2\\star1.ico')    
     ajou.resizable(0,0) 
     ajou.config(bg="#ACE5F3")
     ajou_frame = Frame(ajou,bg='#067790', width='500', height='600')
     ajou_frame.place(x=380, y=30)
 
+    label = Label(ajou_frame, text="Ajouter un nouveau article ",bg='#067790',font=('yu gothic ui', 25,'bold'),fg='white')
+    label.place(x=50, y=30)
+
     global id_article_entry, code_comptable_entry, designation_entry
 
-    code_article_label = Label(ajou_frame, text="Code Article ",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
-    code_article_label.place(x=110, y=50)
+    code_article_label = Label(ajou_frame, text="Code Article* ",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
+    code_article_label.place(x=110, y=115)
 
     code_article_entry = Entry(ajou_frame, highlightthickness=0, relief=FLAT, bg='#B0e0e6', fg='black',font=('yu gothic ui',12,'bold'))
-    code_article_entry.place(x=250, y=50, width=120)
+    code_article_entry.place(x=250, y=115, width=120)
 
     code_article_line =Canvas(ajou_frame, width=120, height=2.0,bg='white',highlightthickness=0)
-    code_article_line.place(x=250, y=75)
+    code_article_line.place(x=250, y=140)
 
-    designation_label = Label(ajou_frame, text="Designation ",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
+    designation_label = Label(ajou_frame, text="Designation* ",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
     designation_label.place(x=110, y=180)
 
     designation_entry = Entry(ajou_frame, highlightthickness=0, relief=FLAT, bg='#B0e0e6', fg='black',font=('yu gothic ui',12,'bold'))
@@ -107,7 +115,7 @@ def ajouter():
     designation_line.place(x=250, y=205)
 
 
-    qte_label = Label(ajou_frame, text="Quantité",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
+    qte_label = Label(ajou_frame, text="Quantité*",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
     qte_label.place(x=110, y=245)
 
     qte_entry = Entry(ajou_frame, highlightthickness=0, relief=FLAT, bg='#B0e0e6', fg='black',font=('yu gothic ui',12,'bold'))
@@ -116,7 +124,7 @@ def ajouter():
     qte_line =Canvas(ajou_frame, width=120, height=2.0,bg='white',highlightthickness=0)
     qte_line.place(x=250, y=270)
 
-    prix_label = Label(ajou_frame, text="Prix",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
+    prix_label = Label(ajou_frame, text="Prix*",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
     prix_label.place(x=110, y=310)
 
     prix_entry = Entry(ajou_frame, highlightthickness=0, relief=FLAT, bg='#B0e0e6', fg='black',font=('yu gothic ui',12,'bold'))
@@ -126,7 +134,7 @@ def ajouter():
     prix_line.place(x=250, y=335)
 
 
-    code_catg_label = Label(ajou_frame, text="Catégorie",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
+    code_catg_label = Label(ajou_frame, text="Catégorie*",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
     code_catg_label.place(x=110, y=375)
 
     code_catg_combobox = ttk.Combobox(ajou_frame, values=["PDR", "FB", "MP", "PF"], state='readonly')
@@ -145,13 +153,26 @@ def ajouter():
         qte = qte_entry.get()
         prix = prix_entry.get()
         code_catg = code_catg_combobox.get()
-        montant = float(prix) * float(qte)
+        montant = float(prix) * int(qte)
+
+        # Vérifier si les champs obligatoires sont remplis
+        if not code_art or not designation or not qte or not prix or not code_catg:
+            messagebox.showerror(title="Erreur", message="Veuillez remplir tous les champs obligatoires (*)", parent=ajou_frame)
+            return
+
+
+        # Vérifier si le code article existe déjà dans la base de données
+        c.execute("SELECT COUNT(*) FROM ARTICLE WHERE code_article=?", (code_art,))
+        count = c.fetchone()[0]
+        if count > 0:
+            messagebox.showerror(title="Erreur", message="Le code article existe déjà dans la base de données", parent=ajou_frame)
+            return
 
 
         c.execute("INSERT INTO ARTICLE VALUES (?, ?, ?, ?, ?, ?)",
              (code_art, designation, qte, prix, montant, code_catg))
 
-        messagebox.showinfo("Succès", "Les données ont été ajoutées avec succès")
+        messagebox.showinfo(title="Succès", message="Les données ont été ajoutées avec succès", parent=ajou_frame)
 
 
         
@@ -161,7 +182,7 @@ def ajouter():
         designation_entry.delete(0, END)
         qte_entry.delete(0, END)
         prix_entry.delete(0, END)
-        code_catg_combobox.delete(0, END)
+        code_catg_combobox.set("")
         
         
         conn.commit()
@@ -170,34 +191,48 @@ def ajouter():
         
 
     def annuler():
-        ajou.destroy()
+        code_article_entry.delete(0, END)
+        designation_entry.delete(0, END)
+        qte_entry.delete(0, END)
+        prix_entry.delete(0, END)
+        code_catg_combobox.set("")
     exit_button = Button(ajou, text="Annuler", width='15',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 11,'bold'),fg='black', command=annuler)
     exit_button.place(x=450,y=500)
 
-#===========================================suprimmer article=====================================
+
+    def annuler():
+        ajou.destroy()
+    exit_button = Button(ajou, text="Retour", width='20', cursor='hand2', command=annuler)
+    exit_button.place(x=10,y=630)
+
+#===========================================supprimer article=====================================
 def supprimer():
     supr = Toplevel()
     supr.geometry('1000x1000')
     supr.title("Suprimer article")
-    supr.state('zoomed')    
+    supr.state('zoomed')  
+    # supr.iconbitmap('C:\\Users\\hp\\Desktop\\Desktop.2\\star1.ico')  
     supr.resizable(0,0) 
     supr.config(bg="#ACE5F3")
     supr_frame = Frame(supr,bg='#067790', width='500', height='600')
     supr_frame.place(x=380, y=30)
+
+    label = Label(supr_frame, text="Supprimer un article ",bg='#067790',font=('yu gothic ui', 25,'bold'),fg='white')
+    label.place(x=100, y=80)
 
     conn = sqlite3.connect('stock1.db')
     c = conn.cursor()
     c.execute("SELECT code_article FROM ARTICLE")
     values = [row[0] for row in c.fetchall()]
 
-    code_art_label = Label(supr, text="Code Article ",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
-    code_art_label.place(x=110, y=50)
+    code_art_label = Label(supr_frame, text="Code Article: ",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
+    code_art_label.place(x=140, y=200)
 
-    code_art_combobox = ttk.Combobox(supr, text="Code Article",width='15', state='readonly', values=values)
-    code_art_combobox.place(x=250, y=50, width=120)
+    code_art_combobox = ttk.Combobox(supr_frame, text="Code Article:",width='15', state='readonly', values=values)
+    code_art_combobox.place(x=250, y=200, width=110)
 
-    code_art_line =Canvas(supr, width=120, height=2.0,bg='white',highlightthickness=0)
-    code_art_line.place(x=250, y=75)
+    code_art_line =Canvas(supr_frame, width=110, height=2.0,bg='white',highlightthickness=0)
+    code_art_line.place(x=250, y=220)
 
     conn.close()
 
@@ -206,18 +241,37 @@ def supprimer():
 
         conn = sqlite3.connect('stock1.db')
         c = conn.cursor()
-        c.execute("DELETE FROM ARTICLE WHERE code_article = ?",(code_art))
-        messagebox.showinfo("Succès","L'article a été suprimmer")
+        c.execute("DELETE FROM ARTICLE WHERE code_article = ?",(code_art,))
+        messagebox.showinfo(title="Succès",message="L'article a été suprimmer avec succès", parent=supr_frame)
+        
+
+        c.execute("SELECT code_article FROM ARTICLE")
+        new_values = [row[0] for row in c.fetchall()]
+
+        code_art_combobox.configure(values=new_values)
+        code_art_combobox.set("")
 
         conn.commit()
         conn.close()
 
+        
 
 
 
+    save_button = Button(supr, text="Supprimer",width='15',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 11,'bold'),fg='black', command=save_suprimer)
+    save_button.place(x=660,y=450)
+        
 
-    save_button = Button(supr, text="Suprimer",width='15',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 11,'bold'),fg='black', command=save_suprimer)
-    save_button.place(x=660,y=500)
+    def annuler():
+        code_art_combobox.set("")
+    exit_button = Button(supr, text="Annuler", width='15',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 11,'bold'),fg='black', command=annuler)
+    exit_button.place(x=450,y=450)
+
+
+    def annuler():
+        supr.destroy()
+    exit_button = Button(supr, text="Retour", width='20', cursor='hand2', command=annuler)
+    exit_button.place(x=10,y=630)
 
 #========================================MP   PDR   FB    PF=======================================
 def articles_type():
@@ -225,19 +279,20 @@ def articles_type():
     articles = Toplevel()
     articles.geometry('500x500')
     articles.title("Articles")
-    articles.state('zoomed')     
+    articles.state('zoomed')
+    # articles.iconbitmap('C:\\Users\\hp\\Desktop\\Desktop.2\\star1.ico')     
     articles.resizable(0,0) 
     articles.config(background='#ACE5F3')
     articles_frame = Frame(articles,bg='#067790', width='500', height='600')
     articles_frame.place(x=380, y=30)
     btn = Button(articles_frame,text="MP",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=articleMP)
-    btn.place(x=120,y=100)
+    btn.place(x=120,y=120)
     btn1 = Button(articles_frame,text="PDR",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=articlePDR)
-    btn1.place(x=120,y=200)
+    btn1.place(x=120,y=220)
     btn2 = Button(articles_frame,text="FB",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=articleFB)
-    btn2.place(x=120,y=300)
+    btn2.place(x=120,y=320)
     btn3 = Button(articles_frame,text="PF",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=articlePF)
-    btn3.place(x=120,y=400)
+    btn3.place(x=120,y=420)
    
     def annuler():
         articles.destroy()
@@ -257,17 +312,18 @@ def articleMP() :
 
     art = Toplevel()
     art.title("Liste des aticles MP")
-    art.state('zoomed')    
+    art.state('zoomed') 
+    # art.iconbitmap('C:\\Users\\hp\\Desktop\\Desktop.2\\star1.ico')   
     art.resizable(0,0) 
-    art.config(background='#ACE5F3')
-    art_frame = Frame(art,bg='#067790', width='900', height='600')
-    art_frame.place(x=140, y=70)
+    art.config(bg='#ACE5F3')
+    art_frame = Frame(art,bg='#067790',)
+    art_frame.place(x=180, y=70)
 
-    article_label = Label(art, text="Liste des articles MP", font=('yu gothic ui', 23,'bold'),fg="white",bg="#ACE5F3")
+    article_label = Label(art, text="Liste des articles MP", font=('yu gothic ui', 23,'bold'),fg="white",bg='#ACE5F3')
     article_label.place(x=500, y=20)
 
     # Créer le tableau
-    table = ttk.Treeview(art_frame, columns=("designation","qte","prix","montant", "code_catg"))
+    table = ttk.Treeview(art_frame, columns=("designation","qte","prix","montant", "code_catg"), height='25')
     # Définir les en-têtes de colonnes
     table.heading("#0", text="Code Article")
     table.heading("designation", text="Designation")
@@ -278,12 +334,12 @@ def articleMP() :
     
     table.pack(fill="both", expand=True)
 
-    table.column("#0", width=100, stretch=NO)
-    table.column("designation", width=100, stretch=NO)
-    table.column("qte", width=100, stretch=NO)
-    table.column("prix", width=100, stretch=NO)
-    table.column("montant", width=100, stretch=NO)
-    table.column("code_catg", width=100, stretch=NO)
+    table.column("#0", width=150, stretch=NO)
+    table.column("designation", width=170, stretch=NO)
+    table.column("qte", width=150, stretch=NO)
+    table.column("prix", width=150, stretch=NO)
+    table.column("montant", width=150, stretch=NO)
+    table.column("code_catg", width=150, stretch=NO)
    
     cur.execute("""SELECT * FROM ARTICLE WHERE code_catg='MP'
     """)
@@ -313,17 +369,18 @@ def articlePDR() :
 
     art = Toplevel()
     art.title("Liste des aticles PDR")
-    art.state('zoomed')    
+    art.state('zoomed') 
+    # art.iconbitmap('C:\\Users\\hp\\Desktop\\Desktop.2\\star1.ico')   
     art.resizable(0,0) 
     art.config(background='#ACE5F3')
     art_frame = Frame(art,bg='#067790', width='900', height='600')
-    art_frame.place(x=140, y=70)
+    art_frame.place(x=200, y=70)
 
-    article_label = Label(art, text="Liste des articles MP", font=('yu gothic ui', 23,'bold'),fg="white",bg="#ACE5F3")
+    article_label = Label(art, text="Liste des articles PDR", font=('yu gothic ui', 23,'bold'),fg="white",bg="#ACE5F3")
     article_label.place(x=500, y=20)
 
     # Créer le tableau
-    table = ttk.Treeview(art_frame, columns=("designation","qte","prix","montant", "code_catg"))
+    table = ttk.Treeview(art_frame, columns=("designation","qte","prix","montant", "code_catg"), height='25')
     # Définir les en-têtes de colonnes
     table.heading("#0", text="Code Article")
     table.heading("designation", text="Designation")
@@ -334,12 +391,12 @@ def articlePDR() :
     
     table.pack(fill="both", expand=True)
 
-    table.column("#0", width=100, stretch=NO)
-    table.column("designation", width=100, stretch=NO)
-    table.column("qte", width=100, stretch=NO)
-    table.column("prix", width=100, stretch=NO)
-    table.column("montant", width=100, stretch=NO)
-    table.column("code_catg", width=100, stretch=NO)
+    table.column("#0", width=150, stretch=NO)
+    table.column("designation", width=180, stretch=NO)
+    table.column("qte", width=150, stretch=NO)
+    table.column("prix", width=150, stretch=NO)
+    table.column("montant", width=150, stretch=NO)
+    table.column("code_catg", width=150, stretch=NO)
    
     cur.execute("""SELECT * FROM ARTICLE WHERE code_catg='PDR'
     """)
@@ -369,17 +426,18 @@ def articleFB() :
 
     art = Toplevel()
     art.title("Liste des aticles FB")
-    art.state('zoomed')    
+    art.state('zoomed') 
+    # art.iconbitmap('C:\\Users\\hp\\Desktop\\Desktop.2\\star1.ico')   
     art.resizable(0,0) 
     art.config(background='#ACE5F3')
     art_frame = Frame(art,bg='#067790', width='900', height='600')
-    art_frame.place(x=140, y=70)
+    art_frame.place(x=200, y=70)
 
-    article_label = Label(art, text="Liste des articles MP", font=('yu gothic ui', 23,'bold'),fg="white",bg="#ACE5F3")
+    article_label = Label(art, text="Liste des articles FB", font=('yu gothic ui', 23,'bold'),fg="white",bg="#ACE5F3")
     article_label.place(x=500, y=20)
 
     # Créer le tableau
-    table = ttk.Treeview(art_frame, columns=("designation","qte","prix","montant", "code_catg"))
+    table = ttk.Treeview(art_frame, columns=("designation","qte","prix","montant", "code_catg"), height='25')
     # Définir les en-têtes de colonnes
     table.heading("#0", text="Code Article")
     table.heading("designation", text="Designation")
@@ -390,12 +448,12 @@ def articleFB() :
     
     table.pack(fill="both", expand=True)
 
-    table.column("#0", width=100, stretch=NO)
-    table.column("designation", width=100, stretch=NO)
-    table.column("qte", width=100, stretch=NO)
-    table.column("prix", width=100, stretch=NO)
-    table.column("montant", width=100, stretch=NO)
-    table.column("code_catg", width=100, stretch=NO)
+    table.column("#0", width=150, stretch=NO)
+    table.column("designation", width=170, stretch=NO)
+    table.column("qte", width=150, stretch=NO)
+    table.column("prix", width=150, stretch=NO)
+    table.column("montant", width=150, stretch=NO)
+    table.column("code_catg", width=150, stretch=NO)
    
     cur.execute("""SELECT * FROM ARTICLE WHERE code_catg='FB'
     """)
@@ -426,17 +484,18 @@ def articlePF() :
 
     art = Toplevel()
     art.title("Liste des aticles PF")
-    art.state('zoomed')    
+    art.state('zoomed')
+    # art.iconbitmap('C:\\Users\\hp\\Desktop\\Desktop.2\\star1.ico')    
     art.resizable(0,0) 
     art.config(background='#ACE5F3')
     art_frame = Frame(art,bg='#067790', width='900', height='600')
-    art_frame.place(x=140, y=70)
+    art_frame.place(x=200, y=70)
 
-    article_label = Label(art, text="Liste des articles MP", font=('yu gothic ui', 23,'bold'),fg="white",bg="#ACE5F3")
+    article_label = Label(art, text="Liste des articles PF", font=('yu gothic ui', 23,'bold'),fg="white",bg="#ACE5F3")
     article_label.place(x=500, y=20)
 
     # Créer le tableau
-    table = ttk.Treeview(art_frame, columns=("designation","qte","prix","montant", "code_catg"))
+    table = ttk.Treeview(art_frame, columns=("designation","qte","prix","montant", "code_catg"), height='25')
     # Définir les en-têtes de colonnes
     table.heading("#0", text="Code Article")
     table.heading("designation", text="Designation")
@@ -447,12 +506,12 @@ def articlePF() :
     
     table.pack(fill="both", expand=True)
 
-    table.column("#0", width=100, stretch=NO)
-    table.column("designation", width=100, stretch=NO)
-    table.column("qte", width=100, stretch=NO)
-    table.column("prix", width=100, stretch=NO)
-    table.column("montant", width=100, stretch=NO)
-    table.column("code_catg", width=100, stretch=NO)
+    table.column("#0", width=150, stretch=NO)
+    table.column("designation", width=170, stretch=NO)
+    table.column("qte", width=150, stretch=NO)
+    table.column("prix", width=150, stretch=NO)
+    table.column("montant", width=150, stretch=NO)
+    table.column("code_catg", width=150, stretch=NO)
    
     cur.execute("""SELECT * FROM ARTICLE WHERE code_catg='PF'
     """)
@@ -481,8 +540,9 @@ def article_details():
     detail_window = Toplevel()
     detail_window.title("Detail Article")
     detail_window.geometry("1300x700")
-    detail_window.state('zoomed')    
-    detail_window.resizable(0,0)
+   
+    # detail_window.iconbitmap('C:\\Users\\hp\\Desktop\\Desktop.2\\star1.ico')    
+    
     detail_window.config(background='#ACE5F3')
 
     conn = sqlite3.connect('stock1.db')
@@ -500,7 +560,7 @@ def article_details():
 
     
 
-    result_frame = Frame(detail_window, bg='#ACE5F3')
+    result_frame = Frame(detail_window, bg='#ACE5F3', width='600', height='600')
     result_frame.place(x=140, y=100)
 
     entres_label = Label(result_frame, text="ENTRES", bg='#ACE5F3', font=('yu gothic ui', 10,'bold'))
@@ -563,6 +623,7 @@ def article_details():
     show_button.place(x=350, y=30)
 
     def annuler():
+        code_art_combobox.set("")
         detail_window.destroy()
 
     exit_button = Button(detail_window, text="Retour", width='20',cursor='hand2', command=annuler)
@@ -573,14 +634,15 @@ def article_details():
 def AjouterBR():
     add_br_window = tk.Toplevel()
     add_br_window.title("Ajouter BR")
-    add_br_window.state('zoomed')    
+    add_br_window.state('zoomed') 
+    # add_br_window.iconbitmap('C:\\Users\\hp\\Desktop\\Desktop.2\\star1.ico')   
     add_br_window.resizable(0,0)
     add_br_window.config(bg="#ACE5F3")
     add_br_frame = Frame(add_br_window,bg='#067790', width='900', height='600')
     add_br_frame.place(x=200, y=30)
 
     add_br_window.geometry("1300x700")
-    add_br_window.config(bg="#D3D3D3")
+    
 
 
     conn = sqlite3.connect('stock1.db')
@@ -601,20 +663,21 @@ def AjouterBR():
     code_br_line.place(x=465, y=93)
 
     date_label = Label(add_br_frame, text="Date : ",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
-    date_label.place(x=700, y=90)
+    date_label.place(x=700, y=120)
 
-    date_entry = DateEntry(add_br_frame, width=1, background='#067790', foreground='white', borderwidth=1, font=('yu gothic ui',12,'bold'))
-    date_entry.place(x=750, y=90, width=130)
+    date_entry = DateEntry(add_br_frame, width=1, background='#067790', foreground='white', borderwidth=1, font=('yu gothic ui',12,'bold'), state='readonly', date_pattern="dd/mm/yyyy")
+    date_entry.place(x=750, y=120, width=130)
+    date_entry.place(x=750, y=120, width=130)
 
 
-    nom_label = Label(add_br_frame, text="Fournisseur    :",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
-    nom_label.place(x=30, y=90)
+    nom_label = Label(add_br_frame, text="Fournisseur :",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
+    nom_label.place(x=30, y=120)
 
     Num_fournisseur_combobox = ttk.Combobox(add_br_frame, text="Num fournisseur",width='15', state='readonly', values=values)
-    Num_fournisseur_combobox.place(x=100, y=90, width=120)
+    Num_fournisseur_combobox.place(x=135, y=125, width=120)
 
     nom_line =Canvas(add_br_frame, width=120, height=2.0,bg='white',highlightthickness=0)
-    nom_line.place(x=100, y=113)
+    nom_line.place(x=135, y=145)
 
     conn.close()
 
@@ -626,31 +689,58 @@ def AjouterBR():
         code_br = code_br_entry.get()
         date = date_entry.get()
         Num_fournisseur = Num_fournisseur_combobox.get()
+
+        #Vérifier si tous les champs sont remplis
+        if not code_br or not date or not Num_fournisseur:
+            messagebox.showerror(title="Erreur", message="Tous les champs doivent être remplis", parent=add_br_frame)
+            return
     
 
         c.execute("INSERT INTO BR VALUES (?, ?, ?)",
                   (code_br, date, Num_fournisseur))
+
+        messagebox.showinfo(title="Succès", message="Les données ont été ajoutées avec succès", parent=add_br_frame)
+
+        # Vider le tableau
+        tableau.delete(*tableau.get_children())
+        # Ajouter une ligne vide pour la saisie
+        tableau.insert("", tk.END, values=("", "", "", "", "", ""))
+        e_code_br.delete(0, END)
         
 
         code_br_entry.delete(0, END)
         date_entry.delete(0, END)
+        Num_fournisseur_combobox.set("")
         
 
         conn.commit()
         conn.close()
     
-    save_button = Button(add_br_frame, text="Ajouter", width='15',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 11,'bold'),fg='black', command=save_BR)
-    save_button.place(x=620,y=500)
-
-    def annuler():
-        add_br_window.destroy()
-
-
-    exit_button = Button(add_br_frame, text="Annuler",  width='15',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 11,'bold'),fg='black', command=annuler)
-    exit_button.place(x=250,y=500)
+    
 
     
 
+    def annuler():
+        tableau.delete(*tableau.get_children())
+        # Ajouter une ligne vide pour la saisie
+        tableau.insert("", tk.END, values=("", "", "", "", "", ""))
+        e_code_br.delete(0, END)
+        
+
+        code_br_entry.delete(0, END)
+        date_entry.delete(0, END)
+        Num_fournisseur_combobox.set("")
+        e_code_entre.delete(0, tk.END)
+        e_qte_ent.delete(0, tk.END)
+        e_prix_ent.delete(0, tk.END)   
+        e_code_combobox.set("")
+
+
+    exit_button = Button(add_br_frame, text="Annuler",  width='15',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 11,'bold'),fg='black', command=annuler)
+    exit_button.place(x=150,y=500)
+
+    
+    tableau = None
 
     def ajouter_ligne():
         conn = sqlite3.connect('stock1.db')
@@ -663,6 +753,18 @@ def AjouterBR():
         montant_ent = qte_ent * prix_ent
         code_br = e_code_br.get()
         code_article = e_code_combobox.get()
+
+        # Vérifier si le code article existe déjà dans la base de données
+        c.execute("SELECT COUNT(*) FROM Entrées WHERE code_ent=?", (code_entre,))
+        count = c.fetchone()[0]
+        if count > 0:
+            messagebox.showerror(title="Erreur", message="Le code d'entrée existe déjà dans la base de données", parent=add_br_frame)
+            return
+
+        #Vérifier si tous les champs sont remplis
+        if not code_entre or not qte_ent or not prix_ent or not montant_ent or not code_br or not code_article:
+            messagebox.showerror(title="Erreur", message="Tous les champs doivent être remplis", parent=add_br_frame)
+            return
     
         # Insertion des données dans la base de données
         c.execute("INSERT INTO Entrées VALUES (?, ?, ?, ?, ?, ?)",
@@ -686,7 +788,7 @@ def AjouterBR():
         e_code_entre.delete(0, tk.END)
         e_qte_ent.delete(0, tk.END)
         e_prix_ent.delete(0, tk.END)   
-        e_code_combobox.delete(0, tk.END)
+        e_code_combobox.set("")
 
     # Création du tableau
     tableau = tk.ttk.Treeview(add_br_frame, columns=("code_entre", "qte_ent", "prix_ent", "montant_ent", "code_br", "code_article"))
@@ -712,7 +814,7 @@ def AjouterBR():
     tableau.insert("", tk.END, values=("", "", "", "", "", ""))
 
     # Placement du tableau dans la fenêtre
-    tableau.place(x=200, y=250)
+    tableau.place(x=150, y=250)
     conn = sqlite3.connect('stock1.db')
     c = conn.cursor()
     c.execute("SELECT code_article FROM ARTICLE")
@@ -730,22 +832,30 @@ def AjouterBR():
 
 
     # Placement des champs de saisie dans la fenêtre
-    e_code_entre.place(x=200, y=220)
-    e_qte_ent.place(x=300, y=220)
-    e_prix_ent.place(x=400, y=220)
-    e_code_br.place(x=500, y=220)
-    e_code_combobox.place(x=600, y=219)
+    e_code_entre.place(x=150, y=220)
+    e_qte_ent.place(x=250, y=220)
+    e_prix_ent.place(x=350, y=220)
+    e_code_br.place(x=450, y=220)
+    e_code_combobox.place(x=550, y=219)
 
     # Création des étiquettes pour les champs de saisie
-    tk.Label(add_br_frame, text="Code Entrée",bg="#067790").place(x=200, y=195)
-    tk.Label(add_br_frame, text="Quantité Entrée",bg="#067790").place(x=300, y=195)
-    tk.Label(add_br_frame, text="Prix Entrée",bg="#067790").place(x=400, y=195)
-    tk.Label(add_br_frame, text="Code BR",bg="#067790").place(x=500, y=195)
-    tk.Label(add_br_frame, text="Code Article",bg="#067790").place(x=600, y=195)
+    tk.Label(add_br_frame, text="Code Entrée",bg="#067790").place(x=150, y=195)
+    tk.Label(add_br_frame, text="Quantité Entrée",bg="#067790").place(x=250, y=195)
+    tk.Label(add_br_frame, text="Prix Entrée",bg="#067790").place(x=350, y=195)
+    tk.Label(add_br_frame, text="Code BR",bg="#067790").place(x=450, y=195)
+    tk.Label(add_br_frame, text="Code Article",bg="#067790").place(x=550, y=195)
 
     # Bouton pour ajouter une ligne
     btn_ajouter = tk.Button(add_br_frame, text="Ajouter Entré",width='10', bg='#ACE5F3',cursor='hand2', command=ajouter_ligne)
-    btn_ajouter.place(x=720, y=218)
+    btn_ajouter.place(x=670, y=218)
+
+
+    
+
+    save_button = Button(add_br_frame, text="Ajouter", width='15',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 11,'bold'),fg='black', command=save_BR)
+    save_button.place(x=610,y=500)
+
+    
 
     def update_fields(event):
         value = code_br_entry.get()
@@ -754,18 +864,25 @@ def AjouterBR():
 
     code_br_entry.bind("<KeyRelease>", update_fields)
 
+
+    def annuler():
+        add_br_window.destroy()
+
+    exit_button = Button(add_br_window, text="Retour", width='20',cursor='hand2', command=annuler)
+    exit_button.place(x=10, y=630)
 #==========================================Ajouter BR MP============================================
 def AjouterBR_MP():
     add_br_window = tk.Toplevel()
     add_br_window.title("Ajouter BR")
-    add_br_window.state('zoomed')    
+    add_br_window.state('zoomed')  
+    # add_br_window.iconbitmap('C:\\Users\\hp\\Desktop\\Desktop.2\\star1.ico')  
     add_br_window.resizable(0,0)
     add_br_window.config(bg="#ACE5F3")
     add_br_frame = Frame(add_br_window,bg='#067790', width='900', height='600')
     add_br_frame.place(x=200, y=30)
 
     add_br_window.geometry("1300x700")
-    add_br_window.config(bg="#D3D3D3")
+
 
 
     conn = sqlite3.connect('stock1.db')
@@ -786,20 +903,20 @@ def AjouterBR_MP():
     code_br_line.place(x=465, y=93)
 
     date_label = Label(add_br_frame, text="Date : ",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
-    date_label.place(x=700, y=90)
+    date_label.place(x=700, y=120)
 
     date_entry = DateEntry(add_br_frame, width=1, background='#067790', foreground='white', borderwidth=1, font=('yu gothic ui',12,'bold'))
-    date_entry.place(x=750, y=90, width=130)
+    date_entry.place(x=750, y=120, width=130)
 
 
-    nom_label = Label(add_br_frame, text="Fournisseur    :",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
-    nom_label.place(x=30, y=90)
+    nom_label = Label(add_br_frame, text="Fournisseur :",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
+    nom_label.place(x=30, y=120)
 
     Num_fournisseur_combobox = ttk.Combobox(add_br_frame, text="Num fournisseur",width='15', state='readonly', values=values)
-    Num_fournisseur_combobox.place(x=100, y=90, width=120)
+    Num_fournisseur_combobox.place(x=135, y=125, width=125)
 
-    nom_line =Canvas(add_br_frame, width=120, height=2.0,bg='white',highlightthickness=0)
-    nom_line.place(x=100, y=113)
+    # nom_line =Canvas(add_br_frame, width=120, height=2.0,bg='white',highlightthickness=0)
+    # nom_line.place(x=135, y=145)
 
     conn.close()
 
@@ -811,30 +928,55 @@ def AjouterBR_MP():
         code_br = code_br_entry.get()
         date = date_entry.get()
         Num_fournisseur = Num_fournisseur_combobox.get()
+
+        #Vérifier si tous les champs sont remplis
+        if not code_br or not date or not Num_fournisseur:
+            messagebox.showerror(title="Erreur", message="Tous les champs doivent être remplis", parent=add_br_frame)
+            return
     
 
         c.execute("INSERT INTO BR VALUES (?, ?, ?)",
                   (code_br, date, Num_fournisseur))
         
+        messagebox.showinfo(title="Succès", message="Les données ont été ajoutées avec succès", parent=add_br_frame)
+
+        # Vider le tableau
+        tableau.delete(*tableau.get_children())
+        # Ajouter une ligne vide pour la saisie
+        tableau.insert("", tk.END, values=("", "", "", "", "", ""))
+        e_code_br.delete(0, END)
+        
 
         code_br_entry.delete(0, END)
         date_entry.delete(0, END)
-        
+        Num_fournisseur_combobox.set("")
 
         conn.commit()
         conn.close()
     
     save_button = Button(add_br_frame, text="Ajouter", width='15',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 11,'bold'),fg='black', command=save_BR)
-    save_button.place(x=620,y=500)
+    save_button.place(x=610,y=500)
 
     def annuler():
-        add_br_window.destroy()
+        tableau.delete(*tableau.get_children())
+        # Ajouter une ligne vide pour la saisie
+        tableau.insert("", tk.END, values=("", "", "", "", "", ""))
+        e_code_br.delete(0, END)
+     
+
+        code_br_entry.delete(0, END)
+        date_entry.delete(0, END)
+        Num_fournisseur_combobox.set("")
+        e_code_entre.delete(0, tk.END)
+        e_qte_ent.delete(0, tk.END)
+        e_prix_ent.delete(0, tk.END)   
+        e_code_combobox.set("")
 
 
     exit_button = Button(add_br_frame, text="Annuler",  width='15',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 11,'bold'),fg='black', command=annuler)
-    exit_button.place(x=250,y=500)
+    exit_button.place(x=150,y=500)
 
-    
+    tableau = None
 
 
     def ajouter_ligne():
@@ -848,6 +990,18 @@ def AjouterBR_MP():
         montant_ent = qte_ent * prix_ent
         code_br = e_code_br.get()
         code_article = e_code_combobox.get()
+
+        # Vérifier si le code article existe déjà dans la base de données
+        c.execute("SELECT COUNT(*) FROM Entrées WHERE code_ent=?", (code_entre,))
+        count = c.fetchone()[0]
+        if count > 0:
+            messagebox.showerror(title="Erreur", message="Le code d'entrée existe déjà dans la base de données", parent=add_br_frame)
+            return
+
+        #Vérifier si tous les champs sont remplis
+        if not code_entre or not qte_ent or not prix_ent or not montant_ent or not code_br or not code_article:
+            messagebox.showerror(title="Erreur", message="Tous les champs doivent être remplis", parent=add_br_frame)
+            return
     
         # Insertion des données dans la base de données
         c.execute("INSERT INTO Entrées VALUES (?, ?, ?, ?, ?, ?)",
@@ -871,7 +1025,7 @@ def AjouterBR_MP():
         e_code_entre.delete(0, tk.END)
         e_qte_ent.delete(0, tk.END)
         e_prix_ent.delete(0, tk.END)   
-        e_code_combobox.delete(0, tk.END)
+        e_code_combobox.set("")
 
     # Création du tableau
     tableau = tk.ttk.Treeview(add_br_frame, columns=("code_entre", "qte_ent", "prix_ent", "montant_ent", "code_br", "code_article"))
@@ -897,7 +1051,7 @@ def AjouterBR_MP():
     tableau.insert("", tk.END, values=("", "", "", "", "", ""))
 
     # Placement du tableau dans la fenêtre
-    tableau.place(x=200, y=250)
+    tableau.place(x=150, y=250)
     conn = sqlite3.connect('stock1.db')
     c = conn.cursor()
     c.execute("SELECT code_article FROM ARTICLE WHERE Code_catg = 'MP'")
@@ -915,22 +1069,22 @@ def AjouterBR_MP():
 
 
     # Placement des champs de saisie dans la fenêtre
-    e_code_entre.place(x=200, y=220)
-    e_qte_ent.place(x=300, y=220)
-    e_prix_ent.place(x=400, y=220)
-    e_code_br.place(x=500, y=220)
-    e_code_combobox.place(x=600, y=219)
+    e_code_entre.place(x=150, y=220)
+    e_qte_ent.place(x=250, y=220)
+    e_prix_ent.place(x=350, y=220)
+    e_code_br.place(x=450, y=220)
+    e_code_combobox.place(x=550, y=219)
 
     # Création des étiquettes pour les champs de saisie
-    tk.Label(add_br_frame, text="Code Entrée",bg="#067790").place(x=200, y=195)
-    tk.Label(add_br_frame, text="Quantité Entrée",bg="#067790").place(x=300, y=195)
-    tk.Label(add_br_frame, text="Prix Entrée",bg="#067790").place(x=400, y=195)
-    tk.Label(add_br_frame, text="Code BR",bg="#067790").place(x=500, y=195)
-    tk.Label(add_br_frame, text="Code Article",bg="#067790").place(x=600, y=195)
+    tk.Label(add_br_frame, text="Code Entrée",bg="#067790").place(x=150, y=195)
+    tk.Label(add_br_frame, text="Quantité Entrée",bg="#067790").place(x=250, y=195)
+    tk.Label(add_br_frame, text="Prix Entrée",bg="#067790").place(x=350, y=195)
+    tk.Label(add_br_frame, text="Code BR",bg="#067790").place(x=450, y=195)
+    tk.Label(add_br_frame, text="Code Article",bg="#067790").place(x=550, y=195)
 
     # Bouton pour ajouter une ligne
     btn_ajouter = tk.Button(add_br_frame, text="Ajouter Entré",width='10', bg='#ACE5F3',cursor='hand2', command=ajouter_ligne)
-    btn_ajouter.place(x=720, y=218)
+    btn_ajouter.place(x=670, y=218)
 
     def update_fields(event):
         value = code_br_entry.get()
@@ -939,18 +1093,26 @@ def AjouterBR_MP():
 
     code_br_entry.bind("<KeyRelease>", update_fields)
 
+    def annuler():
+        Num_fournisseur_combobox.set("")
+        add_br_window.destroy()
+
+    exit_button = Button(add_br_window, text="Retour", width='20',cursor='hand2', command=annuler)
+    exit_button.place(x=10, y=630)   
+
 #============================================Ajouter BR PDR=========================================
 def AjouterBR_PDR():
     add_br_window = tk.Toplevel()
     add_br_window.title("Ajouter BR")
-    add_br_window.state('zoomed')    
+    add_br_window.state('zoomed')
+    # add_br_window.iconbitmap('C:\\Users\\hp\\Desktop\\Desktop.2\\star1.ico')    
     add_br_window.resizable(0,0)
     add_br_window.config(bg="#ACE5F3")
     add_br_frame = Frame(add_br_window,bg='#067790', width='900', height='600')
     add_br_frame.place(x=200, y=30)
 
     add_br_window.geometry("1300x700")
-    add_br_window.config(bg="#D3D3D3")
+    
 
 
     conn = sqlite3.connect('stock1.db')
@@ -971,20 +1133,20 @@ def AjouterBR_PDR():
     code_br_line.place(x=465, y=93)
 
     date_label = Label(add_br_frame, text="Date : ",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
-    date_label.place(x=700, y=90)
+    date_label.place(x=700, y=120)
 
-    date_entry = DateEntry(add_br_frame, width=1, background='#067790', foreground='white', borderwidth=1, font=('yu gothic ui',12,'bold'))
-    date_entry.place(x=750, y=90, width=130)
+    date_entry = DateEntry(add_br_frame, width=1, background='#067790', foreground='white', borderwidth=1, font=('yu gothic ui',12,'bold'), date_pattern="dd/mm/yyyy")
+    date_entry.place(x=750, y=120, width=130)
 
 
-    nom_label = Label(add_br_frame, text="Fournisseur    :",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
-    nom_label.place(x=30, y=90)
+    nom_label = Label(add_br_frame, text="Fournisseur :",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
+    nom_label.place(x=30, y=120)
 
     Num_fournisseur_combobox = ttk.Combobox(add_br_frame, text="Num fournisseur",width='15', state='readonly', values=values)
-    Num_fournisseur_combobox.place(x=100, y=90, width=120)
+    Num_fournisseur_combobox.place(x=135, y=125, width=120)
 
     nom_line =Canvas(add_br_frame, width=120, height=2.0,bg='white',highlightthickness=0)
-    nom_line.place(x=100, y=113)
+    nom_line.place(x=135, y=145)
 
     conn.close()
 
@@ -997,30 +1159,55 @@ def AjouterBR_PDR():
         date = date_entry.get()
         Num_fournisseur = Num_fournisseur_combobox.get()
     
+        #Vérifier si tous les champs sont remplis
+        if not code_br or not date or not Num_fournisseur:
+            messagebox.showerror(title="Erreur", message="Tous les champs doivent être remplis", parent=add_br_frame)
+            return
+    
 
         c.execute("INSERT INTO BR VALUES (?, ?, ?)",
                   (code_br, date, Num_fournisseur))
         
+        messagebox.showinfo(title="Succès", message="Les données ont été ajoutées avec succès", parent=add_br_frame)
+
+        # Vider le tableau
+        tableau.delete(*tableau.get_children())
+        # Ajouter une ligne vide pour la saisie
+        tableau.insert("", tk.END, values=("", "", "", "", "", ""))
+        e_code_br.delete(0, END)
+        
 
         code_br_entry.delete(0, END)
         date_entry.delete(0, END)
-        
+        Num_fournisseur_combobox.set("")
 
         conn.commit()
         conn.close()
     
     save_button = Button(add_br_frame, text="Ajouter", width='15',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 11,'bold'),fg='black', command=save_BR)
-    save_button.place(x=620,y=500)
+    save_button.place(x=610,y=500)
 
     def annuler():
-        add_br_window.destroy()
+        tableau.delete(*tableau.get_children())
+        # Ajouter une ligne vide pour la saisie
+        tableau.insert("", tk.END, values=("", "", "", "", "", ""))
+        e_code_br.delete(0, END)
+        
+
+        code_br_entry.delete(0, END)
+        date_entry.delete(0, END)
+        Num_fournisseur_combobox.set("")
+        e_code_entre.delete(0, tk.END)
+        e_qte_ent.delete(0, tk.END)
+        e_prix_ent.delete(0, tk.END)   
+        e_code_combobox.set("")
 
 
     exit_button = Button(add_br_frame, text="Annuler",  width='15',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 11,'bold'),fg='black', command=annuler)
-    exit_button.place(x=250,y=500)
+    exit_button.place(x=150,y=500)
 
     
-
+    tableau = None
 
     def ajouter_ligne():
         conn = sqlite3.connect('stock1.db')
@@ -1033,6 +1220,18 @@ def AjouterBR_PDR():
         montant_ent = qte_ent * prix_ent
         code_br = e_code_br.get()
         code_article = e_code_combobox.get()
+
+        # Vérifier si le code article existe déjà dans la base de données
+        c.execute("SELECT COUNT(*) FROM Entrées WHERE code_ent=?", (code_entre,))
+        count = c.fetchone()[0]
+        if count > 0:
+            messagebox.showerror(title="Erreur", message="Le code d'entrée existe déjà dans la base de données", parent=add_br_frame)
+            return
+
+        #Vérifier si tous les champs sont remplis
+        if not code_entre or not qte_ent or not prix_ent or not montant_ent or not code_br or not code_article:
+            messagebox.showerror(title="Erreur", message="Tous les champs doivent être remplis", parent=add_br_frame)
+            return
     
         # Insertion des données dans la base de données
         c.execute("INSERT INTO Entrées VALUES (?, ?, ?, ?, ?, ?)",
@@ -1056,7 +1255,7 @@ def AjouterBR_PDR():
         e_code_entre.delete(0, tk.END)
         e_qte_ent.delete(0, tk.END)
         e_prix_ent.delete(0, tk.END)   
-        e_code_combobox.delete(0, tk.END)
+        e_code_combobox.set("")
 
     # Création du tableau
     tableau = tk.ttk.Treeview(add_br_frame, columns=("code_entre", "qte_ent", "prix_ent", "montant_ent", "code_br", "code_article"))
@@ -1082,7 +1281,7 @@ def AjouterBR_PDR():
     tableau.insert("", tk.END, values=("", "", "", "", "", ""))
 
     # Placement du tableau dans la fenêtre
-    tableau.place(x=200, y=250)
+    tableau.place(x=150, y=250)
     conn = sqlite3.connect('stock1.db')
     c = conn.cursor()
     c.execute("SELECT code_article FROM ARTICLE WHERE Code_catg = 'PDR'")
@@ -1100,22 +1299,22 @@ def AjouterBR_PDR():
 
 
     # Placement des champs de saisie dans la fenêtre
-    e_code_entre.place(x=200, y=220)
-    e_qte_ent.place(x=300, y=220)
-    e_prix_ent.place(x=400, y=220)
-    e_code_br.place(x=500, y=220)
-    e_code_combobox.place(x=600, y=219)
+    e_code_entre.place(x=150, y=220)
+    e_qte_ent.place(x=250, y=220)
+    e_prix_ent.place(x=350, y=220)
+    e_code_br.place(x=450, y=220)
+    e_code_combobox.place(x=550, y=219)
 
     # Création des étiquettes pour les champs de saisie
-    tk.Label(add_br_frame, text="Code Entrée",bg="#067790").place(x=200, y=195)
-    tk.Label(add_br_frame, text="Quantité Entrée",bg="#067790").place(x=300, y=195)
-    tk.Label(add_br_frame, text="Prix Entrée",bg="#067790").place(x=400, y=195)
-    tk.Label(add_br_frame, text="Code BR",bg="#067790").place(x=500, y=195)
-    tk.Label(add_br_frame, text="Code Article",bg="#067790").place(x=600, y=195)
+    tk.Label(add_br_frame, text="Code Entrée",bg="#067790").place(x=150, y=195)
+    tk.Label(add_br_frame, text="Quantité Entrée",bg="#067790").place(x=250, y=195)
+    tk.Label(add_br_frame, text="Prix Entrée",bg="#067790").place(x=350, y=195)
+    tk.Label(add_br_frame, text="Code BR",bg="#067790").place(x=450, y=195)
+    tk.Label(add_br_frame, text="Code Article",bg="#067790").place(x=550, y=195)
 
     # Bouton pour ajouter une ligne
     btn_ajouter = tk.Button(add_br_frame, text="Ajouter Entré",width='10', bg='#ACE5F3',cursor='hand2', command=ajouter_ligne)
-    btn_ajouter.place(x=720, y=218)
+    btn_ajouter.place(x=670, y=218)
 
     def update_fields(event):
         value = code_br_entry.get()
@@ -1123,18 +1322,26 @@ def AjouterBR_PDR():
         e_code_br.insert(0, value)
 
     code_br_entry.bind("<KeyRelease>", update_fields)
+
+    def annuler():
+        add_br_window.destroy()
+
+    exit_button = Button(add_br_window, text="Retour", width='20',cursor='hand2', command=annuler)
+    exit_button.place(x=10, y=630)   
+
 #==============================================Ajouter BR FB=========================================
 def AjouterBR_FB():
     add_br_window = tk.Toplevel()
     add_br_window.title("Ajouter BR")
-    add_br_window.state('zoomed')    
+    add_br_window.state('zoomed')
+    # add_br_window.iconbitmap('C:\\Users\\hp\\Desktop\\Desktop.2\\star1.ico')    
     add_br_window.resizable(0,0)
     add_br_window.config(bg="#ACE5F3")
     add_br_frame = Frame(add_br_window,bg='#067790', width='900', height='600')
     add_br_frame.place(x=200, y=30)
 
     add_br_window.geometry("1300x700")
-    add_br_window.config(bg="#D3D3D3")
+    
 
 
     conn = sqlite3.connect('stock1.db')
@@ -1155,20 +1362,20 @@ def AjouterBR_FB():
     code_br_line.place(x=465, y=93)
 
     date_label = Label(add_br_frame, text="Date : ",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
-    date_label.place(x=700, y=90)
+    date_label.place(x=700, y=120)
 
     date_entry = DateEntry(add_br_frame, width=1, background='#067790', foreground='white', borderwidth=1, font=('yu gothic ui',12,'bold'))
-    date_entry.place(x=750, y=90, width=130)
+    date_entry.place(x=750, y=120, width=130)
 
 
     nom_label = Label(add_br_frame, text="Fournisseur    :",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
-    nom_label.place(x=30, y=90)
+    nom_label.place(x=30, y=120)
 
     Num_fournisseur_combobox = ttk.Combobox(add_br_frame, text="Num fournisseur",width='15', state='readonly', values=values)
-    Num_fournisseur_combobox.place(x=100, y=90, width=120)
+    Num_fournisseur_combobox.place(x=135, y=125, width=120)
 
     nom_line =Canvas(add_br_frame, width=120, height=2.0,bg='white',highlightthickness=0)
-    nom_line.place(x=100, y=113)
+    nom_line.place(x=135, y=145)
 
     conn.close()
 
@@ -1181,30 +1388,55 @@ def AjouterBR_FB():
         date = date_entry.get()
         Num_fournisseur = Num_fournisseur_combobox.get()
     
+        #Vérifier si tous les champs sont remplis
+        if not code_br or not date or not Num_fournisseur:
+            messagebox.showerror(title="Erreur", message="Tous les champs doivent être remplis", parent=add_br_frame)
+            return
+    
 
         c.execute("INSERT INTO BR VALUES (?, ?, ?)",
                   (code_br, date, Num_fournisseur))
+
+        messagebox.showinfo(title="Succès", message="Les données ont été ajoutées avec succès", parent=add_br_frame)
+
+        # Vider le tableau
+        tableau.delete(*tableau.get_children())
+        # Ajouter une ligne vide pour la saisie
+        tableau.insert("", tk.END, values=("", "", "", "", "", ""))
+        e_code_br.delete(0, END)
         
 
         code_br_entry.delete(0, END)
         date_entry.delete(0, END)
-        
+        Num_fournisseur_combobox.set("")
 
         conn.commit()
         conn.close()
     
     save_button = Button(add_br_frame, text="Ajouter", width='15',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 11,'bold'),fg='black', command=save_BR)
-    save_button.place(x=620,y=500)
+    save_button.place(x=610,y=500)
 
     def annuler():
-        add_br_window.destroy()
+        tableau.delete(*tableau.get_children())
+        # Ajouter une ligne vide pour la saisie
+        tableau.insert("", tk.END, values=("", "", "", "", "", ""))
+        e_code_br.delete(0, END)
+        
+
+        code_br_entry.delete(0, END)
+        date_entry.delete(0, END)
+        Num_fournisseur_combobox.set("")
+        e_code_entre.delete(0, tk.END)
+        e_qte_ent.delete(0, tk.END)
+        e_prix_ent.delete(0, tk.END)   
+        e_code_combobox.set("")
 
 
     exit_button = Button(add_br_frame, text="Annuler",  width='15',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 11,'bold'),fg='black', command=annuler)
-    exit_button.place(x=250,y=500)
+    exit_button.place(x=150,y=500)
 
     
-
+    tableau = None
 
     def ajouter_ligne():
         conn = sqlite3.connect('stock1.db')
@@ -1217,6 +1449,18 @@ def AjouterBR_FB():
         montant_ent = qte_ent * prix_ent
         code_br = e_code_br.get()
         code_article = e_code_combobox.get()
+
+        # Vérifier si le code article existe déjà dans la base de données
+        c.execute("SELECT COUNT(*) FROM Entrées WHERE code_ent=?", (code_entre,))
+        count = c.fetchone()[0]
+        if count > 0:
+            messagebox.showerror(title="Erreur", message="Le code d'entrée existe déjà dans la base de données", parent=add_br_frame)
+            return
+
+        #Vérifier si tous les champs sont remplis
+        if not code_entre or not qte_ent or not prix_ent or not montant_ent or not code_br or not code_article:
+            messagebox.showerror(title="Erreur", message="Tous les champs doivent être remplis", parent=add_br_frame)
+            return
     
         # Insertion des données dans la base de données
         c.execute("INSERT INTO Entrées VALUES (?, ?, ?, ?, ?, ?)",
@@ -1240,7 +1484,7 @@ def AjouterBR_FB():
         e_code_entre.delete(0, tk.END)
         e_qte_ent.delete(0, tk.END)
         e_prix_ent.delete(0, tk.END)   
-        e_code_combobox.delete(0, tk.END)
+        e_code_combobox.set("")
 
     # Création du tableau
     tableau = tk.ttk.Treeview(add_br_frame, columns=("code_entre", "qte_ent", "prix_ent", "montant_ent", "code_br", "code_article"))
@@ -1266,7 +1510,7 @@ def AjouterBR_FB():
     tableau.insert("", tk.END, values=("", "", "", "", "", ""))
 
     # Placement du tableau dans la fenêtre
-    tableau.place(x=200, y=250)
+    tableau.place(x=150, y=250)
     conn = sqlite3.connect('stock1.db')
     c = conn.cursor()
     c.execute("SELECT code_article FROM ARTICLE WHERE Code_catg = 'FB'")
@@ -1284,22 +1528,22 @@ def AjouterBR_FB():
 
 
     # Placement des champs de saisie dans la fenêtre
-    e_code_entre.place(x=200, y=220)
-    e_qte_ent.place(x=300, y=220)
-    e_prix_ent.place(x=400, y=220)
-    e_code_br.place(x=500, y=220)
-    e_code_combobox.place(x=600, y=219)
+    e_code_entre.place(x=150, y=220)
+    e_qte_ent.place(x=250, y=220)
+    e_prix_ent.place(x=350, y=220)
+    e_code_br.place(x=450, y=220)
+    e_code_combobox.place(x=550, y=219)
 
     # Création des étiquettes pour les champs de saisie
-    tk.Label(add_br_frame, text="Code Entrée",bg="#067790").place(x=200, y=195)
-    tk.Label(add_br_frame, text="Quantité Entrée",bg="#067790").place(x=300, y=195)
-    tk.Label(add_br_frame, text="Prix Entrée",bg="#067790").place(x=400, y=195)
-    tk.Label(add_br_frame, text="Code BR",bg="#067790").place(x=500, y=195)
-    tk.Label(add_br_frame, text="Code Article",bg="#067790").place(x=600, y=195)
+    tk.Label(add_br_frame, text="Code Entrée",bg="#067790").place(x=150, y=195)
+    tk.Label(add_br_frame, text="Quantité Entrée",bg="#067790").place(x=250, y=195)
+    tk.Label(add_br_frame, text="Prix Entrée",bg="#067790").place(x=350, y=195)
+    tk.Label(add_br_frame, text="Code BR",bg="#067790").place(x=450, y=195)
+    tk.Label(add_br_frame, text="Code Article",bg="#067790").place(x=550, y=195)
 
     # Bouton pour ajouter une ligne
     btn_ajouter = tk.Button(add_br_frame, text="Ajouter Entré",width='10', bg='#ACE5F3',cursor='hand2', command=ajouter_ligne)
-    btn_ajouter.place(x=720, y=218)
+    btn_ajouter.place(x=670, y=218)
 
     def update_fields(event):
         value = code_br_entry.get()
@@ -1308,23 +1552,29 @@ def AjouterBR_FB():
 
     code_br_entry.bind("<KeyRelease>", update_fields)
 
+    def annuler():
+        add_br_window.destroy()
+
+    exit_button = Button(add_br_window, text="Retour", width='20',cursor='hand2', command=annuler)
+    exit_button.place(x=10, y=630)   
+
+
 #=============================================Ajouter BR PF=============================================    
 def AjouterBR_PF():
     add_br_window = tk.Toplevel()
     add_br_window.title("Ajouter BR")
-    add_br_window.state('zoomed')    
+    add_br_window.state('zoomed') 
+    # add_br_window.iconbitmap('C:\\Users\\hp\\Desktop\\Desktop.2\\star1.ico')   
     add_br_window.resizable(0,0)
     add_br_window.config(bg="#ACE5F3")
     add_br_frame = Frame(add_br_window,bg='#067790', width='900', height='600')
     add_br_frame.place(x=200, y=30)
 
     add_br_window.geometry("1300x700")
-    add_br_window.config(bg="#D3D3D3")
-
 
     conn = sqlite3.connect('stock1.db')
     c = conn.cursor()
-    c.execute("SELECT Num_carte FROM Employé WHERE Département='Production' ")
+    c.execute("SELECT Num_carte FROM Employé WHERE Département='Production'")
     values = [row[0] for row in c.fetchall()]
 
     label = Label(add_br_frame, text="BON DE RECEPTION ",bg='#067790',font=('yu gothic ui', 20,'bold'),fg='white')
@@ -1340,20 +1590,20 @@ def AjouterBR_PF():
     code_br_line.place(x=465, y=93)
 
     date_label = Label(add_br_frame, text="Date : ",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
-    date_label.place(x=700, y=90)
+    date_label.place(x=700, y=120)
 
     date_entry = DateEntry(add_br_frame, width=1, background='#067790', foreground='white', borderwidth=1, font=('yu gothic ui',12,'bold'))
-    date_entry.place(x=750, y=90, width=130)
+    date_entry.place(x=750, y=120, width=130)
 
 
-    nom_label = Label(add_br_frame, text="Fournisseur    :",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
-    nom_label.place(x=30, y=90)
+    nom_label = Label(add_br_frame, text="Employé:",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
+    nom_label.place(x=30, y=120)
 
-    Num_fournisseur_combobox = ttk.Combobox(add_br_frame, text="Num fournisseur",width='15', state='readonly', values=values)
-    Num_fournisseur_combobox.place(x=100, y=90, width=120)
+    Num_carte_combobox = ttk.Combobox(add_br_frame, text="Num carte",width='15', state='readonly', values=values)
+    Num_carte_combobox.place(x=135, y=125, width=120)
 
     nom_line =Canvas(add_br_frame, width=120, height=2.0,bg='white',highlightthickness=0)
-    nom_line.place(x=100, y=113)
+    nom_line.place(x=135, y=145)
 
     conn.close()
 
@@ -1364,32 +1614,55 @@ def AjouterBR_PF():
 
         code_br = code_br_entry.get()
         date = date_entry.get()
-        Num_fournisseur = Num_fournisseur_combobox.get()
+        Num_carte = Num_carte_combobox.get()
+
+        #Vérifier si tous les champs sont remplis
+        if not code_br or not date or not Num_carte:
+            messagebox.showerror(title="Erreur", message="Tous les champs doivent être remplis", parent=add_br_frame)
+            return
     
 
         c.execute("INSERT INTO BR VALUES (?, ?, ?)",
-                  (code_br, date, Num_fournisseur))
+                  (code_br, date, Num_carte))
         
+        messagebox.showinfo(title="Succès", message="Les données ont été ajoutées avec succès", parent=add_br_frame)
+
+        # Vider le tableau
+        tableau.delete(*tableau.get_children())
+        # Ajouter une ligne vide pour la saisie
+        tableau.insert("", tk.END, values=("", "", "", "", "", ""))
+        e_code_br.delete(0, END)
 
         code_br_entry.delete(0, END)
         date_entry.delete(0, END)
+        Num_carte_combobox.set("")
         
 
         conn.commit()
         conn.close()
     
     save_button = Button(add_br_frame, text="Ajouter", width='15',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 11,'bold'),fg='black', command=save_BR)
-    save_button.place(x=620,y=500)
+    save_button.place(x=610,y=500)
 
     def annuler():
-        add_br_window.destroy()
+        tableau.delete(*tableau.get_children())
+        # Ajouter une ligne vide pour la saisie
+        tableau.insert("", tk.END, values=("", "", "", "", "", ""))
+        e_code_br.delete(0, END)
+        code_br_entry.delete(0, END)
+        date_entry.delete(0, END)
+        Num_carte_combobox.set("")
+        e_code_entre.delete(0, tk.END)
+        e_qte_ent.delete(0, tk.END)
+        e_prix_ent.delete(0, tk.END)   
+        e_code_combobox.set("")
 
 
     exit_button = Button(add_br_frame, text="Annuler",  width='15',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 11,'bold'),fg='black', command=annuler)
-    exit_button.place(x=250,y=500)
+    exit_button.place(x=150,y=500)
 
     
-
+    tableau = None
 
     def ajouter_ligne():
         conn = sqlite3.connect('stock1.db')
@@ -1402,6 +1675,18 @@ def AjouterBR_PF():
         montant_ent = qte_ent * prix_ent
         code_br = e_code_br.get()
         code_article = e_code_combobox.get()
+
+        # Vérifier si le code article existe déjà dans la base de données
+        c.execute("SELECT COUNT(*) FROM Entrées WHERE code_ent=?", (code_entre,))
+        count = c.fetchone()[0]
+        if count > 0:
+            messagebox.showerror(title="Erreur", message="Le code d'entrée existe déjà dans la base de données", parent=add_br_frame)
+            return
+
+        #Vérifier si tous les champs sont remplis
+        if not code_entre or not qte_ent or not prix_ent or not montant_ent or not code_br or not code_article:
+            messagebox.showerror(title="Erreur", message="Tous les champs doivent être remplis", parent=add_br_frame)
+            return
     
         # Insertion des données dans la base de données
         c.execute("INSERT INTO Entrées VALUES (?, ?, ?, ?, ?, ?)",
@@ -1425,7 +1710,7 @@ def AjouterBR_PF():
         e_code_entre.delete(0, tk.END)
         e_qte_ent.delete(0, tk.END)
         e_prix_ent.delete(0, tk.END)   
-        e_code_combobox.delete(0, tk.END)
+        e_code_combobox.set("")
 
     # Création du tableau
     tableau = tk.ttk.Treeview(add_br_frame, columns=("code_entre", "qte_ent", "prix_ent", "montant_ent", "code_br", "code_article"))
@@ -1451,7 +1736,7 @@ def AjouterBR_PF():
     tableau.insert("", tk.END, values=("", "", "", "", "", ""))
 
     # Placement du tableau dans la fenêtre
-    tableau.place(x=200, y=250)
+    tableau.place(x=150, y=250)
     conn = sqlite3.connect('stock1.db')
     c = conn.cursor()
     c.execute("SELECT code_article FROM ARTICLE WHERE Code_catg='PF' ")
@@ -1469,43 +1754,49 @@ def AjouterBR_PF():
 
 
     # Placement des champs de saisie dans la fenêtre
-    e_code_entre.place(x=200, y=220)
-    e_qte_ent.place(x=300, y=220)
-    e_prix_ent.place(x=400, y=220)
-    e_code_br.place(x=500, y=220)
-    e_code_combobox.place(x=600, y=219)
+    e_code_entre.place(x=150, y=220)
+    e_qte_ent.place(x=250, y=220)
+    e_prix_ent.place(x=350, y=220)
+    e_code_br.place(x=450, y=220)
+    e_code_combobox.place(x=550, y=219)
 
     # Création des étiquettes pour les champs de saisie
-    tk.Label(add_br_frame, text="Code Entrée",bg="#067790").place(x=200, y=195)
-    tk.Label(add_br_frame, text="Quantité Entrée",bg="#067790").place(x=300, y=195)
-    tk.Label(add_br_frame, text="Prix Entrée",bg="#067790").place(x=400, y=195)
-    tk.Label(add_br_frame, text="Code BR",bg="#067790").place(x=500, y=195)
-    tk.Label(add_br_frame, text="Code Article",bg="#067790").place(x=600, y=195)
+    tk.Label(add_br_frame, text="Code Entrée",bg="#067790").place(x=150, y=195)
+    tk.Label(add_br_frame, text="Quantité Entrée",bg="#067790").place(x=250, y=195)
+    tk.Label(add_br_frame, text="Prix Entrée",bg="#067790").place(x=350, y=195)
+    tk.Label(add_br_frame, text="Code BR",bg="#067790").place(x=450, y=195)
+    tk.Label(add_br_frame, text="Code Article",bg="#067790").place(x=550, y=195)
 
     # Bouton pour ajouter une ligne
     btn_ajouter = tk.Button(add_br_frame, text="Ajouter Entré",width='10', bg='#ACE5F3',cursor='hand2', command=ajouter_ligne)
-    btn_ajouter.place(x=720, y=218)
+    btn_ajouter.place(x=670, y=218)
 
     def update_fields(event):
         value = code_br_entry.get()
         e_code_br.delete(0, END)
         e_code_br.insert(0, value)
 
-    code_br_entry.bind("<KeyRelease>", update_fields)    
+    code_br_entry.bind("<KeyRelease>", update_fields) 
+
+    def annuler():
+        add_br_window.destroy()
+
+    exit_button = Button(add_br_window, text="Retour", width='20',cursor='hand2', command=annuler)
+    exit_button.place(x=10, y=630)   
 
 #===========================================Ajouter BSM====================================================
 def AjouterBSM():
 
     add_bsm_window = tk.Toplevel()
     add_bsm_window.title("Ajouter BSM")
-    add_bsm_window.state('zoomed')    
+    add_bsm_window.state('zoomed')   
+    # add_bsm_window.iconbitmap('C:\\Users\\hp\\Desktop\\Desktop.2\\star1.ico') 
     add_bsm_window.resizable(0,0)
     add_bsm_window.config(bg="#ACE5F3")
     add_bsm_frame = Frame(add_bsm_window,bg='#067790', width='900', height='600')
     add_bsm_frame.place(x=200, y=30)
 
     add_bsm_window.geometry("1300x700")
-    add_bsm_window.config(bg="#D3D3D3")
 
 
     conn = sqlite3.connect('stock1.db')
@@ -1516,7 +1807,7 @@ def AjouterBSM():
     label = Label(add_bsm_frame, text="BON DE SORTIE ",bg='#067790',font=('yu gothic ui', 20,'bold'),fg='white')
     label.place(x=15, y=10)
     
-    code_bsm_label = Label(add_bsm_frame, text="Code BSM :",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
+    code_bsm_label = Label(add_bsm_frame, text="Code BSM:",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
     code_bsm_label.place(x=380, y=70)
 
     code_bsm_entry = Entry(add_bsm_frame, highlightthickness=0, relief=FLAT, bg='#067790', fg='black',font=('yu gothic ui',12,'bold'))
@@ -1526,20 +1817,20 @@ def AjouterBSM():
     code_bsm_line.place(x=465, y=93)
 
     date_label = Label(add_bsm_frame, text="Date : ",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
-    date_label.place(x=700, y=90)
+    date_label.place(x=700, y=120)
 
-    date_entry = DateEntry(add_bsm_frame, width=1, background='#067790', foreground='white', borderwidth=1, font=('yu gothic ui',12,'bold'))
-    date_entry.place(x=750, y=90, width=130)
+    date_entry = DateEntry(add_bsm_frame, width=1, background='#067790', foreground='white', borderwidth=1, font=('yu gothic ui',12,'bold'), state='readonly')
+    date_entry.place(x=750, y=120, width=130)
 
 
-    nom_label = Label(add_bsm_frame, text="Employé    :",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
-    nom_label.place(x=30, y=90)
+    nom_label = Label(add_bsm_frame, text="Employé :",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
+    nom_label.place(x=30, y=120)
 
     Num_carte_combobox = ttk.Combobox(add_bsm_frame, text="Numéro carte",width='15', state='readonly', values=values)
-    Num_carte_combobox.place(x=100, y=90, width=120)
+    Num_carte_combobox.place(x=135, y=125, width=120)
 
     nom_line =Canvas(add_bsm_frame, width=120, height=2.0,bg='white',highlightthickness=0)
-    nom_line.place(x=100, y=113)
+    nom_line.place(x=135, y=145)
 
     conn.close()
 
@@ -1551,30 +1842,60 @@ def AjouterBSM():
         code_bsm = code_bsm_entry.get()
         date = date_entry.get()
         Num_carte = Num_carte_combobox.get()
+
+        #Vérifier si tous les champs sont remplis
+        if not code_bsm or not date or not Num_carte:
+            messagebox.showerror(title="Erreur", message="Tous les champs doivent être remplis", parent=add_bsm_frame)
+            return
     
 
         c.execute("INSERT INTO BSM VALUES (?, ?, ?)",
                   (code_bsm, date, Num_carte))
+
+        messagebox.showinfo(title="Succès", message="Les données ont été ajoutées avec succès", parent=add_bsm_frame)
+
+        # Vider le tableau
+        tableau.delete(*tableau.get_children())
+        # Ajouter une ligne vide pour la saisie
+        tableau.insert("", tk.END, values=("", "", "", "", "", ""))
+        e_code_bsm.delete(0, END)
         
 
         code_bsm_entry.delete(0, END)
         date_entry.delete(0, END)
+        Num_carte_combobox.set("")
+
+        e_code_sort.delete(0, tk.END)
+        e_qte_sort.delete(0, tk.END)
+        e_prix_sort.delete(0, tk.END)   
+        e_code_combobox.set("")
         
 
         conn.commit()
         conn.close()
     
     save_button = Button(add_bsm_frame, text="Ajouter", width='15',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 11,'bold'),fg='black', command=save_BSM)
-    save_button.place(x=620,y=500)
+    save_button.place(x=610,y=500)
 
     def annuler():
-        add_bsm_window.destroy()
+        # Vider le tableau
+        tableau.delete(*tableau.get_children())
+        # Ajouter une ligne vide pour la saisie
+        tableau.insert("", tk.END, values=("", "", "", "", "", ""))
+        e_code_bsm.delete(0, END)
+        code_bsm_entry.delete(0, END)
+        date_entry.delete(0, END)
+        Num_carte_combobox.set("")
+        e_code_sort.delete(0, tk.END)
+        e_qte_sort.delete(0, tk.END)
+        e_prix_sort.delete(0, tk.END)   
+        e_code_combobox.set("")
 
 
     exit_button = Button(add_bsm_frame, text="Annuler",  width='15',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 11,'bold'),fg='black', command=annuler)
-    exit_button.place(x=250,y=500)
+    exit_button.place(x=150,y=500)
 
-    
+    tableau = None
 
 
     def ajouter_ligne():
@@ -1588,6 +1909,25 @@ def AjouterBSM():
         montant_sort = qte_sort * prix_sort
         code_bsm = e_code_bsm.get()
         code_article = e_code_combobox.get()
+
+        # Vérifier si le code article existe déjà dans la base de données
+        c.execute("SELECT COUNT(*) FROM SORTIES WHERE code_sort=?", (code_sort,))
+        count = c.fetchone()[0]
+        if count > 0:
+            messagebox.showerror(title="Erreur", message="Le code de sortie existe déjà dans la base de données", parent=add_bsm_window)
+            return
+
+        #Vérifier si tous les champs sont remplis
+        if not code_sort or not qte_sort or not prix_sort or not montant_sort or not code_bsm or not code_article:
+            messagebox.showerror(title="Erreur", message="Tous les champs doivent être remplis", parent=add_bsm_window)
+            return
+
+        # Vérification de la quantité disponible dans le stock
+        c.execute("SELECT Quantité FROM Article WHERE code_article = ?", (code_article,))
+        qte_dispo = c.fetchone()[0]
+        if qte_sort > qte_dispo:
+            messagebox.showerror(title="Erreur", message=f"La quantité disponible pour l'article {code_article} est insuffisante pour effectuer une sortie de {qte_sort} unité(s).", parent=add_bsm_frame)
+            return
     
         # Insertion des données dans la base de données
         c.execute("INSERT INTO Sorties VALUES (?, ?, ?, ?, ?, ?)",
@@ -1595,12 +1935,14 @@ def AjouterBSM():
 
 
         c.execute("""
-        UPDATE ARTICLE
-        SET Quantité = Quantité - (SELECT Quantité_sort FROM Sorties WHERE Sorties.code_sort = ?),
-        prix = (SELECT Prix_sort FROM Sorties WHERE Sorties.code_sort = ?),
-        montant = (Quantité - (SELECT Quantité_sort FROM Sorties WHERE Sorties.code_sort = ?))*(SELECT Prix_sort FROM Sorties WHERE Sorties.code_sort = ?)
+        UPDATE Article
+        SET Quantité = Quantité - ?,
+            prix = ?,
+            montant = (Quantité - ?) * ?
         WHERE code_article = ?
-        """, (code_sort,code_sort,code_sort,code_sort,code_article,))
+        """, (qte_sort, prix_sort, qte_sort, prix_sort, code_article,))
+
+
         conn.commit()
         conn.close()
     
@@ -1611,7 +1953,7 @@ def AjouterBSM():
         e_code_sort.delete(0, tk.END)
         e_qte_sort.delete(0, tk.END)
         e_prix_sort.delete(0, tk.END)   
-        e_code_combobox.delete(0, tk.END)
+        e_code_combobox.set("")
 
     # Création du tableau
     tableau = tk.ttk.Treeview(add_bsm_frame, columns=("code_sort", "qte_sort", "prix_sort", "montant_sort", "code_bsm", "code_article"))
@@ -1637,7 +1979,7 @@ def AjouterBSM():
     tableau.insert("", tk.END, values=("", "", "", "", "", ""))
 
     # Placement du tableau dans la fenêtre
-    tableau.place(x=200, y=250)
+    tableau.place(x=150, y=250)
     conn = sqlite3.connect('stock1.db')
     c = conn.cursor()
     c.execute("SELECT code_article FROM ARTICLE")
@@ -1655,22 +1997,22 @@ def AjouterBSM():
 
 
     # Placement des champs de saisie dans la fenêtre
-    e_code_sort.place(x=200, y=220)
-    e_qte_sort.place(x=300, y=220)
-    e_prix_sort.place(x=400, y=220)
-    e_code_bsm.place(x=500, y=220)
-    e_code_combobox.place(x=600, y=219)
+    e_code_sort.place(x=150, y=220)
+    e_qte_sort.place(x=250, y=220)
+    e_prix_sort.place(x=350, y=220)
+    e_code_bsm.place(x=450, y=220)
+    e_code_combobox.place(x=550, y=219)
 
     # Création des étiquettes pour les champs de saisie
-    tk.Label(add_bsm_frame, text="Code Sortie",bg="#067790").place(x=200, y=195)
-    tk.Label(add_bsm_frame, text="Quantité Sortie",bg="#067790").place(x=300, y=195)
-    tk.Label(add_bsm_frame, text="Prix Sorties",bg="#067790").place(x=400, y=195)
-    tk.Label(add_bsm_frame, text="Code BSM",bg="#067790").place(x=500, y=195)
-    tk.Label(add_bsm_frame, text="Code Article",bg="#067790").place(x=600, y=195)
+    tk.Label(add_bsm_frame, text="Code Sortie",bg="#067790").place(x=150, y=195)
+    tk.Label(add_bsm_frame, text="Quantité Sortie",bg="#067790").place(x=250, y=195)
+    tk.Label(add_bsm_frame, text="Prix Sorties",bg="#067790").place(x=350, y=195)
+    tk.Label(add_bsm_frame, text="Code BSM",bg="#067790").place(x=450, y=195)
+    tk.Label(add_bsm_frame, text="Code Article",bg="#067790").place(x=550, y=195)
 
     # Bouton pour ajouter une ligne
     btn_ajouter = tk.Button(add_bsm_frame, text="Ajouter Sortie",width='10', bg='#ACE5F3',cursor='hand2', command=ajouter_ligne)
-    btn_ajouter.place(x=720, y=218)
+    btn_ajouter.place(x=670, y=218)
 
     def update_fields(event):
         value = code_bsm_entry.get()
@@ -1678,19 +2020,25 @@ def AjouterBSM():
         e_code_bsm.insert(0, value)
 
     code_bsm_entry.bind("<KeyRelease>", update_fields)
+
+    def annuler():
+        add_bsm_window.destroy()
+
+    exit_button = Button(add_bsm_window, text="Retour", width='20',cursor='hand2', command=annuler)
+    exit_button.place(x=10, y=630)
 #===========================================Ajouter BSM MP  ====================================
 def AjouterBSM_MP():
 
     add_bsm_window = tk.Toplevel()
     add_bsm_window.title("Ajouter BSM")
-    add_bsm_window.state('zoomed')    
+    add_bsm_window.state('zoomed') 
+    # add_bsm_window.iconbitmap('C:\\Users\\hp\\Desktop\\Desktop.2\\star1.ico')   
     add_bsm_window.resizable(0,0)
     add_bsm_window.config(bg="#ACE5F3")
     add_bsm_frame = Frame(add_bsm_window,bg='#067790', width='900', height='600')
     add_bsm_frame.place(x=200, y=30)
 
     add_bsm_window.geometry("1300x700")
-    add_bsm_window.config(bg="#D3D3D3")
 
 
     conn = sqlite3.connect('stock1.db')
@@ -1701,7 +2049,7 @@ def AjouterBSM_MP():
     label = Label(add_bsm_frame, text="BON DE SORTIE ",bg='#067790',font=('yu gothic ui', 20,'bold'),fg='white')
     label.place(x=15, y=10)
     
-    code_bsm_label = Label(add_bsm_frame, text="Code BSM :",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
+    code_bsm_label = Label(add_bsm_frame, text="Code BSM:",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
     code_bsm_label.place(x=380, y=70)
 
     code_bsm_entry = Entry(add_bsm_frame, highlightthickness=0, relief=FLAT, bg='#067790', fg='black',font=('yu gothic ui',12,'bold'))
@@ -1711,20 +2059,20 @@ def AjouterBSM_MP():
     code_bsm_line.place(x=465, y=93)
 
     date_label = Label(add_bsm_frame, text="Date : ",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
-    date_label.place(x=700, y=90)
+    date_label.place(x=700, y=120)
 
     date_entry = DateEntry(add_bsm_frame, width=1, background='#067790', foreground='white', borderwidth=1, font=('yu gothic ui',12,'bold'))
-    date_entry.place(x=750, y=90, width=130)
+    date_entry.place(x=750, y=120, width=130)
 
 
-    nom_label = Label(add_bsm_frame, text="Employé    :",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
-    nom_label.place(x=30, y=90)
+    nom_label = Label(add_bsm_frame, text="Employé :",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
+    nom_label.place(x=30, y=120)
 
     Num_carte_combobox = ttk.Combobox(add_bsm_frame, text="Numéro carte",width='15', state='readonly', values=values)
-    Num_carte_combobox.place(x=100, y=90, width=120)
+    Num_carte_combobox.place(x=125, y=125, width=120)
 
     nom_line =Canvas(add_bsm_frame, width=120, height=2.0,bg='white',highlightthickness=0)
-    nom_line.place(x=100, y=113)
+    nom_line.place(x=125, y=145)
 
     conn.close()
 
@@ -1736,30 +2084,55 @@ def AjouterBSM_MP():
         code_bsm = code_bsm_entry.get()
         date = date_entry.get()
         Num_carte = Num_carte_combobox.get()
+
+        #Vérifier si tous les champs sont remplis
+        if not code_bsm or not date or not Num_carte:
+            messagebox.showerror(title="Erreur", message="Tous les champs doivent être remplis", parent=add_bsm_frame)
+            return
     
 
         c.execute("INSERT INTO BSM VALUES (?, ?, ?)",
                   (code_bsm, date, Num_carte))
+
+
+        messagebox.showinfo(title="Succès", message="Les données ont été ajoutées avec succès", parent=add_bsm_frame)
+
+        # Vider le tableau
+        tableau.delete(*tableau.get_children())
+        # Ajouter une ligne vide pour la saisie
+        tableau.insert("", tk.END, values=("", "", "", "", "", ""))
+        e_code_bsm.delete(0, END)
         
 
         code_bsm_entry.delete(0, END)
         date_entry.delete(0, END)
-        
+        Num_carte_combobox.set("")
 
         conn.commit()
         conn.close()
     
     save_button = Button(add_bsm_frame, text="Ajouter", width='15',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 11,'bold'),fg='black', command=save_BSM)
-    save_button.place(x=620,y=500)
+    save_button.place(x=610,y=500)
 
     def annuler():
-        add_bsm_window.destroy()
+        # Vider le tableau
+        tableau.delete(*tableau.get_children())
+        # Ajouter une ligne vide pour la saisie
+        tableau.insert("", tk.END, values=("", "", "", "", "", ""))
+        e_code_bsm.delete(0, END)
+        code_bsm_entry.delete(0, END)
+        date_entry.delete(0, END)
+        Num_carte_combobox.set("")
+        e_code_sort.delete(0, tk.END)
+        e_qte_sort.delete(0, tk.END)
+        e_prix_sort.delete(0, tk.END)   
+        e_code_combobox.set("")
 
 
     exit_button = Button(add_bsm_frame, text="Annuler",  width='15',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 11,'bold'),fg='black', command=annuler)
-    exit_button.place(x=250,y=500)
+    exit_button.place(x=150,y=500)
 
-    
+    tableau = None
 
 
     def ajouter_ligne():
@@ -1773,6 +2146,26 @@ def AjouterBSM_MP():
         montant_sort = qte_sort * prix_sort
         code_bsm = e_code_bsm.get()
         code_article = e_code_combobox.get()
+
+        # Vérifier si le code article existe déjà dans la base de données
+        c.execute("SELECT COUNT(*) FROM SORTIES WHERE code_sort=?", (code_sort,))
+        count = c.fetchone()[0]
+        if count > 0:
+            messagebox.showerror(title="Erreur", message="Le code de sortie existe déjà dans la base de données", parent=add_bsm_frame)
+            return
+
+        #Vérifier si tous les champs sont remplis
+        if not code_sort or not qte_sort or not prix_sort or not montant_sort or not code_bsm or not code_article:
+            messagebox.showerror(title="Erreur", message="Tous les champs doivent être remplis", parent=add_bsm_frame)
+            return
+
+        # Vérification de la quantité disponible dans le stock
+        c.execute("SELECT Quantité FROM Article WHERE code_article = ?", (code_article,))
+        qte_dispo = c.fetchone()[0]
+        if qte_sort > qte_dispo:
+            messagebox.showerror(title="Erreur", message=f"La quantité disponible pour l'article {code_article} est insuffisante pour effectuer une sortie de {qte_sort} unité(s).", parent=add_bsm_frame)
+            return
+
     
         # Insertion des données dans la base de données
         c.execute("INSERT INTO Sorties VALUES (?, ?, ?, ?, ?, ?)",
@@ -1780,12 +2173,14 @@ def AjouterBSM_MP():
 
 
         c.execute("""
-        UPDATE ARTICLE
-        SET Quantité = Quantité - (SELECT Quantité_sort FROM Sorties WHERE Sorties.code_sort = ?),
-        prix = (SELECT Prix_sort FROM Sorties WHERE Sorties.code_sort = ?),
-        montant = (Quantité - (SELECT Quantité_sort FROM Sorties WHERE Sorties.code_sort = ?))*(SELECT Prix_sort FROM Sorties WHERE Sorties.code_sort = ?)
+        UPDATE Article
+        SET Quantité = Quantité - ?,
+            prix = ?,
+            montant = (Quantité - ?) * ?
         WHERE code_article = ?
-        """, (code_sort,code_sort,code_sort,code_sort,code_article,))
+        """, (qte_sort, prix_sort, qte_sort, prix_sort, code_article,))
+
+
         conn.commit()
         conn.close()
     
@@ -1796,7 +2191,7 @@ def AjouterBSM_MP():
         e_code_sort.delete(0, tk.END)
         e_qte_sort.delete(0, tk.END)
         e_prix_sort.delete(0, tk.END)   
-        e_code_combobox.delete(0, tk.END)
+        e_code_combobox.set("")
 
     # Création du tableau
     tableau = tk.ttk.Treeview(add_bsm_frame, columns=("code_sort", "qte_sort", "prix_sort", "montant_sort", "code_bsm", "code_article"))
@@ -1822,7 +2217,7 @@ def AjouterBSM_MP():
     tableau.insert("", tk.END, values=("", "", "", "", "", ""))
 
     # Placement du tableau dans la fenêtre
-    tableau.place(x=200, y=250)
+    tableau.place(x=150, y=250)
     conn = sqlite3.connect('stock1.db')
     c = conn.cursor()
     c.execute("SELECT code_article FROM ARTICLE WHERE Code_catg='MP'")
@@ -1840,22 +2235,22 @@ def AjouterBSM_MP():
 
 
     # Placement des champs de saisie dans la fenêtre
-    e_code_sort.place(x=200, y=220)
-    e_qte_sort.place(x=300, y=220)
-    e_prix_sort.place(x=400, y=220)
-    e_code_bsm.place(x=500, y=220)
-    e_code_combobox.place(x=600, y=219)
+    e_code_sort.place(x=150, y=220)
+    e_qte_sort.place(x=250, y=220)
+    e_prix_sort.place(x=350, y=220)
+    e_code_bsm.place(x=450, y=220)
+    e_code_combobox.place(x=550, y=219)
 
     # Création des étiquettes pour les champs de saisie
-    tk.Label(add_bsm_frame, text="Code Sortie",bg="#067790").place(x=200, y=195)
-    tk.Label(add_bsm_frame, text="Quantité Sortie",bg="#067790").place(x=300, y=195)
-    tk.Label(add_bsm_frame, text="Prix Sorties",bg="#067790").place(x=400, y=195)
-    tk.Label(add_bsm_frame, text="Code BSM",bg="#067790").place(x=500, y=195)
-    tk.Label(add_bsm_frame, text="Code Article",bg="#067790").place(x=600, y=195)
+    tk.Label(add_bsm_frame, text="Code Sortie",bg="#067790").place(x=150, y=195)
+    tk.Label(add_bsm_frame, text="Quantité Sortie",bg="#067790").place(x=250, y=195)
+    tk.Label(add_bsm_frame, text="Prix Sorties",bg="#067790").place(x=350, y=195)
+    tk.Label(add_bsm_frame, text="Code BSM",bg="#067790").place(x=450, y=195)
+    tk.Label(add_bsm_frame, text="Code Article",bg="#067790").place(x=550, y=195)
 
     # Bouton pour ajouter une ligne
     btn_ajouter = tk.Button(add_bsm_frame, text="Ajouter Sortie",width='10', bg='#ACE5F3',cursor='hand2', command=ajouter_ligne)
-    btn_ajouter.place(x=720, y=218)
+    btn_ajouter.place(x=670, y=218)
 
     def update_fields(event):
         value = code_bsm_entry.get()
@@ -1863,20 +2258,24 @@ def AjouterBSM_MP():
         e_code_bsm.insert(0, value)
 
     code_bsm_entry.bind("<KeyRelease>", update_fields)  
+    def annuler():
+        add_bsm_window.destroy()
 
+    exit_button = Button(add_bsm_window, text="Retour", width='20',cursor='hand2', command=annuler)
+    exit_button.place(x=10, y=630)
 #==========================================Ajouter BSM PDR==================================================
 def AjouterBSM_PDR():
 
     add_bsm_window = tk.Toplevel()
     add_bsm_window.title("Ajouter BSM")
-    add_bsm_window.state('zoomed')    
+    add_bsm_window.state('zoomed')
+    # add_bsm_window.iconbitmap('C:\\Users\\hp\\Desktop\\Desktop.2\\star1.ico')    
     add_bsm_window.resizable(0,0)
     add_bsm_window.config(bg="#ACE5F3")
     add_bsm_frame = Frame(add_bsm_window,bg='#067790', width='900', height='600')
     add_bsm_frame.place(x=200, y=30)
 
     add_bsm_window.geometry("1300x700")
-    add_bsm_window.config(bg="#D3D3D3")
 
 
     conn = sqlite3.connect('stock1.db')
@@ -1887,7 +2286,7 @@ def AjouterBSM_PDR():
     label = Label(add_bsm_frame, text="BON DE SORTIE ",bg='#067790',font=('yu gothic ui', 20,'bold'),fg='white')
     label.place(x=15, y=10)
     
-    code_bsm_label = Label(add_bsm_frame, text="Code BSM :",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
+    code_bsm_label = Label(add_bsm_frame, text="Code BSM:",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
     code_bsm_label.place(x=380, y=70)
 
     code_bsm_entry = Entry(add_bsm_frame, highlightthickness=0, relief=FLAT, bg='#067790', fg='black',font=('yu gothic ui',12,'bold'))
@@ -1897,20 +2296,20 @@ def AjouterBSM_PDR():
     code_bsm_line.place(x=465, y=93)
 
     date_label = Label(add_bsm_frame, text="Date : ",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
-    date_label.place(x=700, y=90)
+    date_label.place(x=700, y=120)
 
     date_entry = DateEntry(add_bsm_frame, width=1, background='#067790', foreground='white', borderwidth=1, font=('yu gothic ui',12,'bold'))
-    date_entry.place(x=750, y=90, width=130)
+    date_entry.place(x=750, y=120, width=130)
 
 
     nom_label = Label(add_bsm_frame, text="Employé    :",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
-    nom_label.place(x=30, y=90)
+    nom_label.place(x=30, y=120)
 
     Num_carte_combobox = ttk.Combobox(add_bsm_frame, text="Numéro carte",width='15', state='readonly', values=values)
-    Num_carte_combobox.place(x=100, y=90, width=120)
+    Num_carte_combobox.place(x=135, y=125, width=120)
 
     nom_line =Canvas(add_bsm_frame, width=120, height=2.0,bg='white',highlightthickness=0)
-    nom_line.place(x=100, y=113)
+    nom_line.place(x=135, y=145)
 
     conn.close()
 
@@ -1922,30 +2321,55 @@ def AjouterBSM_PDR():
         code_bsm = code_bsm_entry.get()
         date = date_entry.get()
         Num_carte = Num_carte_combobox.get()
+
+        #Vérifier si tous les champs sont remplis
+        if not code_bsm or not date or not Num_carte:
+            messagebox.showerror(title="Erreur", message="Tous les champs doivent être remplis", parent=add_bsm_frame)
+            return
     
 
         c.execute("INSERT INTO BSM VALUES (?, ?, ?)",
                   (code_bsm, date, Num_carte))
+
+        messagebox.showinfo(title="Succès", message="Les données ont été ajoutées avec succès", parent=add_bsm_frame)
+
+        # Vider le tableau
+        tableau.delete(*tableau.get_children())
+        # Ajouter une ligne vide pour la saisie
+        tableau.insert("", tk.END, values=("", "", "", "", "", ""))
+        e_code_bsm.delete(0, END)
         
 
         code_bsm_entry.delete(0, END)
         date_entry.delete(0, END)
-        
+        Num_carte_combobox.set("")
 
         conn.commit()
         conn.close()
     
     save_button = Button(add_bsm_frame, text="Ajouter", width='15',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 11,'bold'),fg='black', command=save_BSM)
-    save_button.place(x=620,y=500)
+    save_button.place(x=610,y=500)
 
     def annuler():
-        add_bsm_window.destroy()
+        # Vider le tableau
+        tableau.delete(*tableau.get_children())
+        # Ajouter une ligne vide pour la saisie
+        tableau.insert("", tk.END, values=("", "", "", "", "", ""))
+        e_code_bsm.delete(0, END)
+        code_bsm_entry.delete(0, END)
+        date_entry.delete(0, END)
+        Num_carte_combobox.set("")
+        e_code_sort.delete(0, tk.END)
+        e_qte_sort.delete(0, tk.END)
+        e_prix_sort.delete(0, tk.END)   
+        e_code_combobox.set("")
 
 
     exit_button = Button(add_bsm_frame, text="Annuler",  width='15',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 11,'bold'),fg='black', command=annuler)
-    exit_button.place(x=250,y=500)
+    exit_button.place(x=150,y=500)
 
     
+    tableau = None
 
 
     def ajouter_ligne():
@@ -1959,19 +2383,38 @@ def AjouterBSM_PDR():
         montant_sort = qte_sort * prix_sort
         code_bsm = e_code_bsm.get()
         code_article = e_code_combobox.get()
+
+        # Vérifier si le code article existe déjà dans la base de données
+        c.execute("SELECT COUNT(*) FROM SORTIES WHERE code_sort=?", (code_sort,))
+        count = c.fetchone()[0]
+        if count > 0:
+            messagebox.showerror(title="Erreur", message="Le code sortie existe déjà dans la base de données", parent=add_bsm_frame)
+            return
+
+        #Vérifier si tous les champs sont remplis
+        if not code_sort or not qte_sort or not prix_sort or not montant_sort or not code_bsm or not code_article:
+            messagebox.showerror(title="Erreur", message="Tous les champs doivent être remplis", parent=add_bsm_frame)
+            return
     
+        # Vérification de la quantité disponible dans le stock
+        c.execute("SELECT Quantité FROM Article WHERE code_article = ?", (code_article,))
+        qte_dispo = c.fetchone()[0]
+        if qte_sort > qte_dispo:
+            messagebox.showerror(title="Erreur", message=f"La quantité disponible pour l'article {code_article} est insuffisante pour effectuer une sortie de {qte_sort} unité(s).", parent=add_bsm_frame)
+            return
+
         # Insertion des données dans la base de données
         c.execute("INSERT INTO Sorties VALUES (?, ?, ?, ?, ?, ?)",
                 (code_sort, qte_sort, prix_sort, montant_sort, code_bsm, code_article))
 
 
         c.execute("""
-        UPDATE ARTICLE
-        SET Quantité = Quantité - (SELECT Quantité_sort FROM Sorties WHERE Sorties.code_sort = ?),
-        prix = (SELECT Prix_sort FROM Sorties WHERE Sorties.code_sort = ?),
-        montant = (Quantité - (SELECT Quantité_sort FROM Sorties WHERE Sorties.code_sort = ?))*(SELECT Prix_sort FROM Sorties WHERE Sorties.code_sort = ?)
+        UPDATE Article
+        SET Quantité = Quantité - ?,
+            prix = ?,
+            montant = (Quantité - ?) * ?
         WHERE code_article = ?
-        """, (code_sort,code_sort,code_sort,code_sort,code_article,))
+        """, (qte_sort, prix_sort, qte_sort, prix_sort, code_article,))
         conn.commit()
         conn.close()
     
@@ -1982,7 +2425,7 @@ def AjouterBSM_PDR():
         e_code_sort.delete(0, tk.END)
         e_qte_sort.delete(0, tk.END)
         e_prix_sort.delete(0, tk.END)   
-        e_code_combobox.delete(0, tk.END)
+        e_code_combobox.set("")
 
     # Création du tableau
     tableau = tk.ttk.Treeview(add_bsm_frame, columns=("code_sort", "qte_sort", "prix_sort", "montant_sort", "code_bsm", "code_article"))
@@ -2008,7 +2451,7 @@ def AjouterBSM_PDR():
     tableau.insert("", tk.END, values=("", "", "", "", "", ""))
 
     # Placement du tableau dans la fenêtre
-    tableau.place(x=200, y=250)
+    tableau.place(x=150, y=250)
     conn = sqlite3.connect('stock1.db')
     c = conn.cursor()
     c.execute("SELECT code_article FROM ARTICLE WHERE Code_catg='PDR'")
@@ -2026,22 +2469,22 @@ def AjouterBSM_PDR():
 
 
     # Placement des champs de saisie dans la fenêtre
-    e_code_sort.place(x=200, y=220)
-    e_qte_sort.place(x=300, y=220)
-    e_prix_sort.place(x=400, y=220)
-    e_code_bsm.place(x=500, y=220)
-    e_code_combobox.place(x=600, y=219)
+    e_code_sort.place(x=150, y=220)
+    e_qte_sort.place(x=250, y=220)
+    e_prix_sort.place(x=350, y=220)
+    e_code_bsm.place(x=450, y=220)
+    e_code_combobox.place(x=550, y=219)
 
     # Création des étiquettes pour les champs de saisie
-    tk.Label(add_bsm_frame, text="Code Sortie",bg="#067790").place(x=200, y=195)
-    tk.Label(add_bsm_frame, text="Quantité Sortie",bg="#067790").place(x=300, y=195)
-    tk.Label(add_bsm_frame, text="Prix Sorties",bg="#067790").place(x=400, y=195)
-    tk.Label(add_bsm_frame, text="Code BSM",bg="#067790").place(x=500, y=195)
-    tk.Label(add_bsm_frame, text="Code Article",bg="#067790").place(x=600, y=195)
+    tk.Label(add_bsm_frame, text="Code Sortie",bg="#067790").place(x=150, y=195)
+    tk.Label(add_bsm_frame, text="Quantité Sortie",bg="#067790").place(x=250, y=195)
+    tk.Label(add_bsm_frame, text="Prix Sorties",bg="#067790").place(x=350, y=195)
+    tk.Label(add_bsm_frame, text="Code BSM",bg="#067790").place(x=450, y=195)
+    tk.Label(add_bsm_frame, text="Code Article",bg="#067790").place(x=550, y=195)
 
     # Bouton pour ajouter une ligne
     btn_ajouter = tk.Button(add_bsm_frame, text="Ajouter Sortie",width='10', bg='#ACE5F3',cursor='hand2', command=ajouter_ligne)
-    btn_ajouter.place(x=720, y=218)
+    btn_ajouter.place(x=670, y=218)
 
     def update_fields(event):
         value = code_bsm_entry.get()
@@ -2049,21 +2492,26 @@ def AjouterBSM_PDR():
         e_code_bsm.insert(0, value)
 
     code_bsm_entry.bind("<KeyRelease>", update_fields)      
+    def annuler():
+        add_bsm_window.destroy()
 
+    exit_button = Button(add_bsm_window, text="Retour", width='20',cursor='hand2', command=annuler)
+    exit_button.place(x=10, y=630)
 #===========================================Ajouter BSM FB =================================================
 
 def AjouterBSM_FB():
 
     add_bsm_window = tk.Toplevel()
     add_bsm_window.title("Ajouter BSM")
-    add_bsm_window.state('zoomed')    
+    add_bsm_window.state('zoomed')  
+    # add_bsm_window.iconbitmap('C:\\Users\\hp\\Desktop\\Desktop.2\\star1.ico')  
     add_bsm_window.resizable(0,0)
     add_bsm_window.config(bg="#ACE5F3")
     add_bsm_frame = Frame(add_bsm_window,bg='#067790', width='900', height='600')
     add_bsm_frame.place(x=200, y=30)
 
     add_bsm_window.geometry("1300x700")
-    add_bsm_window.config(bg="#D3D3D3")
+
 
 
     conn = sqlite3.connect('stock1.db')
@@ -2074,7 +2522,7 @@ def AjouterBSM_FB():
     label = Label(add_bsm_frame, text="BON DE SORTIE ",bg='#067790',font=('yu gothic ui', 20,'bold'),fg='white')
     label.place(x=15, y=10)
     
-    code_bsm_label = Label(add_bsm_frame, text="Code BSM :",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
+    code_bsm_label = Label(add_bsm_frame, text="Code BSM:",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
     code_bsm_label.place(x=380, y=70)
 
     code_bsm_entry = Entry(add_bsm_frame, highlightthickness=0, relief=FLAT, bg='#067790', fg='black',font=('yu gothic ui',12,'bold'))
@@ -2084,20 +2532,20 @@ def AjouterBSM_FB():
     code_bsm_line.place(x=465, y=93)
 
     date_label = Label(add_bsm_frame, text="Date : ",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
-    date_label.place(x=700, y=90)
+    date_label.place(x=700, y=120)
 
     date_entry = DateEntry(add_bsm_frame, width=1, background='#067790', foreground='white', borderwidth=1, font=('yu gothic ui',12,'bold'))
-    date_entry.place(x=750, y=90, width=130)
+    date_entry.place(x=750, y=120, width=130)
 
 
     nom_label = Label(add_bsm_frame, text="Employé    :",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
-    nom_label.place(x=30, y=90)
+    nom_label.place(x=30, y=120)
 
     Num_carte_combobox = ttk.Combobox(add_bsm_frame, text="Numéro carte",width='15', state='readonly', values=values)
-    Num_carte_combobox.place(x=100, y=90, width=120)
+    Num_carte_combobox.place(x=135, y=125, width=120)
 
     nom_line =Canvas(add_bsm_frame, width=120, height=2.0,bg='white',highlightthickness=0)
-    nom_line.place(x=100, y=113)
+    nom_line.place(x=135, y=145)
 
     conn.close()
 
@@ -2109,30 +2557,55 @@ def AjouterBSM_FB():
         code_bsm = code_bsm_entry.get()
         date = date_entry.get()
         Num_carte = Num_carte_combobox.get()
+
+        #Vérifier si tous les champs sont remplis
+        if not code_bsm or not date or not Num_carte:
+            messagebox.showerror(title="Erreur", message="Tous les champs doivent être remplis", parent=add_bsm_frame)
+            return
     
 
         c.execute("INSERT INTO BSM VALUES (?, ?, ?)",
                   (code_bsm, date, Num_carte))
         
+        messagebox.showinfo(title="Succès", message="Les données ont été ajoutées avec succès", parent=add_bsm_frame)
+
+        # Vider le tableau
+        tableau.delete(*tableau.get_children())
+        # Ajouter une ligne vide pour la saisie
+        tableau.insert("", tk.END, values=("", "", "", "", "", ""))
+        e_code_bsm.delete(0, END)
+        
+
 
         code_bsm_entry.delete(0, END)
         date_entry.delete(0, END)
-        
+        Num_carte_combobox.set("")
 
         conn.commit()
         conn.close()
     
     save_button = Button(add_bsm_frame, text="Ajouter", width='15',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 11,'bold'),fg='black', command=save_BSM)
-    save_button.place(x=620,y=500)
+    save_button.place(x=610,y=500)
 
     def annuler():
-        add_bsm_window.destroy()
+        # Vider le tableau
+        tableau.delete(*tableau.get_children())
+        # Ajouter une ligne vide pour la saisie
+        tableau.insert("", tk.END, values=("", "", "", "", "", ""))
+        e_code_bsm.delete(0, END)
+        code_bsm_entry.delete(0, END)
+        date_entry.delete(0, END)
+        Num_carte_combobox.set("")
+        e_code_sort.delete(0, tk.END)
+        e_qte_sort.delete(0, tk.END)
+        e_prix_sort.delete(0, tk.END)   
+        e_code_combobox.set("")
 
 
     exit_button = Button(add_bsm_frame, text="Annuler",  width='15',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 11,'bold'),fg='black', command=annuler)
-    exit_button.place(x=250,y=500)
+    exit_button.place(x=150,y=500)
 
-    
+    tableau = None
 
 
     def ajouter_ligne():
@@ -2146,19 +2619,38 @@ def AjouterBSM_FB():
         montant_sort = qte_sort * prix_sort
         code_bsm = e_code_bsm.get()
         code_article = e_code_combobox.get()
+
+        # Vérifier si le code article existe déjà dans la base de données
+        c.execute("SELECT COUNT(*) FROM SORTIES WHERE code_sort=?", (code_sort,))
+        count = c.fetchone()[0]
+        if count > 0:
+            messagebox.showerror(title="Erreur", message="Le code de sortie existe déjà dans la base de données", parent=add_bsm_window)
+            return
+
+        #Vérifier si tous les champs sont remplis
+        if not code_sort or not qte_sort or not prix_sort or not montant_sort or not code_bsm or not code_article:
+            messagebox.showerror(title="Erreur", message="Tous les champs doivent être remplis", parent=add_bsm_window)
+            return
+    
+        # Vérification de la quantité disponible dans le stock
+        c.execute("SELECT Quantité FROM Article WHERE code_article = ?", (code_article,))
+        qte_dispo = c.fetchone()[0]
+        if qte_sort > qte_dispo:
+            messagebox.showerror(title="Erreur", message=f"La quantité disponible pour l'article {code_article} est insuffisante pour effectuer une sortie de {qte_sort} unité(s).", parent=add_bsm_frame)
+            return
     
         # Insertion des données dans la base de données
-        c.execute("INSERT INTO Sorties VALUES (?, ?, ?, ?, ?, ?)",
+        c.execute("INSERT INTO SORTIES VALUES (?, ?, ?, ?, ?, ?)",
                 (code_sort, qte_sort, prix_sort, montant_sort, code_bsm, code_article))
 
-
         c.execute("""
-        UPDATE ARTICLE
-        SET Quantité = Quantité - (SELECT Quantité_sort FROM Sorties WHERE Sorties.code_sort = ?),
-        prix = (SELECT Prix_sort FROM Sorties WHERE Sorties.code_sort = ?),
-        montant = (Quantité - (SELECT Quantité_sort FROM Sorties WHERE Sorties.code_sort = ?))*(SELECT Prix_sort FROM Sorties WHERE Sorties.code_sort = ?)
+        UPDATE Article
+        SET Quantité = Quantité - ?,
+            prix = ?,
+            montant = (Quantité - ?) * ?
         WHERE code_article = ?
-        """, (code_sort,code_sort,code_sort,code_sort,code_article,))
+        """, (qte_sort, prix_sort, qte_sort, prix_sort, code_article,))
+
         conn.commit()
         conn.close()
     
@@ -2169,7 +2661,7 @@ def AjouterBSM_FB():
         e_code_sort.delete(0, tk.END)
         e_qte_sort.delete(0, tk.END)
         e_prix_sort.delete(0, tk.END)   
-        e_code_combobox.delete(0, tk.END)
+        e_code_combobox.set("")
 
     # Création du tableau
     tableau = tk.ttk.Treeview(add_bsm_frame, columns=("code_sort", "qte_sort", "prix_sort", "montant_sort", "code_bsm", "code_article"))
@@ -2195,7 +2687,7 @@ def AjouterBSM_FB():
     tableau.insert("", tk.END, values=("", "", "", "", "", ""))
 
     # Placement du tableau dans la fenêtre
-    tableau.place(x=200, y=250)
+    tableau.place(x=150, y=250)
     conn = sqlite3.connect('stock1.db')
     c = conn.cursor()
     c.execute("SELECT code_article FROM ARTICLE WHERE Code_catg='FB'")
@@ -2213,22 +2705,22 @@ def AjouterBSM_FB():
 
 
     # Placement des champs de saisie dans la fenêtre
-    e_code_sort.place(x=200, y=220)
-    e_qte_sort.place(x=300, y=220)
-    e_prix_sort.place(x=400, y=220)
-    e_code_bsm.place(x=500, y=220)
-    e_code_combobox.place(x=600, y=219)
+    e_code_sort.place(x=150, y=220)
+    e_qte_sort.place(x=250, y=220)
+    e_prix_sort.place(x=350, y=220)
+    e_code_bsm.place(x=450, y=220)
+    e_code_combobox.place(x=550, y=219)
 
     # Création des étiquettes pour les champs de saisie
-    tk.Label(add_bsm_frame, text="Code Sortie",bg="#067790").place(x=200, y=195)
-    tk.Label(add_bsm_frame, text="Quantité Sortie",bg="#067790").place(x=300, y=195)
-    tk.Label(add_bsm_frame, text="Prix Sorties",bg="#067790").place(x=400, y=195)
-    tk.Label(add_bsm_frame, text="Code BSM",bg="#067790").place(x=500, y=195)
-    tk.Label(add_bsm_frame, text="Code Article",bg="#067790").place(x=600, y=195)
+    tk.Label(add_bsm_frame, text="Code Sortie",bg="#067790").place(x=150, y=195)
+    tk.Label(add_bsm_frame, text="Quantité Sortie",bg="#067790").place(x=250, y=195)
+    tk.Label(add_bsm_frame, text="Prix Sorties",bg="#067790").place(x=350, y=195)
+    tk.Label(add_bsm_frame, text="Code BSM",bg="#067790").place(x=450, y=195)
+    tk.Label(add_bsm_frame, text="Code Article",bg="#067790").place(x=550, y=195)
 
     # Bouton pour ajouter une ligne
     btn_ajouter = tk.Button(add_bsm_frame, text="Ajouter Sortie",width='10', bg='#ACE5F3',cursor='hand2', command=ajouter_ligne)
-    btn_ajouter.place(x=720, y=218)
+    btn_ajouter.place(x=670, y=218)
 
     def update_fields(event):
         value = code_bsm_entry.get()
@@ -2236,7 +2728,11 @@ def AjouterBSM_FB():
         e_code_bsm.insert(0, value)
 
     code_bsm_entry.bind("<KeyRelease>", update_fields)      
+    def annuler():
+        add_bsm_window.destroy()
 
+    exit_button = Button(add_bsm_window, text="Retour", width='20',cursor='hand2', command=annuler)
+    exit_button.place(x=10, y=630)
 
 #===========================================Ajouter BSM PF =================================================
 
@@ -2244,14 +2740,15 @@ def AjouterBSM_PF():
 
     add_bsm_pf_window = tk.Toplevel()
     add_bsm_pf_window.title("Ajouter BSM")
-    add_bsm_pf_window.state('zoomed')    
+    add_bsm_pf_window.state('zoomed') 
+    # add_bsm_pf_window.iconbitmap('C:\\Users\\hp\\Desktop\\Desktop.2\\star1.ico')   
     add_bsm_pf_window.resizable(0,0)
     add_bsm_pf_window.config(bg="#ACE5F3")
     add_bsm_pf_frame = Frame(add_bsm_pf_window,bg='#067790', width='900', height='600')
     add_bsm_pf_frame.place(x=200, y=30)
 
     add_bsm_pf_window.geometry("1300x700")
-    add_bsm_pf_window.config(bg="#D3D3D3")
+
 
 
     conn = sqlite3.connect('stock1.db')
@@ -2262,7 +2759,7 @@ def AjouterBSM_PF():
     label = Label(add_bsm_pf_frame, text="BON DE SORTIE ",bg='#067790',font=('yu gothic ui', 20,'bold'),fg='white')
     label.place(x=15, y=10)
     
-    code_bsm_label = Label(add_bsm_pf_frame, text="Code BSM :",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
+    code_bsm_label = Label(add_bsm_pf_frame, text="Code BSM:",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
     code_bsm_label.place(x=380, y=70)
 
     code_bsm_entry = Entry(add_bsm_pf_frame, highlightthickness=0, relief=FLAT, bg='#067790', fg='black',font=('yu gothic ui',12,'bold'))
@@ -2272,20 +2769,20 @@ def AjouterBSM_PF():
     code_bsm_line.place(x=465, y=93)
 
     date_label = Label(add_bsm_pf_frame, text="Date : ",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
-    date_label.place(x=700, y=90)
+    date_label.place(x=700, y=120)
 
     date_entry = DateEntry(add_bsm_pf_frame, width=1, background='#067790', foreground='white', borderwidth=1, font=('yu gothic ui',12,'bold'))
-    date_entry.place(x=750, y=90, width=130)
+    date_entry.place(x=750, y=120, width=130)
 
 
-    nom_label = Label(add_bsm_pf_frame, text="Représentant    :",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
-    nom_label.place(x=30, y=90)
+    nom_label = Label(add_bsm_pf_frame, text="Représentant:",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
+    nom_label.place(x=30, y=120)
 
     Num_représantant_combobox = ttk.Combobox(add_bsm_pf_frame, text="Numméro représentant",width='15', state='readonly', values=values)
-    Num_représantant_combobox.place(x=100, y=90, width=120)
+    Num_représantant_combobox.place(x=145, y=125, width=120)
 
     nom_line =Canvas(add_bsm_pf_frame, width=120, height=2.0,bg='white',highlightthickness=0)
-    nom_line.place(x=100, y=113)
+    nom_line.place(x=145, y=145)
 
     conn.close()
 
@@ -2297,30 +2794,60 @@ def AjouterBSM_PF():
         code_bsm = code_bsm_entry.get()
         date = date_entry.get()
         Num_représantant = Num_représantant_combobox.get()
+
+
+        
+
+
+        #Vérifier si tous les champs sont remplis
+        if not code_bsm or not date or not Num_représantant:
+            messagebox.showerror(title="Erreur", message="Tous les champs doivent être remplis", parent=add_bsm_pf_frame)
+            return
     
 
         c.execute("INSERT INTO BSM VALUES (?, ?, ?)",
                   (code_bsm, date, Num_représantant))
         
 
+        messagebox.showinfo(title="Succès", message="Les données ont été ajoutées avec succès", parent=add_bsm_pf_frame)
+
+        # Vider le tableau
+        tableau.delete(*tableau.get_children())
+        # Ajouter une ligne vide pour la saisie
+        tableau.insert("", tk.END, values=("", "", "", "", "", ""))
+        e_code_bsm.delete(0, END)
+
         code_bsm_entry.delete(0, END)
         date_entry.delete(0, END)
-        
+        Num_représantant_combobox.set("")
 
         conn.commit()
         conn.close()
     
     save_button = Button(add_bsm_pf_frame, text="Ajouter", width='15',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 11,'bold'),fg='black', command=save_BSM_PF)
-    save_button.place(x=620,y=500)
+    save_button.place(x=610,y=500)
 
     def annuler():
-        add_bsm_pf_window.destroy()
+        tableau.delete(*tableau.get_children())
+        # Ajouter une ligne vide pour la saisie
+        tableau.insert("", tk.END, values=("", "", "", "", "", ""))
+        e_code_bsm.delete(0, END)
+
+        code_bsm_entry.delete(0, END)
+        date_entry.delete(0, END)
+        Num_représantant_combobox.set("")
+
+
+        e_code_sort.delete(0, tk.END)
+        e_qte_sort.delete(0, tk.END)
+        e_prix_sort.delete(0, tk.END)   
+        e_code_combobox.set("")
 
 
     exit_button = Button(add_bsm_pf_frame, text="Annuler",  width='15',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 11,'bold'),fg='black', command=annuler)
-    exit_button.place(x=250,y=500)
+    exit_button.place(x=150,y=500)
 
-    
+    tableau = None
 
 
     def ajouter_ligne():
@@ -2334,19 +2861,39 @@ def AjouterBSM_PF():
         montant_sort = qte_sort * prix_sort
         code_bsm = e_code_bsm.get()
         code_article = e_code_combobox.get()
+
+        # Vérifier si le code article existe déjà dans la base de données
+        c.execute("SELECT COUNT(*) FROM SORTIES WHERE code_sort=?", (code_sort,))
+        count = c.fetchone()[0]
+        if count > 0:
+            messagebox.showerror(title="Erreur", message="Le code de sortie existe déjà dans la base de données", parent=add_bsm_pf_frame)
+            return
+
+
+        #Vérifier si tous les champs sont remplis
+        if not code_sort or not qte_sort or not prix_sort or not montant_sort or not code_bsm or not code_article:
+            messagebox.showerror(title="Erreur", message="Tous les champs doivent être remplis", parent=add_bsm_pf_frame)
+            return
+    
+        # Vérification de la quantité disponible dans le stock
+        c.execute("SELECT Quantité FROM Article WHERE code_article = ?", (code_article,))
+        qte_dispo = c.fetchone()[0]
+        if qte_sort > qte_dispo:
+            messagebox.showerror(title="Erreur", message=f"La quantité disponible pour l'article {code_article} est insuffisante pour effectuer une sortie de {qte_sort} unité(s).", parent=add_bsm_pf_frame)
+            return
     
         # Insertion des données dans la base de données
-        c.execute("INSERT INTO Sorties VALUES (?, ?, ?, ?, ?, ?)",
+        c.execute("INSERT INTO SORTIES VALUES (?, ?, ?, ?, ?, ?)",
                 (code_sort, qte_sort, prix_sort, montant_sort, code_bsm, code_article))
 
-
         c.execute("""
-        UPDATE ARTICLE
-        SET Quantité = Quantité - (SELECT Quantité_sort FROM Sorties WHERE Sorties.code_sort = ?),
-        prix = (SELECT Prix_sort FROM Sorties WHERE Sorties.code_sort = ?),
-        montant = (Quantité - (SELECT Quantité_sort FROM Sorties WHERE Sorties.code_sort = ?))*(SELECT Prix_sort FROM Sorties WHERE Sorties.code_sort = ?)
+        UPDATE Article
+        SET Quantité = Quantité - ?,
+            prix = ?,
+            montant = (Quantité - ?) * ?
         WHERE code_article = ?
-        """, (code_sort,code_sort,code_sort,code_sort,code_article,))
+        """, (qte_sort, prix_sort, qte_sort, prix_sort, code_article,))
+
         conn.commit()
         conn.close()
     
@@ -2357,7 +2904,7 @@ def AjouterBSM_PF():
         e_code_sort.delete(0, tk.END)
         e_qte_sort.delete(0, tk.END)
         e_prix_sort.delete(0, tk.END)   
-        e_code_combobox.delete(0, tk.END)
+        e_code_combobox.set("")
 
     # Création du tableau
     tableau = tk.ttk.Treeview(add_bsm_pf_frame, columns=("code_sort", "qte_sort", "prix_sort", "montant_sort", "code_bsm", "code_article"))
@@ -2383,7 +2930,7 @@ def AjouterBSM_PF():
     tableau.insert("", tk.END, values=("", "", "", "", "", ""))
 
     # Placement du tableau dans la fenêtre
-    tableau.place(x=200, y=250)
+    tableau.place(x=150, y=250)
     conn = sqlite3.connect('stock1.db')
     c = conn.cursor()
     c.execute("SELECT code_article FROM ARTICLE WHERE code_catg ='PF' ")
@@ -2401,22 +2948,22 @@ def AjouterBSM_PF():
 
 
     # Placement des champs de saisie dans la fenêtre
-    e_code_sort.place(x=200, y=220)
-    e_qte_sort.place(x=300, y=220)
-    e_prix_sort.place(x=400, y=220)
-    e_code_bsm.place(x=500, y=220)
-    e_code_combobox.place(x=600, y=219)
+    e_code_sort.place(x=150, y=220)
+    e_qte_sort.place(x=250, y=220)
+    e_prix_sort.place(x=350, y=220)
+    e_code_bsm.place(x=450, y=220)
+    e_code_combobox.place(x=550, y=219)
 
     # Création des étiquettes pour les champs de saisie
-    tk.Label(add_bsm_pf_frame, text="Code Sortie",bg="#067790").place(x=200, y=195)
-    tk.Label(add_bsm_pf_frame, text="Quantité Sortie",bg="#067790").place(x=300, y=195)
-    tk.Label(add_bsm_pf_frame, text="Prix Sorties",bg="#067790").place(x=400, y=195)
-    tk.Label(add_bsm_pf_frame, text="Code BSM",bg="#067790").place(x=500, y=195)
-    tk.Label(add_bsm_pf_frame, text="Code Article",bg="#067790").place(x=600, y=195)
+    tk.Label(add_bsm_pf_frame, text="Code Sortie",bg="#067790").place(x=150, y=195)
+    tk.Label(add_bsm_pf_frame, text="Quantité Sortie",bg="#067790").place(x=250, y=195)
+    tk.Label(add_bsm_pf_frame, text="Prix Sorties",bg="#067790").place(x=350, y=195)
+    tk.Label(add_bsm_pf_frame, text="Code BSM",bg="#067790").place(x=450, y=195)
+    tk.Label(add_bsm_pf_frame, text="Code Article",bg="#067790").place(x=550, y=195)
 
     # Bouton pour ajouter une ligne
     btn_ajouter = tk.Button(add_bsm_pf_frame, text="Ajouter Sortie",width='10', bg='#ACE5F3',cursor='hand2', command=ajouter_ligne)
-    btn_ajouter.place(x=720, y=218)
+    btn_ajouter.place(x=670, y=218)
 
     def update_fields(event):
         value = code_bsm_entry.get()
@@ -2424,7 +2971,11 @@ def AjouterBSM_PF():
         e_code_bsm.insert(0, value)
 
     code_bsm_entry.bind("<KeyRelease>", update_fields)
-    
+    def annuler():
+        add_bsm_pf_window.destroy()
+
+    exit_button = Button(add_bsm_pf_window, text="Retour", width='20',cursor='hand2', command=annuler)
+    exit_button.place(x=10, y=630)
 
 #===========================================Liste BR======================================================================================
 def liste_br() :
@@ -2434,11 +2985,12 @@ def liste_br() :
 
     art = Toplevel()
     art.title("Liste BR")
-    art.state('zoomed')    
+    art.state('zoomed')
+    # art.iconbitmap('C:\\Users\\hp\\Desktop\\Desktop.2\\star1.ico')    
     art.resizable(0,0) 
     art.config(bg="#ACE5F3")
-    art_frame = Frame(art, bg='#ACE5F3')
-    art_frame.place(x=400, y=100)
+    art_frame = Frame(art, bg='#ACE5F3', width='900', height='600')
+    art_frame.place(x=480, y=100)
 
     label = Label(art, text="Liste BR", font=('yu gothic ui', 23,'bold'),fg="white",bg="#ACE5F3")
     label.place(x=550, y=20)
@@ -2483,11 +3035,12 @@ def liste_bsm() :
 
     art = Toplevel()
     art.title("Liste BSM")
-    art.state('zoomed')    
+    art.state('zoomed')  
+    # art.iconbitmap('C:\\Users\\hp\\Desktop\\Desktop.2\\star1.ico')  
     art.resizable(0,0) 
     art.config(bg="#ACE5F3")
-    art_frame = Frame(art, bg='#ACE5F3')
-    art_frame.place(x=400, y=100)
+    art_frame = Frame(art, bg='#ACE5F3', width='900', height='600')
+    art_frame.place(x=480, y=100)
 
     label = Label(art, text="Liste BSM", font=('yu gothic ui', 23,'bold'),fg="white",bg="#ACE5F3")
     label.place(x=550, y=20)
@@ -2536,62 +3089,86 @@ def liste_bsm() :
 #================================ajouter fournisseur================================================================================
 
 def Ajouter_fournisseur():
-    ajou_four = Toplevel()
+    ajou_four = Toplevel() 
     ajou_four.geometry('1000x1000')
-    ajou_four.title("Ajouter Article")
-    ajou_four.state('zoomed')    
+    ajou_four.title("Ajouter Fournisseur")
+    ajou_four.state('zoomed') 
+    # ajou_four.iconbitmap('C:\\Users\\hp\\Desktop\\Desktop.2\\star1.ico')   
     ajou_four.resizable(0,0) 
     ajou_four.config(bg="#ACE5F3")
     ajou_four_frame = Frame(ajou_four,bg='#067790', width='500', height='600')
     ajou_four_frame.place(x=380, y=30)
 
-    Num_fournisseur_label = Label(ajou_four_frame, text="Numéro fournisseur ",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
-    Num_fournisseur_label.place(x=110, y=50)
+
+    label = Label(ajou_four_frame, text="Ajouter un nouveau fournisseur ",bg='#067790',font=('yu gothic ui', 25,'bold'),fg='white')
+    label.place(x=10, y=30)
+
+    Num_fournisseur_label = Label(ajou_four_frame, text="Code fournisseur * ",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
+    Num_fournisseur_label.place(x=70, y=115)
 
     Num_fournisseur_entry = Entry(ajou_four_frame, highlightthickness=0, relief=FLAT, bg='#B0e0e6', fg='black',font=('yu gothic ui',12,'bold'))
-    Num_fournisseur_entry.place(x=250, y=50, width=120)
+    Num_fournisseur_entry.place(x=280, y=115, width=160)
 
-    Num_fournisseur_line =Canvas(ajou_four_frame, width=120, height=2.0,bg='white',highlightthickness=0)
-    Num_fournisseur_line.place(x=250, y=75)
+    Num_fournisseur_line =Canvas(ajou_four_frame, width=160, height=2.0,bg='white',highlightthickness=0)
+    Num_fournisseur_line.place(x=280, y=140)
 
-    Nom_label = Label(ajou_four_frame, text="Nom ",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
-    Nom_label.place(x=110, y=180)
+    Nom_label = Label(ajou_four_frame, text="Nom * ",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
+    Nom_label.place(x=70, y=180)
 
     Nom_entry = Entry(ajou_four_frame, highlightthickness=0, relief=FLAT, bg='#B0e0e6', fg='black',font=('yu gothic ui',12,'bold'))
-    Nom_entry.place(x=250, y=180, width=120)
+    Nom_entry.place(x=280, y=180, width=160)
 
-    Nom_line =Canvas(ajou_four_frame, width=120, height=2.0,bg='white',highlightthickness=0)
-    Nom_line.place(x=250, y=205)
+    Nom_line =Canvas(ajou_four_frame, width=160, height=2.0,bg='white',highlightthickness=0)
+    Nom_line.place(x=280, y=205)
 
 
-    Prénom_label = Label(ajou_four_frame, text="Prénom ",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
-    Prénom_label.place(x=110, y=245)
+    Prénom_label = Label(ajou_four_frame, text="Prénom * ",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
+    Prénom_label.place(x=70, y=245)
 
     Prénom_entry = Entry(ajou_four_frame, highlightthickness=0, relief=FLAT, bg='#B0e0e6', fg='black',font=('yu gothic ui',12,'bold'))
-    Prénom_entry.place(x=250, y=245, width=120)
+    Prénom_entry.place(x=280, y=245, width=160)
 
-    Prénom_line =Canvas(ajou_four_frame, width=120, height=2.0,bg='white',highlightthickness=0)
-    Prénom_line.place(x=250, y=270)
+    Prénom_line =Canvas(ajou_four_frame, width=160, height=2.0,bg='white',highlightthickness=0)
+    Prénom_line.place(x=280, y=270)
 
-    Num_tel_label = Label(ajou_four_frame, text="Numéro de téléphone",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
-    Num_tel_label.place(x=110, y=310)
+    Num_tel_label = Label(ajou_four_frame, text="Numéro de téléphone *",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
+    Num_tel_label.place(x=70, y=310)
 
     Num_tel_entry = Entry(ajou_four_frame, highlightthickness=0, relief=FLAT, bg='#B0e0e6', fg='black',font=('yu gothic ui',12,'bold'))
-    Num_tel_entry.place(x=250, y=310, width=120)
+    Num_tel_entry.place(x=280, y=310, width=160)
 
-    Num_tel_line =Canvas(ajou_four_frame, width=120, height=2.0,bg='white',highlightthickness=0)
-    Num_tel_line.place(x=250, y=335)
+    Num_tel_line =Canvas(ajou_four_frame, width=160, height=2.0,bg='white',highlightthickness=0)
+    Num_tel_line.place(x=280, y=335)
 
 
-    Email_label = Label(ajou_four_frame, text="Adress email",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
-    Email_label.place(x=110, y=375)
+    Email_label = Label(ajou_four_frame, text="Adresse e-mail *",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
+    Email_label.place(x=70, y=375)
 
     Email_entry = Entry(ajou_four_frame, highlightthickness=0, relief=FLAT, bg='#B0e0e6', fg='black',font=('yu gothic ui',12,'bold'))
-    Email_entry.place(x=250, y=375, width=120)
+    Email_entry.place(x=280, y=375, width=160)
 
-    Email_line =Canvas(ajou_four_frame, width=120, height=2.0,bg='white',highlightthickness=0)
-    Email_line.place(x=250, y=395)
+    Email_line =Canvas(ajou_four_frame, width=160, height=2.0,bg='white',highlightthickness=0)
+    Email_line.place(x=280, y=400)
+
+
+    def validate_email(Email):
+        """Valide le format de l'adresse e-mail."""
+        pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'  # expression régulière pour valider le format de l'adresse e-mail
+        return re.match(pattern, Email) is not None
     
+    
+
+    def validate_num_tel(num_tel):
+        """
+        Vérifie si le numéro de telephone est valide.
+        """
+        if len(num_tel) != 10:
+            return False
+        if not num_tel.isdigit():
+            return False
+        return True
+
+
     def save_fournisseur():
         conn = sqlite3.connect('stock1.db')
         c = conn.cursor()
@@ -2601,13 +3178,38 @@ def Ajouter_fournisseur():
         Prénom = Prénom_entry.get()
         Num_tel = Num_tel_entry.get()
         Email = Email_entry.get()
+
+
+         # Vérifier si le code article existe déjà dans la base de données
+        c.execute("SELECT COUNT(*) FROM Fournisseurs WHERE Num_fournisseur=?", (Num_fournisseur,))
+        count = c.fetchone()[0]
+        if count > 0:
+            messagebox.showerror(title="Erreur", message="Le numémero de fournisseur existe déjà dans la base de données", parent=ajou_four_frame)
+            return
+
+
+        # Vérifier si les champs obligatoires sont remplis
+        if not Num_fournisseur or not Nom or not Prénom or not Num_tel or not Email:
+            messagebox.showerror(title="Erreur", message="Veuillez remplir tous les champs obligatoires (*)", parent=ajou_four_frame)
+            return
+
+
+        # Vérifier si le numéro de fournisseur est correct
+        if not validate_num_tel(Num_tel):
+            messagebox.showerror(title="Erreur", message="Le numéro de téléphone est incorrect", parent=ajou_four_frame)
+            return
+
         
 
+        # Vérifier si l'adresse e-mail est valide
+        if not validate_email(Email):
+            messagebox.showerror(title="Erreur", message="Adresse e-mail invalide", parent=ajou_four_frame)
+            return
 
         c.execute("INSERT INTO Fournisseurs VALUES (?, ?, ?, ?, ?)",
              (Num_fournisseur, Nom, Prénom, Num_tel, Email))
 
-        messagebox.showinfo("Succès", "Les données ont été ajoutées avec succès")       
+        messagebox.showinfo(title="Succès", message="Les données ont été ajoutées avec succès", parent=ajou_four)       
     
 
         Num_fournisseur_entry.delete(0, END)
@@ -2621,13 +3223,24 @@ def Ajouter_fournisseur():
         conn.close()
 
     save_button = Button(ajou_four, text="Ajouter",width='15',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 11,'bold'),fg='black', command=save_fournisseur)
-    save_button.place(x=660,y=500)
+    save_button.place(x=680,y=500)
         
 
     def annuler():
-        ajou_four.destroy()
+        Num_fournisseur_entry.delete(0, END)
+        Nom_entry.delete(0, END)
+        Prénom_entry.delete(0, END)
+        Num_tel_entry.delete(0, END)
+        Email_entry.delete(0, END)
     exit_button = Button(ajou_four, text="Annuler", width='15',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 11,'bold'),fg='black', command=annuler)
-    exit_button.place(x=450,y=500)
+    exit_button.place(x=440,y=500)
+
+
+    def annuler():
+        ajou_four.destroy()
+
+    exit_button = Button(ajou_four, text="Retour", width='20',cursor='hand2', command=annuler)
+    exit_button.place(x=10, y=630)
 
 
 
@@ -2638,11 +3251,12 @@ def Liste_fournisseur():
 
     four = Toplevel()
     four.title("Liste des fournisseur ")
-    four.state('zoomed')    
+    four.state('zoomed') 
+    # four.iconbitmap('C:\\Users\\hp\\Desktop\\Desktop.2\\star1.ico')   
     four.resizable(0,0) 
     four.config(background='#ACE5F3')
-    four_frame = Frame(four,bg='#067790', width='900', height='600')
-    four_frame.place(x=140, y=70)
+    four_frame = Frame(four,bg='#067790', width='1900', height='600')
+    four_frame.place(x=350, y=70)
 
     article_label = Label(four, text="Liste des fournisseur", font=('yu gothic ui', 23,'bold'),fg="white",bg="#ACE5F3")
     article_label.place(x=500, y=20)
@@ -2662,7 +3276,7 @@ def Liste_fournisseur():
     table.column("nom", width=100, stretch=NO)
     table.column("prenom", width=100, stretch=NO)
     table.column("num_tel", width=100, stretch=NO)
-    table.column("email", width=100, stretch=NO)
+    table.column("email", width=150, stretch=NO)
    
     cur.execute("""SELECT * FROM Fournisseurs""")
     fournisseurs = cur.fetchall()
@@ -2686,87 +3300,108 @@ def Liste_fournisseur():
 def Ajouter_empl():
     ajou_empl = Toplevel()
     ajou_empl.geometry('1000x1000')
-    ajou_empl.title("Ajouter Article")
-    ajou_empl.state('zoomed')    
+    ajou_empl.title("Ajouter employé")
+    ajou_empl.state('zoomed')
+    # ajou_empl.iconbitmap('C:\\Users\\hp\\Desktop\\Desktop.2\\star1.ico')    
     ajou_empl.resizable(0,0) 
     ajou_empl.config(bg="#ACE5F3")
     ajou_empl_frame = Frame(ajou_empl,bg='#067790', width='500', height='600')
     ajou_empl_frame.place(x=380, y=30)
+
+    label = Label(ajou_empl_frame, text="Ajouter un employé ",bg='#067790',font=('yu gothic ui', 20,'bold'),fg='white')
+    label.place(x=100, y=0)
 
     conn = sqlite3.connect('stock1.db')
     c = conn.cursor()
     c.execute("SELECT Nom_département FROM Département")
     values = [row[0] for row in c.fetchall()]
 
-    Num_carte_label = Label(ajou_empl_frame, text="Numéro de carte ",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
-    Num_carte_label.place(x=110, y=50)
+    Num_carte_label = Label(ajou_empl_frame, text="Numéro de carte* ",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
+    Num_carte_label.place(x=80, y=50)
 
     Num_carte_entry = Entry(ajou_empl_frame, highlightthickness=0, relief=FLAT, bg='#B0e0e6', fg='black',font=('yu gothic ui',12,'bold'))
-    Num_carte_entry.place(x=250, y=50, width=120)
+    Num_carte_entry.place(x=280, y=50, width=160)
 
-    Num_carte_line =Canvas(ajou_empl_frame, width=120, height=2.0,bg='white',highlightthickness=0)
-    Num_carte_line.place(x=250, y=75)
+    Num_carte_line =Canvas(ajou_empl_frame, width=160, height=2.0,bg='white',highlightthickness=0)
+    Num_carte_line.place(x=280, y=75)
 
-    Nom_label = Label(ajou_empl_frame, text="Nom ",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
-    Nom_label.place(x=110, y=115)
+    Nom_label = Label(ajou_empl_frame, text="Nom* ",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
+    Nom_label.place(x=80, y=115)
 
     Nom_entry = Entry(ajou_empl_frame, highlightthickness=0, relief=FLAT, bg='#B0e0e6', fg='black',font=('yu gothic ui',12,'bold'))
-    Nom_entry.place(x=250, y=115, width=120)
+    Nom_entry.place(x=280, y=115, width=160)
 
-    Nom_line =Canvas(ajou_empl_frame, width=120, height=2.0,bg='white',highlightthickness=0)
-    Nom_line.place(x=250, y=140)
+    Nom_line =Canvas(ajou_empl_frame, width=160, height=2.0,bg='white',highlightthickness=0)
+    Nom_line.place(x=280, y=140)
 
-    Prénom_label = Label(ajou_empl_frame, text="Prénom ",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
-    Prénom_label.place(x=110, y=180)
+    Prénom_label = Label(ajou_empl_frame, text="Prénom* ",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
+    Prénom_label.place(x=80, y=180)
 
     Prénom_entry = Entry(ajou_empl_frame, highlightthickness=0, relief=FLAT, bg='#B0e0e6', fg='black',font=('yu gothic ui',12,'bold'))
-    Prénom_entry.place(x=250, y=180, width=120)
+    Prénom_entry.place(x=280, y=180, width=160)
 
-    Prénom_line =Canvas(ajou_empl_frame, width=120, height=2.0,bg='white',highlightthickness=0)
-    Prénom_line.place(x=250, y=205)
+    Prénom_line =Canvas(ajou_empl_frame, width=160, height=2.0,bg='white',highlightthickness=0)
+    Prénom_line.place(x=280, y=205)
 
-    Num_tel_label = Label(ajou_empl_frame, text="Numéro de téléphone",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
-    Num_tel_label.place(x=110, y=245)
+    Num_tel_label = Label(ajou_empl_frame, text="Numéro de téléphone*",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
+    Num_tel_label.place(x=80, y=245)
 
     Num_tel_entry = Entry(ajou_empl_frame, highlightthickness=0, relief=FLAT, bg='#B0e0e6', fg='black',font=('yu gothic ui',12,'bold'))
-    Num_tel_entry.place(x=250, y=245, width=120)
+    Num_tel_entry.place(x=280, y=245, width=160)
 
-    Num_tel_line =Canvas(ajou_empl_frame, width=120, height=2.0,bg='white',highlightthickness=0)
-    Num_tel_line.place(x=250, y=270)
+    Num_tel_line =Canvas(ajou_empl_frame, width=160, height=2.0,bg='white',highlightthickness=0)
+    Num_tel_line.place(x=280, y=270)
 
 
-    Email_label = Label(ajou_empl_frame, text="Adress email",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
-    Email_label.place(x=110, y=310)
+    Email_label = Label(ajou_empl_frame, text="Adresse e-mail*",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
+    Email_label.place(x=80, y=310)
 
     Email_entry = Entry(ajou_empl_frame, highlightthickness=0, relief=FLAT, bg='#B0e0e6', fg='black',font=('yu gothic ui',12,'bold'))
-    Email_entry.place(x=250, y=310, width=120)
+    Email_entry.place(x=280, y=310, width=160)
 
-    Email_line =Canvas(ajou_empl_frame, width=120, height=2.0,bg='white',highlightthickness=0)
-    Email_line.place(x=250, y=335)
+    Email_line =Canvas(ajou_empl_frame, width=160, height=2.0,bg='white',highlightthickness=0)
+    Email_line.place(x=280, y=335)
 
 
 
-    Grade_label = Label(ajou_empl_frame, text="Grade",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
-    Grade_label.place(x=110, y=375)
+    Grade_label = Label(ajou_empl_frame, text="Grade*",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
+    Grade_label.place(x=80, y=375)
 
     Grade_combobox = ttk.Combobox(ajou_empl_frame, text="Grade",width='15', state='readonly', values=["Chef département", "Chef service"])
-    Grade_combobox.place(x=250, y=375, width=120)
+    Grade_combobox.place(x=280, y=382, width=160)
 
-    Grade_line =Canvas(ajou_empl_frame, width=120, height=2.0,bg='white',highlightthickness=0)
-    Grade_line.place(x=250, y=400)
+    Grade_line =Canvas(ajou_empl_frame, width=160, height=2.0,bg='white',highlightthickness=0)
+    Grade_line.place(x=280, y=400)
 
 
 
-    Département_label = Label(ajou_empl_frame, text="Département",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
-    Département_label.place(x=110, y=440)
+    Département_label = Label(ajou_empl_frame, text="Département*",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
+    Département_label.place(x=80, y=440)
 
     Département_combobox = ttk.Combobox(ajou_empl_frame, text="Département",width='15', state='readonly', values=values)
-    Département_combobox.place(x=250, y=440, width=120)
+    Département_combobox.place(x=280, y=445, width=160)
 
-    Département_line =Canvas(ajou_empl_frame, width=120, height=2.0,bg='white',highlightthickness=0)
-    Département_line.place(x=250, y=465)
+    Département_line =Canvas(ajou_empl_frame, width=160, height=2.0,bg='white',highlightthickness=0)
+    Département_line.place(x=280, y=465)
 
     conn.close()
+
+    def validate_email(Email):
+        """Valide le format de l'adresse e-mail."""
+        pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'  # expression régulière pour valider le format de l'adresse e-mail
+        return re.match(pattern, Email) is not None
+    
+    
+
+    def validate_num_tel(num_tel):
+        """
+        Vérifie si le numéro de telephone est valide.
+        """
+        if len(num_tel) != 10:
+            return False
+        if not num_tel.isdigit():
+            return False
+        return True
 
 
     def save_employé():
@@ -2783,12 +3418,35 @@ def Ajouter_empl():
         Département = Département_combobox.get()
 
 
+        # Vérifier si le code article existe déjà dans la base de données
+        c.execute("SELECT COUNT(*) FROM employé WHERE Num_carte=?", (Num_carte,))
+        count = c.fetchone()[0]
+        if count > 0:
+            messagebox.showerror(title="Erreur", message="Le numémero de carte existe déjà dans la base de données", parent=ajou_empl_frame)
+            return
+
+        # Vérifier si les champs obligatoires sont remplis
+        if not Num_carte or not Nom or not Prénom or not Num_tel or not Email or not Grade or not Département:
+            messagebox.showerror(title="Erreur", message="Veuillez remplir tous les champs obligatoires (*)", parent=ajou_empl_frame)
+            return
+
+        # Vérifier si le numéro de fournisseur est correct
+        if not validate_num_tel(Num_tel):
+            messagebox.showerror(title="Erreur", message="Le numéro de téléphone est incorrect", parent=ajou_empl_frame)
+            return
+
+        # Vérifier si l'adresse e-mail est valide
+        if not validate_email(Email):
+            messagebox.showerror(title="Erreur", message="Adresse e-mail invalide", parent=ajou_empl_frame)
+            return
+
+
         c.execute("INSERT INTO Personne VALUES (?, ?, ?, ?, ?)",
              (Num_carte, Nom, Prénom, Num_tel, Email))
         d.execute("INSERT INTO Employé VALUES (?, ?, ?)",
              (Num_carte, Grade, Département))      
 
-        messagebox.showinfo("Succès", "Les données ont été ajoutées avec succès")       
+        messagebox.showinfo(title="Succès", message="Les données ont été ajoutées avec succès", parent=ajou_empl_frame)       
     
 
         Num_carte_entry.delete(0, END)
@@ -2796,21 +3454,32 @@ def Ajouter_empl():
         Prénom_entry.delete(0, END)
         Num_tel_entry.delete(0, END)
         Email_entry.delete(0, END)
-        Grade_combobox.delete(0, END)
-        Département_combobox.delete(0, END)
+        Grade_combobox.set("")
+        Département_combobox.set("")
         
         
         conn.commit()
         conn.close()
 
     save_button = Button(ajou_empl, text="Ajouter",width='15',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 11,'bold'),fg='black', command=save_employé)
-    save_button.place(x=660,y=500)
+    save_button.place(x=680,y=550)
         
 
     def annuler():
-        ajou_empl.destroy()
+        Num_carte_entry.delete(0, END)
+        Nom_entry.delete(0, END)
+        Prénom_entry.delete(0, END)
+        Num_tel_entry.delete(0, END)
+        Email_entry.delete(0, END)
+        Grade_combobox.set("")
+        Département_combobox.set("")
     exit_button = Button(ajou_empl, text="Annuler", width='15',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 11,'bold'),fg='black', command=annuler)
-    exit_button.place(x=450,y=500)
+    exit_button.place(x=450,y=550)
+
+    def annuler():
+        ajou_empl.destroy()
+    exit_button = Button(ajou_empl, text="Retour", width='15',cursor='hand2', command=annuler)
+    exit_button.place(x=10,y=630)
 
 #====================================Liste Employé==========================================    
 def Liste_employé():
@@ -2819,11 +3488,12 @@ def Liste_employé():
 
     empl = Toplevel()
     empl.title("Liste des Employés ")
-    empl.state('zoomed')    
+    empl.state('zoomed') 
+    # empl.iconbitmap('C:\\Users\\hp\\Desktop\\Desktop.2\\star1.ico')   
     empl.resizable(0,0) 
     empl.config(background='#ACE5F3')
     empl_frame = Frame(empl,bg='#067790', width='900', height='600')
-    empl_frame.place(x=140, y=70)
+    empl_frame.place(x=250, y=70)
 
     article_label = Label(empl, text="Liste des employés", font=('yu gothic ui', 23,'bold'),fg="white",bg="#ACE5F3")
     article_label.place(x=500, y=20)
@@ -2845,7 +3515,7 @@ def Liste_employé():
     table.column("nom", width=100, stretch=NO)
     table.column("prenom", width=100, stretch=NO)
     table.column("num_tel", width=100, stretch=NO)
-    table.column("email", width=100, stretch=NO)
+    table.column("email", width=150, stretch=NO)
     table.column("grade", width=100, stretch=NO)
     table.column("departement", width=100, stretch=NO)
    
@@ -2878,75 +3548,95 @@ def Ajouter_représantant():
     ajou_repr = Toplevel()
     ajou_repr.geometry('1000x1000')
     ajou_repr.title("Ajouter Représentant")
-    ajou_repr.state('zoomed')    
+    ajou_repr.state('zoomed') 
+    # ajou_repr.iconbitmap('C:\\Users\\hp\\Desktop\\Desktop.2\\star1.ico')   
     ajou_repr.resizable(0,0) 
     ajou_repr.config(bg="#ACE5F3")
     ajou_repr_frame = Frame(ajou_repr,bg='#067790', width='500', height='600')
     ajou_repr_frame.place(x=380, y=30)
+
+    label = Label(ajou_repr_frame, text="Ajouter un représentant ",bg='#067790',font=('yu gothic ui', 20,'bold'),fg='white')
+    label.place(x=100, y=30)
 
     conn = sqlite3.connect('stock1.db')
     c = conn.cursor()
     c.execute("SELECT Nom_entreprise FROM Entreprise")
     values = [row[0] for row in c.fetchall()]
 
-    Num_représantant_label = Label(ajou_repr_frame, text="Numéro Représentant ",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
-    Num_représantant_label.place(x=110, y=50)
+    Num_représantant_label = Label(ajou_repr_frame, text="Numéro Représentant* ",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
+    Num_représantant_label.place(x=80, y=100)
 
     Num_représantant_entry = Entry(ajou_repr_frame, highlightthickness=0, relief=FLAT, bg='#B0e0e6', fg='black',font=('yu gothic ui',12,'bold'))
-    Num_représantant_entry.place(x=250, y=50, width=120)
+    Num_représantant_entry.place(x=280, y=100, width=150)
 
-    Num_représantant_line =Canvas(ajou_repr_frame, width=120, height=2.0,bg='white',highlightthickness=0)
-    Num_représantant_line.place(x=250, y=75)
+    Num_représantant_line =Canvas(ajou_repr_frame, width=150, height=2.0,bg='white',highlightthickness=0)
+    Num_représantant_line.place(x=280, y=125)
 
-    Nom_label = Label(ajou_repr_frame, text="Nom ",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
-    Nom_label.place(x=110, y=115)
+    Nom_label = Label(ajou_repr_frame, text="Nom*",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
+    Nom_label.place(x=80, y=165)
 
     Nom_entry = Entry(ajou_repr_frame, highlightthickness=0, relief=FLAT, bg='#B0e0e6', fg='black',font=('yu gothic ui',12,'bold'))
-    Nom_entry.place(x=250, y=115, width=120)
+    Nom_entry.place(x=280, y=165, width=150)
 
-    Nom_line =Canvas(ajou_repr_frame, width=120, height=2.0,bg='white',highlightthickness=0)
-    Nom_line.place(x=250, y=140)
+    Nom_line =Canvas(ajou_repr_frame, width=150, height=2.0,bg='white',highlightthickness=0)
+    Nom_line.place(x=280, y=190)
 
-    Prénom_label = Label(ajou_repr_frame, text="Prénom ",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
-    Prénom_label.place(x=110, y=180)
+    Prénom_label = Label(ajou_repr_frame, text="Prénom* ",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
+    Prénom_label.place(x=80, y=230)
 
     Prénom_entry = Entry(ajou_repr_frame, highlightthickness=0, relief=FLAT, bg='#B0e0e6', fg='black',font=('yu gothic ui',12,'bold'))
-    Prénom_entry.place(x=250, y=180, width=120)
+    Prénom_entry.place(x=280, y=230, width=150)
 
-    Prénom_line =Canvas(ajou_repr_frame, width=120, height=2.0,bg='white',highlightthickness=0)
-    Prénom_line.place(x=250, y=205)
+    Prénom_line =Canvas(ajou_repr_frame, width=150, height=2.0,bg='white',highlightthickness=0)
+    Prénom_line.place(x=280, y=255)
 
-    Num_tel_label = Label(ajou_repr_frame, text="Numéro de téléphone",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
-    Num_tel_label.place(x=110, y=245)
+    Num_tel_label = Label(ajou_repr_frame, text="Numéro de téléphone*",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
+    Num_tel_label.place(x=80, y=295)
 
     Num_tel_entry = Entry(ajou_repr_frame, highlightthickness=0, relief=FLAT, bg='#B0e0e6', fg='black',font=('yu gothic ui',12,'bold'))
-    Num_tel_entry.place(x=250, y=245, width=120)
+    Num_tel_entry.place(x=280, y=295, width=150)
 
-    Num_tel_line =Canvas(ajou_repr_frame, width=120, height=2.0,bg='white',highlightthickness=0)
-    Num_tel_line.place(x=250, y=270)
+    Num_tel_line =Canvas(ajou_repr_frame, width=150, height=2.0,bg='white',highlightthickness=0)
+    Num_tel_line.place(x=280, y=320)
 
 
-    Email_label = Label(ajou_repr_frame, text="Adress email",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
-    Email_label.place(x=110, y=310)
+    Email_label = Label(ajou_repr_frame, text="Adress email*",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
+    Email_label.place(x=80, y=360)
 
     Email_entry = Entry(ajou_repr_frame, highlightthickness=0, relief=FLAT, bg='#B0e0e6', fg='black',font=('yu gothic ui',12,'bold'))
-    Email_entry.place(x=250, y=310, width=120)
+    Email_entry.place(x=280, y=360, width=150)
 
-    Email_line =Canvas(ajou_repr_frame, width=120, height=2.0,bg='white',highlightthickness=0)
-    Email_line.place(x=250, y=335)
+    Email_line =Canvas(ajou_repr_frame, width=150, height=2.0,bg='white',highlightthickness=0)
+    Email_line.place(x=280, y=385)
 
 
-    Entreprise_label = Label(ajou_repr_frame, text="Entreprise",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
-    Entreprise_label.place(x=110, y=375)
+    Entreprise_label = Label(ajou_repr_frame, text="Entreprise*",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
+    Entreprise_label.place(x=80, y=425)
 
-    Entreprise_combobox = ttk.Combobox(ajou_repr_frame, text="Département",width='15', state='readonly', values=values)
-    Entreprise_combobox.place(x=250, y=375, width=120)
+    Entreprise_combobox = ttk.Combobox(ajou_repr_frame, text="Département*",width='15', state='readonly', values=values)
+    Entreprise_combobox.place(x=280, y=430, width=150)
 
-    Entreprise_line =Canvas(ajou_repr_frame, width=120, height=2.0,bg='white',highlightthickness=0)
-    Entreprise_line.place(x=250, y=400)
+    Entreprise_line =Canvas(ajou_repr_frame, width=150, height=2.0,bg='white',highlightthickness=0)
+    Entreprise_line.place(x=280, y=450)
 
     conn.close()
 
+    def validate_email(Email):
+        """Valide le format de l'adresse e-mail."""
+        pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'  # expression régulière pour valider le format de l'adresse e-mail
+        return re.match(pattern, Email) is not None
+    
+    
+
+    def validate_num_tel(num_tel):
+        """
+        Vérifie si le numéro de telephone est valide.
+        """
+        if len(num_tel) != 10:
+            return False
+        if not num_tel.isdigit():
+            return False
+        return True
 
     def save_représantant():
         conn = sqlite3.connect('stock1.db')
@@ -2960,13 +3650,38 @@ def Ajouter_représantant():
         Email = Email_entry.get()
         Entreprise = Entreprise_combobox.get()
 
+        # Vérifier si xxxxxx déjà dans la base de données
+        c.execute("SELECT COUNT(*) FROM représantant WHERE Num_représantant=?", (Num_représantant,))
+        count = c.fetchone()[0]
+        if count > 0:
+            messagebox.showerror(title="Erreur", message="Le numémero de représantant existe déjà dans la base de données", parent=ajou_repr_frame)
+            return
+
+
+        # Vérifier si les champs obligatoires sont remplis
+        if not Num_représantant or not Nom or not Prénom or not Num_tel or not Email or not Entreprise:
+            messagebox.showerror(title="Erreur", message="Veuillez remplir tous les champs obligatoires (*)", parent=ajou_repr_frame)
+            return
+
+        # Vérifier si le numéro de fournisseur est correct
+        if not validate_num_tel(Num_tel):
+            messagebox.showerror(title="Erreur", message="Le numéro de téléphone est incorrect", parent=ajou_repr_frame)
+            return
+
+        
+
+        # Vérifier si l'adresse e-mail est valide
+        if not validate_email(Email):
+            messagebox.showerror(title="Erreur", message="Adresse e-mail invalide", parent=ajou_repr_frame)
+            return
+
 
         c.execute("INSERT INTO Personne VALUES (?, ?, ?, ?, ?)",
              (Num_représantant, Nom, Prénom, Num_tel, Email))
         d.execute("INSERT INTO Représantant VALUES (?, ?)",
              (Num_représantant,  Entreprise))      
 
-        messagebox.showinfo("Succès", "Les données ont été ajoutées avec succès")       
+        messagebox.showinfo(title="Succès", message="Les données ont été ajoutées avec succès", parent=ajou_repr_frame)       
     
 
         Num_représantant_entry.delete(0, END)
@@ -2974,20 +3689,31 @@ def Ajouter_représantant():
         Prénom_entry.delete(0, END)
         Num_tel_entry.delete(0, END)
         Email_entry.delete(0, END)
-        Entreprise_combobox.delete(0, END)
+        Entreprise_combobox.set("")
         
         
         conn.commit()
         conn.close()
 
     save_button = Button(ajou_repr, text="Ajouter",width='15',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 11,'bold'),fg='black', command=save_représantant)
-    save_button.place(x=660,y=500)
+    save_button.place(x=670,y=530)
         
 
     def annuler():
-        ajou_repr.destroy()
+        Num_représantant_entry.delete(0, END)
+        Nom_entry.delete(0, END)
+        Prénom_entry.delete(0, END)
+        Num_tel_entry.delete(0, END)
+        Email_entry.delete(0, END)
+        Entreprise_combobox.set("")
     exit_button = Button(ajou_repr, text="Annuler", width='15',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 11,'bold'),fg='black', command=annuler)
-    exit_button.place(x=450,y=500)
+    exit_button.place(x=470,y=530)
+
+    def annuler():
+        ajou_repr.destroy()
+
+    exit_button = Button(ajou_repr, text="Retour", width='20',cursor='hand2', command=annuler)
+    exit_button.place(x=10, y=630)
 #===================================Liste représentant====================================================
 
 def Liste_représantant():
@@ -2995,12 +3721,12 @@ def Liste_représantant():
     cur = conn.cursor()
 
     repr = Toplevel()
-    repr.title("Liste des Représentant ")
+    repr.title("Liste des Représentants ")
     repr.state('zoomed')    
     repr.resizable(0,0) 
     repr.config(background='#ACE5F3')
     repr_frame = Frame(repr,bg='#067790', width='900', height='600')
-    repr_frame.place(x=140, y=70)
+    repr_frame.place(x=300, y=70)
 
     article_label = Label(repr, text="Liste des représentant", font=('yu gothic ui', 23,'bold'),fg="white",bg="#ACE5F3")
     article_label.place(x=500, y=20)
@@ -3021,7 +3747,7 @@ def Liste_représantant():
     table.column("nom", width=100, stretch=NO)
     table.column("prenom", width=100, stretch=NO)
     table.column("num_tel", width=100, stretch=NO)
-    table.column("email", width=100, stretch=NO)
+    table.column("email", width=150, stretch=NO)
     table.column("entreprise", width=100, stretch=NO)
    
     cur.execute("""SELECT * FROM Personne p
@@ -3054,52 +3780,59 @@ def Ajouter_entreprise():
     ajou_entr = Toplevel()
     ajou_entr.geometry('1000x1000')
     ajou_entr.title("Ajouter Entreprise")
-    ajou_entr.state('zoomed')    
+    ajou_entr.state('zoomed')  
+    # ajou_entr.iconbitmap('C:\\Users\\hp\\Desktop\\Desktop.2\\star1.ico')  
     ajou_entr.resizable(0,0) 
     ajou_entr.config(bg="#ACE5F3")
     ajou_entr_frame = Frame(ajou_entr,bg='#067790', width='500', height='600')
-    ajou_entr_frame.place(x=380, y=30)
+    ajou_entr_frame.place(x=380, y=10)
 
-  
+    label = Label(ajou_entr_frame, text="Ajouter une entreprise ",bg='#067790',font=('yu gothic ui', 25,'bold'),fg='white')
+    label.place(x=90, y=30)
 
-    Num_entr_label = Label(ajou_entr_frame, text="Numéro Entreprise ",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
-    Num_entr_label.place(x=110, y=50)
+    Num_entr_label = Label(ajou_entr_frame, text="Numéro Entreprise* ",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
+    Num_entr_label.place(x=90, y=150)
 
     Num_entr_entry = Entry(ajou_entr_frame, highlightthickness=0, relief=FLAT, bg='#B0e0e6', fg='black',font=('yu gothic ui',12,'bold'))
-    Num_entr_entry.place(x=250, y=50, width=120)
+    Num_entr_entry.place(x=260, y=150, width=160)
 
-    Num_entr_line =Canvas(ajou_entr_frame, width=120, height=2.0,bg='white',highlightthickness=0)
-    Num_entr_line.place(x=250, y=75)
+    Num_entr_line =Canvas(ajou_entr_frame, width=160, height=2.0,bg='white',highlightthickness=0)
+    Num_entr_line.place(x=260, y=175)
 
-    Nom_label = Label(ajou_entr_frame, text="Nom Entreprise ",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
-    Nom_label.place(x=110, y=115)
+    Nom_label = Label(ajou_entr_frame, text="Nom Entreprise* ",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
+    Nom_label.place(x=90, y=215)
 
     Nom_entry = Entry(ajou_entr_frame, highlightthickness=0, relief=FLAT, bg='#B0e0e6', fg='black',font=('yu gothic ui',12,'bold'))
-    Nom_entry.place(x=250, y=115, width=120)
+    Nom_entry.place(x=260, y=215, width=160)
 
-    Nom_line =Canvas(ajou_entr_frame, width=120, height=2.0,bg='white',highlightthickness=0)
-    Nom_line.place(x=250, y=140)
+    Nom_line =Canvas(ajou_entr_frame, width=160, height=2.0,bg='white',highlightthickness=0)
+    Nom_line.place(x=260, y=240)
 
 
-    Email_label = Label(ajou_entr_frame, text="Adress email",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
-    Email_label.place(x=110, y=180)
+    Email_label = Label(ajou_entr_frame, text="Adresse e-mail*",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
+    Email_label.place(x=90, y=280)
 
     Email_entry = Entry(ajou_entr_frame, highlightthickness=0, relief=FLAT, bg='#B0e0e6', fg='black',font=('yu gothic ui',12,'bold'))
-    Email_entry.place(x=250, y=180, width=120)
+    Email_entry.place(x=260, y=280, width=160)
 
-    Email_line =Canvas(ajou_entr_frame, width=120, height=2.0,bg='white',highlightthickness=0)
-    Email_line.place(x=250, y=205)
+    Email_line =Canvas(ajou_entr_frame, width=160, height=2.0,bg='white',highlightthickness=0)
+    Email_line.place(x=260, y=305)
 
     
-    Adresse_label = Label(ajou_entr_frame, text="Adresse",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
-    Adresse_label.place(x=110, y=245)
+    Adresse_label = Label(ajou_entr_frame, text="Adresse*",bg='#067790',font=('yu gothic ui', 13,'bold'),fg='white')
+    Adresse_label.place(x=90, y=345)
 
     Adresse_entry = Entry(ajou_entr_frame, highlightthickness=0, relief=FLAT, bg='#B0e0e6', fg='black',font=('yu gothic ui',12,'bold'))
-    Adresse_entry.place(x=250, y=245, width=120)
+    Adresse_entry.place(x=260, y=345, width=160)
 
-    Adresse_line =Canvas(ajou_entr_frame, width=120, height=2.0,bg='white',highlightthickness=0)
-    Adresse_line.place(x=250, y=270)
+    Adresse_line =Canvas(ajou_entr_frame, width=160, height=2.0,bg='white',highlightthickness=0)
+    Adresse_line.place(x=260, y=370)
 
+    def validate_email(Email):
+        """Valide le format de l'adresse e-mail."""
+        pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'  # expression régulière pour valider le format de l'adresse e-mail
+        return re.match(pattern, Email) is not None
+    
 
   
 
@@ -3113,12 +3846,29 @@ def Ajouter_entreprise():
         Email = Email_entry.get()
         Adresse = Adresse_entry.get()
 
+        # Vérifier si le code article existe déjà dans la base de données
+        c.execute("SELECT COUNT(*) FROM Entreprise WHERE ID_entreprise=?", (Num_entreprise,))
+        count = c.fetchone()[0]
+        if count > 0:
+            messagebox.showerror(title="Erreur", message="Le numémero d'entreprise existe déjà dans la base de données", parent=ajou_entr_frame)
+            return
+
+         # Vérifier si les champs obligatoires sont remplis
+        if not Num_entreprise or not Nom or not Email or not Adresse:
+            messagebox.showerror(title="Erreur", message="Veuillez remplir tous les champs obligatoires (*)", parent=ajou_entr_frame)
+            return
+
+        # Vérifier si l'adresse e-mail est valide
+        if not validate_email(Email):
+            messagebox.showerror(title="Erreur", message="Adresse e-mail invalide", parent=ajou_entr_frame)
+            return
+
 
         c.execute("INSERT INTO Entreprise VALUES (?, ?, ?, ?)",
              (Num_entreprise, Nom, Email, Adresse))
              
 
-        messagebox.showinfo("Succès", "Les données ont été ajoutées avec succès")       
+        messagebox.showinfo(title="Succès", message="Les données ont été ajoutées avec succès", parent=ajou_entr_frame)       
     
 
         Num_entr_entry.delete(0, END)
@@ -3132,15 +3882,25 @@ def Ajouter_entreprise():
         conn.close()
 
     save_button = Button(ajou_entr, text="Ajouter",width='15',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 11,'bold'),fg='black', command=save_entreprise)
-    save_button.place(x=660,y=500)
+    save_button.place(x=660,y=450)
         
+    def annuler():
+        Num_entr_entry.delete(0, END)
+        Nom_entry.delete(0, END)
+        Email_entry.delete(0, END)
+        Adresse_entry.delete(0, END)
+    
+    exit_button = Button(ajou_entr, text="Annuler", width='15',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 11,'bold'),fg='black', command=annuler)
+    exit_button.place(x=450,y=450)
+
 
     def annuler():
         ajou_entr.destroy()
-    exit_button = Button(ajou_entr, text="Annuler", width='15',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 11,'bold'),fg='black', command=annuler)
-    exit_button.place(x=450,y=500)
 
-#=====================================Liste représantant==================================================
+    exit_button = Button(ajou_entr, text="Retour", width='20',cursor='hand2', command=annuler)
+    exit_button.place(x=10, y=630)
+
+#=====================================Liste entreprise==================================================
 
 def Liste_entreprise():
     conn = sqlite3.connect('stock1.db')
@@ -3148,11 +3908,12 @@ def Liste_entreprise():
 
     entr = Toplevel()
     entr.title("Liste des Entreprises ")
-    entr.state('zoomed')    
+    entr.state('zoomed') 
+    # entr.iconbitmap('C:\\Users\\hp\\Desktop\\Desktop.2\\star1.ico')   
     entr.resizable(0,0) 
     entr.config(background='#ACE5F3')
     entr_frame = Frame(entr,bg='#067790', width='900', height='600')
-    entr_frame.place(x=140, y=70)
+    entr_frame.place(x=380, y=70)
 
     entreprise_label = Label(entr, text="Liste des entreprises", font=('yu gothic ui', 23,'bold'),fg="white",bg="#ACE5F3")
     entreprise_label.place(x=500, y=20)
@@ -3169,7 +3930,7 @@ def Liste_entreprise():
 
     table.column("#0", width=100, stretch=NO)
     table.column("nom", width=100, stretch=NO)
-    table.column("email", width=100, stretch=NO)
+    table.column("email", width=150, stretch=NO)
     table.column("adresse", width=100, stretch=NO)
    
     cur.execute("""SELECT * FROM Entreprise""")
@@ -3184,30 +3945,31 @@ def Liste_entreprise():
         table.insert("", "end", text=num_entreprise , values=(nom, email, adresse))
 
     def annuler():
-        repr.destroy()
+        entr.destroy()
 
-    exit_button = Button(repr, text="Retour", width='20',cursor='hand2', command=annuler)
+    exit_button = Button(entr, text="Retour", width='20',cursor='hand2', command=annuler)
     exit_button.place(x=10, y=630)
 #===================================Gestion d'article not admin====================================
 def G_article():
     G_art = Toplevel()
     G_art.geometry('500x500')
-    G_art.title("Exercice 2023")
-    G_art.state('zoomed')     
+    G_art.title("Article")
+    G_art.state('zoomed')
+    # G_art.iconbitmap('C:\\Users\\hp\\Desktop\\Desktop.2\\star1.ico')     
     G_art.resizable(0,0) 
     G_art.config(background='#ACE5F3')
     G_art_frame = Frame(G_art,bg='#067790', width='500', height='600')
     G_art_frame.place(x=380, y=30)
 
 
-    btn = Button(G_art_frame,text="Liste article",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=articles_type)
-    btn.place(x=120,y=80)
-    btn1 = Button(G_art_frame,text="Detaile Article",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=article_details)
-    btn1.place(x=120,y=180)
-    btn2 = Button(G_art_frame,text="Ajouter article",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=ajouter)
-    btn2.place(x=120,y=280)
-    btn5 = Button(G_art_frame,text="Suprrimer article",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=supprimer)
-    btn5.place(x=120,y=380)
+    btn = Button(G_art_frame,text="Liste Article",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=articles_type)
+    btn.place(x=120,y=120)
+    btn1 = Button(G_art_frame,text="Détails Article",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=article_details)
+    btn1.place(x=120,y=220)
+    btn2 = Button(G_art_frame,text="Ajouter Article",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=ajouter)
+    btn2.place(x=120,y=320)
+    btn5 = Button(G_art_frame,text="Supprimer Article",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=supprimer)
+    btn5.place(x=120,y=420)
 
     def annuler():
         G_art.destroy()
@@ -3224,7 +3986,8 @@ def G_article_notadmin():
     G_art = Toplevel()
     G_art.geometry('500x500')
     G_art.title("Exercice 2023")
-    G_art.state('zoomed')     
+    G_art.state('zoomed')
+    # G_art.iconbitmap('C:\\Users\\hp\\Desktop\\Desktop.2\\star1.ico')     
     G_art.resizable(0,0) 
     G_art.config(background='#ACE5F3')
     G_art_frame = Frame(G_art,bg='#067790', width='500', height='600')
@@ -3232,9 +3995,9 @@ def G_article_notadmin():
 
 
     btn = Button(G_art_frame,text="Liste article",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=articles_type)
-    btn.place(x=120,y=80)
+    btn.place(x=120,y=200)
     btn1 = Button(G_art_frame,text="Detaile Article",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=article_details)
-    btn1.place(x=120,y=180)
+    btn1.place(x=120,y=380)
 
     def annuler():
         G_art.destroy()
@@ -3247,17 +4010,18 @@ def consulter_ajouter_br_pf():
     
     ajouter_br = Toplevel()
     ajouter_br.geometry('500x500')
-    ajouter_br.title("BR")
-    ajouter_br.state('zoomed')     
+    ajouter_br.title("BR PF")
+    ajouter_br.state('zoomed')
+    # ajouter_br.iconbitmap('C:\\Users\\hp\\Desktop\\Desktop.2\\star1.ico')     
     ajouter_br.resizable(0,0) 
     ajouter_br.config(background='#ACE5F3')
     ajouter_br_frame = Frame(ajouter_br, bg='#067790', width='500', height='600')
     ajouter_br_frame.place(x=380, y=30)
     
     btn1 = Button(ajouter_br_frame,text="Ajouter BR",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=AjouterBR_PF)
-    btn1.place(x=120,y=100)
+    btn1.place(x=120,y=200)
     btn2 = Button(ajouter_br_frame,text="Liste BR",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=liste_br)
-    btn2.place(x=120,y=200)
+    btn2.place(x=120,y=330)
  
 
     def annuler():
@@ -3272,17 +4036,18 @@ def consulter_ajouter_br_fb():
     
     ajouter_br = Toplevel()
     ajouter_br.geometry('500x500')
-    ajouter_br.title("BR")
-    ajouter_br.state('zoomed')     
+    ajouter_br.title("BR FB")
+    ajouter_br.state('zoomed') 
+    # ajouter_br.iconbitmap('C:\\Users\\hp\\Desktop\\Desktop.2\\star1.ico')   
     ajouter_br.resizable(0,0) 
     ajouter_br.config(background='#ACE5F3')
     ajouter_br_frame = Frame(ajouter_br, bg='#067790', width='500', height='600')
     ajouter_br_frame.place(x=380, y=30)
     
     btn1 = Button(ajouter_br_frame,text="Ajouter BR",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=AjouterBR_FB)
-    btn1.place(x=120,y=100)
+    btn1.place(x=120,y=200)
     btn2 = Button(ajouter_br_frame,text="Liste BR",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=liste_br)
-    btn2.place(x=120,y=200)
+    btn2.place(x=120,y=330)
  
 
     def annuler():
@@ -3298,17 +4063,18 @@ def consulter_ajouter_br_pdr():
     
     ajouter_br = Toplevel()
     ajouter_br.geometry('500x500')
-    ajouter_br.title("BR")
-    ajouter_br.state('zoomed')     
+    ajouter_br.title("BR PDR")
+    ajouter_br.state('zoomed')
+    # ajouter_br.iconbitmap('C:\\Users\\hp\\Desktop\\Desktop.2\\star1.ico')     
     ajouter_br.resizable(0,0) 
     ajouter_br.config(background='#ACE5F3')
     ajouter_br_frame = Frame(ajouter_br, bg='#067790', width='500', height='600')
     ajouter_br_frame.place(x=380, y=30)
     
     btn1 = Button(ajouter_br_frame,text="Ajouter BR",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=AjouterBR_PDR)
-    btn1.place(x=120,y=100)
+    btn1.place(x=120,y=200)
     btn2 = Button(ajouter_br_frame,text="Liste BR",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=liste_br)
-    btn2.place(x=120,y=200)
+    btn2.place(x=120,y=330)
  
 
     def annuler():
@@ -3323,17 +4089,18 @@ def consulter_ajouter_br_mp():
     
     ajouter_br = Toplevel()
     ajouter_br.geometry('500x500')
-    ajouter_br.title("BR")
-    ajouter_br.state('zoomed')     
+    ajouter_br.title("BR MP")
+    ajouter_br.state('zoomed')
+    # ajouter_br.iconbitmap('C:\\Users\\hp\\Desktop\\Desktop.2\\star1.ico')     
     ajouter_br.resizable(0,0) 
     ajouter_br.config(background='#ACE5F3')
     ajouter_br_frame = Frame(ajouter_br, bg='#067790', width='500', height='600')
     ajouter_br_frame.place(x=380, y=30)
     
     btn1 = Button(ajouter_br_frame,text="Ajouter BR",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=AjouterBR_MP)
-    btn1.place(x=120,y=100)
+    btn1.place(x=120,y=200)
     btn2 = Button(ajouter_br_frame,text="Liste BR",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=liste_br)
-    btn2.place(x=120,y=200)
+    btn2.place(x=120,y=330)
  
 
     def annuler():
@@ -3342,13 +4109,14 @@ def consulter_ajouter_br_mp():
 
     exit_button = Button(ajouter_br, text="Retour",width='20',cursor='hand2', command=annuler)
     exit_button.place(x=10, y=630)
-#==================================================================================================================================
+#=============================================ADMINISTRATEUR=====================================================================================
 def consulter_ajouter_br():
     
     ajouter_br = Toplevel()
     ajouter_br.geometry('500x500')
     ajouter_br.title("BR")
-    ajouter_br.state('zoomed')     
+    ajouter_br.state('zoomed')
+    # ajouter_br.iconbitmap('C:\\Users\\hp\\Desktop\\Desktop.2\\star1.ico')     
     ajouter_br.resizable(0,0) 
     ajouter_br.config(background='#ACE5F3')
     ajouter_br_frame = Frame(ajouter_br, bg='#067790', width='500', height='600')
@@ -3374,22 +4142,23 @@ def consulter_ajouter_bsm_pf():
     
     ajouter_bsm = Toplevel()
     ajouter_bsm.geometry('500x500')
-    ajouter_bsm.title("BR")
-    ajouter_bsm.state('zoomed')     
+    ajouter_bsm.title("BSM PF")
+    ajouter_bsm.state('zoomed') 
+    # ajouter_bsm.iconbitmap('C:\\Users\\hp\\Desktop\\Desktop.2\\star1.ico')    
     ajouter_bsm.resizable(0,0) 
     ajouter_bsm.config(background='#ACE5F3')
-    ajouter_bsm_frame = Frame(ajouter_bsm, bg='#067790', width='500', height='700')
+    ajouter_bsm_frame = Frame(ajouter_bsm, bg='#067790', width='500', height='600')
     ajouter_bsm_frame.place(x=380, y=30)
     
 
-    btn2 = Button(ajouter_bsm_frame,text="Ajouter BSM PF",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=AjouterBSM_PF)
-    btn2.place(x=120,y=130)
+    btn2 = Button(ajouter_bsm_frame,text="Ajouter BSM",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=AjouterBSM_PF)
+    btn2.place(x=120,y=150)
     btn3 = Button(ajouter_bsm_frame,text="Liste BSM",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=liste_bsm)
-    btn3.place(x=120,y=180)
+    btn3.place(x=120,y=250)
     btn5 = Button(ajouter_bsm_frame,text="Liste représantants",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=Liste_représantant)
-    btn5.place(x=120,y=280)
+    btn5.place(x=120,y=350)
     btn6 = Button(ajouter_bsm_frame,text="Liste entreprises",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=Liste_entreprise)
-    btn6.place(x=120,y=330)
+    btn6.place(x=120,y=450)
 
 
     def annuler():
@@ -3406,19 +4175,20 @@ def consulter_ajouter_bsm_fb():
     
     ajouter_bsm = Toplevel()
     ajouter_bsm.geometry('500x500')
-    ajouter_bsm.title("BR")
-    ajouter_bsm.state('zoomed')     
+    ajouter_bsm.title("BSM FB")
+    ajouter_bsm.state('zoomed') 
+    # ajouter_bsm.iconbitmap('C:\\Users\\hp\\Desktop\\Desktop.2\\star1.ico')    
     ajouter_bsm.resizable(0,0) 
     ajouter_bsm.config(background='#ACE5F3')
-    ajouter_bsm_frame = Frame(ajouter_bsm, bg='#067790', width='500', height='700')
+    ajouter_bsm_frame = Frame(ajouter_bsm, bg='#067790', width='500', height='600')
     ajouter_bsm_frame.place(x=380, y=30)
     
     btn1 = Button(ajouter_bsm_frame,text="Ajouter BSM",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=AjouterBSM_FB)
-    btn1.place(x=120,y=80)
+    btn1.place(x=120,y=150)
     btn3 = Button(ajouter_bsm_frame,text="Liste BSM",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=liste_bsm)
-    btn3.place(x=120,y=180)
+    btn3.place(x=120,y=250)
     btn4 = Button(ajouter_bsm_frame,text="Liste Employé",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=Liste_employé)
-    btn4.place(x=120,y=230)
+    btn4.place(x=120,y=350)
  
   
   
@@ -3440,19 +4210,20 @@ def consulter_ajouter_bsm_pdr():
     
     ajouter_bsm = Toplevel()
     ajouter_bsm.geometry('500x500')
-    ajouter_bsm.title("BR")
-    ajouter_bsm.state('zoomed')     
+    ajouter_bsm.title("BSM PDR")
+    ajouter_bsm.state('zoomed') 
+    # ajouter_bsm.iconbitmap('C:\\Users\\hp\\Desktop\\Desktop.2\\star1.ico')    
     ajouter_bsm.resizable(0,0) 
     ajouter_bsm.config(background='#ACE5F3')
-    ajouter_bsm_frame = Frame(ajouter_bsm, bg='#067790', width='500', height='700')
+    ajouter_bsm_frame = Frame(ajouter_bsm, bg='#067790', width='500', height='600')
     ajouter_bsm_frame.place(x=380, y=30)
     
     btn1 = Button(ajouter_bsm_frame,text="Ajouter BSM",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=AjouterBSM_PDR)
-    btn1.place(x=120,y=80)
+    btn1.place(x=120,y=150)
     btn3 = Button(ajouter_bsm_frame,text="Liste BSM",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=liste_bsm)
-    btn3.place(x=120,y=180)
+    btn3.place(x=120,y=250)
     btn4 = Button(ajouter_bsm_frame,text="Liste Employé",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=Liste_employé)
-    btn4.place(x=120,y=230)
+    btn4.place(x=120,y=350)
  
   
   
@@ -3471,19 +4242,20 @@ def consulter_ajouter_bsm_mp():
     
     ajouter_bsm = Toplevel()
     ajouter_bsm.geometry('500x500')
-    ajouter_bsm.title("BR")
-    ajouter_bsm.state('zoomed')     
+    ajouter_bsm.title("BSM MP")
+    ajouter_bsm.state('zoomed') 
+    # ajouter_bsm.iconbitmap('C:\\Users\\hp\\Desktop\\Desktop.2\\star1.ico')    
     ajouter_bsm.resizable(0,0) 
     ajouter_bsm.config(background='#ACE5F3')
-    ajouter_bsm_frame = Frame(ajouter_bsm, bg='#067790', width='500', height='700')
+    ajouter_bsm_frame = Frame(ajouter_bsm, bg='#067790', width='500', height='600')
     ajouter_bsm_frame.place(x=380, y=30)
     
     btn1 = Button(ajouter_bsm_frame,text="Ajouter BSM",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=AjouterBSM_MP)
-    btn1.place(x=120,y=80)
+    btn1.place(x=120,y=150)
     btn3 = Button(ajouter_bsm_frame,text="Liste BSM",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=liste_bsm)
-    btn3.place(x=120,y=180)
+    btn3.place(x=120,y=250)
     btn4 = Button(ajouter_bsm_frame,text="Liste Employé",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=Liste_employé)
-    btn4.place(x=120,y=230)
+    btn4.place(x=120,y=350)
  
   
   
@@ -3501,31 +4273,100 @@ def consulter_ajouter_bsm():
     
     ajouter_bsm = Toplevel()
     ajouter_bsm.geometry('500x500')
-    ajouter_bsm.title("BR")
-    ajouter_bsm.state('zoomed')     
+    ajouter_bsm.title("BSM")
+    ajouter_bsm.state('zoomed')
+    # ajouter_bsm.iconbitmap('C:\\Users\\hp\\Desktop\\Desktop.2\\star1.ico')     
     ajouter_bsm.resizable(0,0) 
     ajouter_bsm.config(background='#ACE5F3')
-    ajouter_bsm_frame = Frame(ajouter_bsm, bg='#067790', width='500', height='700')
+    ajouter_bsm_frame = Frame(ajouter_bsm, bg='#067790', width='500', height='600')
     ajouter_bsm_frame.place(x=380, y=30)
     
+    def employe():
+        Employer = Toplevel()
+        Employer.geometry('500x500')
+        Employer.title("Employer")
+        Employer.state('zoomed')
+        # Employer.iconbitmap('C:\\Users\\hp\\Desktop\\Desktop.2\\star1.ico')     
+        Employer.resizable(0,0) 
+        Employer.config(background='#ACE5F3')
+        Employer_frame = Frame(Employer, bg='#067790', width='500', height='600')
+        Employer_frame.place(x=380, y=30)
+
+        btn7 = Button(Employer_frame,text="Ajouter Employé",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=Ajouter_empl)
+        btn7.place(x=120,y=300)
+        btn4 = Button(Employer_frame,text="Liste Employé",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=Liste_employé)
+        btn4.place(x=120,y=150)
+
+        def annuler():
+            Employer.destroy()
+
+
+        exit_button = Button(Employer, text="Retour",width='20',cursor='hand2', command=annuler)
+        exit_button.place(x=10, y=630)
+
+
+    def entreprise():
+        Entr = Toplevel()
+        Entr.geometry('500x500')
+        Entr.title("Entreprise")
+        Entr.state('zoomed')
+        # Entr.iconbitmap('C:\\Users\\hp\\Desktop\\Desktop.2\\star1.ico')     
+        Entr.resizable(0,0) 
+        Entr.config(background='#ACE5F3')
+        Entr_frame = Frame(Entr, bg='#067790', width='500', height='600')
+        Entr_frame.place(x=380, y=30)
+
+        btn7 = Button(Entr_frame,text="Ajouter Entreprise",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=Ajouter_entreprise)
+        btn7.place(x=120,y=300)
+        btn4 = Button(Entr_frame,text="Liste Entreprises",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=Liste_entreprise)
+        btn4.place(x=120,y=150)
+
+        def annuler():
+            Entr.destroy()
+
+
+        exit_button = Button(Entr, text="Retour",width='20',cursor='hand2', command=annuler)
+        exit_button.place(x=10, y=630)
+
+
+    def representant():
+        Rep = Toplevel()
+        Rep.geometry('500x500')
+        Rep.title("Representant")
+        Rep.state('zoomed')
+        # Rep.iconbitmap('C:\\Users\\hp\\Desktop\\Desktop.2\\star1.ico')     
+        Rep.resizable(0,0) 
+        Rep.config(background='#ACE5F3')
+        Rep_frame = Frame(Rep, bg='#067790', width='500', height='600')
+        Rep_frame.place(x=380, y=30)
+
+        btn7 = Button(Rep_frame,text="Ajouter Représentant",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=Ajouter_représantant)
+        btn7.place(x=120,y=300)
+        btn4 = Button(Rep_frame,text="Liste Représentants",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=Liste_représantant)
+        btn4.place(x=120,y=150)
+
+        def annuler():
+            Rep.destroy()
+
+
+        exit_button = Button(Rep, text="Retour",width='20',cursor='hand2', command=annuler)
+        exit_button.place(x=10, y=630)
+
+
+
+
     btn1 = Button(ajouter_bsm_frame,text="Ajouter BSM",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=AjouterBSM)
     btn1.place(x=120,y=80)
     btn2 = Button(ajouter_bsm_frame,text="Ajouter BSM PF",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=AjouterBSM_PF)
-    btn2.place(x=120,y=130)
+    btn2.place(x=120,y=160)
     btn3 = Button(ajouter_bsm_frame,text="Liste BSM",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=liste_bsm)
-    btn3.place(x=120,y=180)
-    btn4 = Button(ajouter_bsm_frame,text="Liste Employé",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=Liste_employé)
-    btn4.place(x=120,y=230)
-    btn5 = Button(ajouter_bsm_frame,text="Liste représantants",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=Liste_représantant)
-    btn5.place(x=120,y=280)
-    btn6 = Button(ajouter_bsm_frame,text="Liste entreprises",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=Liste_entreprise)
-    btn6.place(x=120,y=330)
-    btn7 = Button(ajouter_bsm_frame,text="Ajouter Employé",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=Ajouter_empl)
-    btn7.place(x=120,y=380)
-    btn8 = Button(ajouter_bsm_frame,text="Ajouter Représanant",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=Ajouter_représantant)
-    btn8.place(x=120,y=430)
-    btn9 = Button(ajouter_bsm_frame,text="Ajouter Entreprise",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=Ajouter_entreprise)
-    btn9.place(x=120,y=480)
+    btn3.place(x=120,y=240)
+    btn4 = Button(ajouter_bsm_frame,text="Employé",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=employe)
+    btn4.place(x=120,y=320)
+    btn5 = Button(ajouter_bsm_frame,text="Représantant",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=representant)
+    btn5.place(x=120,y=480)
+    btn6 = Button(ajouter_bsm_frame,text="Entreprise",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=entreprise)
+    btn6.place(x=120,y=400)
     
 
     def annuler():
@@ -3541,7 +4382,8 @@ def exercice_PF():
     Exo = Toplevel()
     Exo.geometry('500x500')
     Exo.title("Exercice 2023")
-    Exo.state('zoomed')     
+    Exo.state('zoomed')  
+    # Exo.iconbitmap('C:\\Users\\hp\\Desktop\\Desktop.2\\star1.ico')   
     Exo.resizable(0,0) 
     Exo.config(background='#ACE5F3')
     Exo_frame = Frame(Exo,bg='#067790', width='500', height='600')
@@ -3549,11 +4391,11 @@ def exercice_PF():
 
 
     btn = Button(Exo_frame,text="Article",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=G_article_notadmin)
-    btn.place(x=120,y=80)    
+    btn.place(x=120,y=160)    
     btn3 = Button(Exo_frame,text="BR",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=consulter_ajouter_br_pf)
-    btn3.place(x=120,y=180)
+    btn3.place(x=120,y=280)
     btn4 = Button(Exo_frame,text="BSM", width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=consulter_ajouter_bsm_pf)
-    btn4.place(x=120,y=280)
+    btn4.place(x=120,y=400)
     
     def annuler():
         Exo.destroy()
@@ -3568,7 +4410,8 @@ def exercice_FB():
     Exo = Toplevel()
     Exo.geometry('500x500')
     Exo.title("Exercice 2023")
-    Exo.state('zoomed')     
+    Exo.state('zoomed') 
+    # Exo.iconbitmap('C:\\Users\\hp\\Desktop\\Desktop.2\\star1.ico')    
     Exo.resizable(0,0) 
     Exo.config(background='#ACE5F3')
     Exo_frame = Frame(Exo,bg='#067790', width='500', height='600')
@@ -3576,11 +4419,11 @@ def exercice_FB():
 
 
     btn = Button(Exo_frame,text="Article",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=G_article_notadmin)
-    btn.place(x=120,y=80)    
+    btn.place(x=120,y=160)    
     btn3 = Button(Exo_frame,text="BR",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=consulter_ajouter_br_fb)
-    btn3.place(x=120,y=180)
+    btn3.place(x=120,y=280)
     btn4 = Button(Exo_frame,text="BSM", width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=consulter_ajouter_bsm_fb)
-    btn4.place(x=120,y=280)
+    btn4.place(x=120,y=400)
     
     def annuler():
         Exo.destroy()
@@ -3596,7 +4439,8 @@ def exercice_PDR():
     Exo = Toplevel()
     Exo.geometry('500x500')
     Exo.title("Exercice 2023")
-    Exo.state('zoomed')     
+    Exo.state('zoomed')
+    # Exo.iconbitmap('C:\\Users\\hp\\Desktop\\Desktop.2\\star1.ico')     
     Exo.resizable(0,0) 
     Exo.config(background='#ACE5F3')
     Exo_frame = Frame(Exo,bg='#067790', width='500', height='600')
@@ -3604,11 +4448,11 @@ def exercice_PDR():
 
 
     btn = Button(Exo_frame,text="Article",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=G_article_notadmin)
-    btn.place(x=120,y=80)    
+    btn.place(x=120,y=160)    
     btn3 = Button(Exo_frame,text="BR",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=consulter_ajouter_br_pdr)
-    btn3.place(x=120,y=180)
+    btn3.place(x=120,y=280)
     btn4 = Button(Exo_frame,text="BSM", width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=consulter_ajouter_bsm_pdr)
-    btn4.place(x=120,y=280)
+    btn4.place(x=120,y=400)
     
     def annuler():
         Exo.destroy()
@@ -3623,7 +4467,8 @@ def exercice_MP():
     Exo = Toplevel()
     Exo.geometry('500x500')
     Exo.title("Exercice 2023")
-    Exo.state('zoomed')     
+    Exo.state('zoomed')
+    # Exo.iconbitmap('C:\\Users\\hp\\Desktop\\Desktop.2\\star1.ico')    
     Exo.resizable(0,0) 
     Exo.config(background='#ACE5F3')
     Exo_frame = Frame(Exo,bg='#067790', width='500', height='600')
@@ -3631,11 +4476,11 @@ def exercice_MP():
 
 
     btn = Button(Exo_frame,text="Article",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=G_article_notadmin)
-    btn.place(x=120,y=80)    
+    btn.place(x=120,y=160)    
     btn3 = Button(Exo_frame,text="BR",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=consulter_ajouter_br_mp)
-    btn3.place(x=120,y=180)
+    btn3.place(x=120,y=280)
     btn4 = Button(Exo_frame,text="BSM", width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=consulter_ajouter_bsm_mp)
-    btn4.place(x=120,y=280)
+    btn4.place(x=120,y=400)
     
     def annuler():
         Exo.destroy()
@@ -3649,7 +4494,8 @@ def exercice():
     Exo = Toplevel()
     Exo.geometry('500x500')
     Exo.title("Exercice 2023")
-    Exo.state('zoomed')     
+    Exo.state('zoomed') 
+    # Exo.iconbitmap('C:\\Users\\hp\\Desktop\\Desktop.2\\star1.ico')    
     Exo.resizable(0,0) 
     Exo.config(background='#ACE5F3')
     Exo_frame = Frame(Exo,bg='#067790', width='500', height='600')
@@ -3657,11 +4503,11 @@ def exercice():
 
 
     btn = Button(Exo_frame,text="Article",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=G_article)
-    btn.place(x=120,y=80)    
+    btn.place(x=120,y=160)    
     btn3 = Button(Exo_frame,text="BR",width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=consulter_ajouter_br)
-    btn3.place(x=120,y=180)
+    btn3.place(x=120,y=280)
     btn4 = Button(Exo_frame,text="BSM", width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=consulter_ajouter_bsm)
-    btn4.place(x=120,y=280)
+    btn4.place(x=120,y=400)
     
     def annuler():
         Exo.destroy()
@@ -3674,19 +4520,26 @@ def ouvrir_fenetre_bienvenue_mag_PF():
     fenetre_bienvenue = Toplevel(lgn_frame)
     fenetre_bienvenue.title("Bienvenue")
     fenetre_bienvenue.config(bg="#D3D3D3")
-    fenetre_bienvenue.state('zoomed')     
+    fenetre_bienvenue.state('zoomed')
+    # fenetre_bienvenue.iconbitmap('C:\\Users\\hp\\Desktop\\Desktop.2\\star1.ico')     
     fenetre_bienvenue.resizable(0,0) 
     fenetre_bienvenue.config(background='#ACE5F3')
     bienvenue_frame = Frame(fenetre_bienvenue,bg='#067790', width='500', height='600')
-    bienvenue_frame.place(x=380, y=30)
+    bienvenue_frame.place(x=380, y=50)
 
     message_bienvenue = Label(bienvenue_frame, text="Bienvenue, " + username_entry.get() + " !",font=('yu gothic ui', 26,'bold'),fg="white",bg="#067790")
     message_bienvenue.place(x=50,y=100)
     ex = Button(bienvenue_frame, text="Voir Exercice : 2023", width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=exercice_PF)
-    ex.place(x=120, y=250)
+    ex.place(x=120, y=300)
 
     username_entry.delete(0, END)
     password_entry.delete(0, END)
+
+    def deconnecter():
+        fenetre_bienvenue.destroy()
+
+    button = Button(fenetre_bienvenue, text="Déconnecter", width='20',bg='red',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=deconnecter)
+    button.place(x=1050, y=30)
 
     def annuler():
         fenetre_bienvenue.destroy()
@@ -3701,17 +4554,24 @@ def ouvrir_fenetre_bienvenue_mag_FB():
     fenetre_bienvenue.config(bg="#D3D3D3")
     fenetre_bienvenue.state('zoomed')     
     fenetre_bienvenue.resizable(0,0) 
+    # fenetre_bienvenue.iconbitmap('C:\\Users\\hp\\Desktop\\Desktop.2\\star1.ico') 
     fenetre_bienvenue.config(background='#ACE5F3')
     bienvenue_frame = Frame(fenetre_bienvenue,bg='#067790', width='500', height='600')
-    bienvenue_frame.place(x=380, y=30)
+    bienvenue_frame.place(x=380, y=50)
 
     message_bienvenue = Label(bienvenue_frame, text="Bienvenue, " + username_entry.get() + " !",font=('yu gothic ui', 26,'bold'),fg="white",bg="#067790")
     message_bienvenue.place(x=50,y=100)
     ex = Button(bienvenue_frame, text="Voir Exercice : 2023", width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=exercice_FB)
-    ex.place(x=120, y=250)
+    ex.place(x=120, y=300)
 
     username_entry.delete(0, END)
     password_entry.delete(0, END)
+
+    def deconnecter():
+        fenetre_bienvenue.destroy()
+
+    button = Button(fenetre_bienvenue, text="Déconnecter", width='20',bg='red',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=deconnecter)
+    button.place(x=1050, y=30)
 
     def annuler():
         fenetre_bienvenue.destroy()
@@ -3725,19 +4585,26 @@ def ouvrir_fenetre_bienvenue_mag_PDR():
     fenetre_bienvenue = Toplevel(lgn_frame)
     fenetre_bienvenue.title("Bienvenue")
     fenetre_bienvenue.config(bg="#D3D3D3")
-    fenetre_bienvenue.state('zoomed')     
+    fenetre_bienvenue.state('zoomed') 
+    # fenetre_bienvenue.iconbitmap('C:\\Users\\hp\\Desktop\\Desktop.2\\star1.ico')     
     fenetre_bienvenue.resizable(0,0) 
     fenetre_bienvenue.config(background='#ACE5F3')
     bienvenue_frame = Frame(fenetre_bienvenue,bg='#067790', width='500', height='600')
-    bienvenue_frame.place(x=380, y=30)
+    bienvenue_frame.place(x=380, y=50)
 
     message_bienvenue = Label(bienvenue_frame, text="Bienvenue, " + username_entry.get() + " !",font=('yu gothic ui', 26,'bold'),fg="white",bg="#067790")
     message_bienvenue.place(x=50,y=100)
     ex = Button(bienvenue_frame, text="Voir Exercice : 2023", width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=exercice_PDR)
-    ex.place(x=120, y=250)
+    ex.place(x=120, y=300)
 
     username_entry.delete(0, END)
     password_entry.delete(0, END)
+
+    def deconnecter():
+        fenetre_bienvenue.destroy()
+
+    button = Button(fenetre_bienvenue, text="Déconnecter", width='20',bg='red',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=deconnecter)
+    button.place(x=1050, y=30)
 
     def annuler():
         fenetre_bienvenue.destroy()
@@ -3752,19 +4619,26 @@ def ouvrir_fenetre_bienvenue_mag_MP():
     fenetre_bienvenue = Toplevel(lgn_frame)
     fenetre_bienvenue.title("Bienvenue")
     fenetre_bienvenue.config(bg="#D3D3D3")
-    fenetre_bienvenue.state('zoomed')     
+    fenetre_bienvenue.state('zoomed')  
+    # fenetre_bienvenue.iconbitmap('C:\\Users\\hp\\Desktop\\Desktop.2\\star1.ico')    
     fenetre_bienvenue.resizable(0,0) 
     fenetre_bienvenue.config(background='#ACE5F3')
     bienvenue_frame = Frame(fenetre_bienvenue,bg='#067790', width='500', height='600')
-    bienvenue_frame.place(x=380, y=30)
+    bienvenue_frame.place(x=380, y=50)
 
     message_bienvenue = Label(bienvenue_frame, text="Bienvenue, " + username_entry.get() + " !",font=('yu gothic ui', 26,'bold'),fg="white",bg="#067790")
     message_bienvenue.place(x=50,y=100)
     ex = Button(bienvenue_frame, text="Voir Exercice : 2023", width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=exercice_MP)
-    ex.place(x=120, y=250)
+    ex.place(x=120, y=300)
 
     username_entry.delete(0, END)
     password_entry.delete(0, END)
+
+    def deconnecter():
+        fenetre_bienvenue.destroy()
+
+    button = Button(fenetre_bienvenue, text="Déconnecter", width='20',bg='red',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=deconnecter)
+    button.place(x=1050, y=30)
 
     def annuler():
         fenetre_bienvenue.destroy()
@@ -3778,19 +4652,26 @@ def ouvrir_fenetre_bienvenue():
     fenetre_bienvenue = Toplevel(lgn_frame)
     fenetre_bienvenue.title("Bienvenue")
     fenetre_bienvenue.config(bg="#D3D3D3")
-    fenetre_bienvenue.state('zoomed')     
+    fenetre_bienvenue.state('zoomed')
+    fenetre_bienvenue.iconbitmap('C:\\Users\\pc\\version1-main\\star.ico')   
     fenetre_bienvenue.resizable(0,0) 
     fenetre_bienvenue.config(background='#ACE5F3')
     bienvenue_frame = Frame(fenetre_bienvenue,bg='#067790', width='500', height='600')
-    bienvenue_frame.place(x=380, y=30)
+    bienvenue_frame.place(x=380, y=50)
 
     message_bienvenue = Label(bienvenue_frame, text="Bienvenue, " + username_entry.get() + " !",font=('yu gothic ui', 26,'bold'),fg="white",bg="#067790")
     message_bienvenue.place(x=50,y=100)
     ex = Button(bienvenue_frame, text="Voir Exercice : 2023", width='25',bg='#ACE5F3',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=exercice)
-    ex.place(x=120, y=250)
+    ex.place(x=120, y=300)
 
     username_entry.delete(0, END)
     password_entry.delete(0, END)
+
+    def deconnecter():
+        fenetre_bienvenue.destroy()
+
+    button = Button(fenetre_bienvenue, text="Déconnecter", width='20',bg='red',cursor='hand2',font=('yu gothic ui', 13,'bold'),fg='black', command=deconnecter)
+    button.place(x=1050, y=30)
 
     def annuler():
         fenetre_bienvenue.destroy()
@@ -3801,12 +4682,6 @@ def ouvrir_fenetre_bienvenue():
 
     #root.withdraw()           # Pour  Masquer la fenêtre principale
 
-# #============================= bg img =========================================================================================
-# bg_frame = Image.open('C:\\Users\\hp\\Desktop\\Desktop\\transparent.png')
-# photo = ImageTk.PhotoImage(bg_frame)
-# bg_panel = Label(root, image=photo)
-# bg_panel.image = photo
-# bg_panel.pack()      # x ou y    & la taill d'origine true false
 
 #============================ frame log in=====================================================================================
 lgn_frame = Frame(root,bg='#067790', width='500', height='600')
@@ -3826,7 +4701,7 @@ show_password_checkbox.place(x=280, y=400)
 
 #============================ Image login ======================================================================================
 # user_img = Image.open('C:\\Users\\hp\\Desktop\\Desktop\\logi.png')
-# # photo = ImageTk.PhotoImage(user_img)
+# photo = ImageTk.PhotoImage(user_img)
 # user_img_panel = Label(root, image=photo, bg='#067790')
 # user_img_panel.image = photo
 # user_img_panel.place(x=580, y=60) 
@@ -3837,7 +4712,7 @@ sign_in_label.place(x=165, y=130)
 
 #==========================     Username       ================================================================================
 # username_icon = Image.open('C:\\Users\\hp\\Downloads\\user2.png')
-# # photo = ImageTk.PhotoImage(username_icon)
+# photo = ImageTk.PhotoImage(username_icon)
 # username_icon_label = Label(lgn_frame, image=photo, bg='#067790',width='100', height='100')
 # username_icon_label.image = photo
 # username_icon_label.place(x=40, y=205)
